@@ -3,15 +3,24 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { useRouter } from "expo-router";
 import { Stack } from "expo-router";
 import React from "react";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginScreen() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    // Handle authentication logic
-    console.log("Logging in with:", username, password);
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in user:", userCredential.user.email);
+      await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
+      router.replace("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -20,12 +29,12 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>CIPN Rehabilitation App</Text>
 
-      <Text style={styles.label}>Utilizador:</Text>
+      <Text style={styles.label}>Email:</Text>
       <TextInput
         style={styles.input}
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Enter username"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Inserir email"
       />
 
       <Text style={styles.label}>Password:</Text>
@@ -34,7 +43,7 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        placeholder="Enter password"
+        placeholder="Inserir password"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
