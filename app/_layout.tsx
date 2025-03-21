@@ -12,7 +12,7 @@ export default function RootLayout() {
   const isLoginPage = segments[0] === "login";
 
   return (
-    <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column" }}>
+    <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column" , backgroundColor: "#fff" }}>
     {Platform.OS === "web" && !isLoginPage && <Sidebar />}
       <Stack screenOptions={{ headerStyle: { backgroundColor: "#5A2A2A" }, headerTintColor: "#fff" ,
             headerRight: () => (
@@ -27,7 +27,7 @@ export default function RootLayout() {
             ),
           }}
         />
-        {Platform.OS !== "web" && !isLoginPage && <BottomNav />}
+        {Platform.OS !== "web" && !isLoginPage && <BottomNav/>}
         </View>
   );
 }

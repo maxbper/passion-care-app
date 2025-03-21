@@ -9,7 +9,10 @@ const en = {
     placeholder_password: "Insert password",
     login: "Login",
     logout: "Logout",
+    login_failed_title: "Login Failed",
+    login_failed_message: "Invalid email or password",
     homescreen_title: "Home",
+    profilescreen_title: "Profile",
    };
 
 

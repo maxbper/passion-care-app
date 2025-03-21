@@ -9,7 +9,10 @@ const pt = {
     placeholder_password: "Inserir senha",
     login: "Entrar",
     logout: "Sair",
+    login_failed_title: "Falha no login",
+    login_failed_message: "Email ou senha inválidos",
     homescreen_title: "Início",
+    profilescreen_title: "Perfil",
    };
 
 export default pt;

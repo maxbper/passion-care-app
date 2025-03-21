@@ -1,19 +1,36 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import { router, usePathname } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function SidebarNav() {
+    const { t } = useTranslation();
+    const pathname = usePathname();
+
+    const navItems: { name: string; label: string; route: any; library: any }[] = [
+        { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
+        { name: "user", label: t("profilescreen_title"), route: "/profile", library: AntDesign },
+        ];
+
   return (
-    <View style={{ width: 80, backgroundColor: "#fff", height: "100%", paddingTop: 20 }}>
-      {[
-        { name: "home", label: "Home" },
-        { name: "star", label: "Activity" },
-        { name: "account", label: "Profile" },
-      ].map((item) => (
-        <TouchableOpacity key={item.name} style={{ alignItems: "center", marginVertical: 20 }}>
-          <AntDesign name={item.name} size={30} color="#5A2A2A" />
-          <Text style={{ fontSize: 12 }}>{item.label}</Text>
-        </TouchableOpacity>
-      ))}
+    <View style={{ width: 80, backgroundColor: "#fff", height: "100%" , paddingTop: 20, justifyContent: "center"}}>
+      {navItems.map((item, index) => {
+              const IconComponent = item.library;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => router.push(item.route)}
+                  style={{alignItems: "center", marginVertical: 20 }}
+                >
+                  <IconComponent
+                    name={item.name}
+                    size={24}
+                    color={pathname === item.route ? "#5A2A2A" : "grey"}
+                  />
+                  <Text style={{ fontSize: 12 }}>{item.label}</Text>
+                </TouchableOpacity>
+              );
+            })}
     </View>
   );
 }

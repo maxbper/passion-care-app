@@ -12,7 +12,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const handleLogin = async () => {
     try {
@@ -22,9 +22,9 @@ export default function LoginScreen() {
       router.replace("/");
     } catch (error) {
       if (Platform.OS === "web") {
-        alert("Login Failed: Invalid email or password");
+        alert(t("login_failed_title") + ": " + t("login_failed_message"));
       } else {
-        Alert.alert("Login Failed", "Invalid email or password");
+        Alert.alert(t("login_failed_title"), t("login_failed_message"));
       }
     }
   };
