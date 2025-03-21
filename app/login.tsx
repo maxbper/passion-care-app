@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Stack } from "expo-router";
 import React from "react";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const {t} = useTranslation();
 
   const handleLogin = async () => {
     try {
@@ -19,38 +21,57 @@ export default function LoginScreen() {
       await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
       router.replace("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      if (Platform.OS === "web") {
+        alert("Login Failed: Invalid email or password");
+      } else {
+        Alert.alert("Login Failed", "Invalid email or password");
+      }
     }
   };
 
-  return (
-    <>
-    <Stack.Screen options={{ headerShown: false }} />
+  const renderLoginContent = () => (
     <View style={styles.container}>
-      <Text style={styles.title}>CIPN Rehabilitation App</Text>
-
-      <Text style={styles.label}>Email:</Text>
+      <Text style={styles.title}>{t("app_title")}</Text>
+  
+      <Text style={styles.label}>{t("email")}:</Text>
       <TextInput
         style={styles.input}
         value={email}
         onChangeText={setEmail}
-        placeholder="Inserir email"
+        placeholder={t("placeholder_email")}
       />
-
-      <Text style={styles.label}>Password:</Text>
+  
+      <Text style={styles.label}>{t("password")}:</Text>
       <TextInput
         style={styles.input}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        placeholder="Inserir password"
+        placeholder={t("placeholder_password")}
+        onSubmitEditing={handleLogin}
       />
-
+  
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>{t("login")}</Text>
       </TouchableOpacity>
     </View>
-    </>
+  );
+  
+
+  return (
+    <>
+  <Stack.Screen options={{ headerTitle: "" }} />
+
+  {Platform.OS !== "web" ? (
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        {renderLoginContent()}
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  ) : (
+    renderLoginContent()
+  )}
+</>
   );
 }
 

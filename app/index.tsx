@@ -1,12 +1,14 @@
-import { Text, View, Button } from "react-native";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { View } from "react-native";
+import { Stack, useRouter } from "expo-router";
+import { useEffect } from "react";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { auth } from "../firebaseConfig";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useTranslation } from "react-i18next";
+import "../constants/translations";
+import React from "react";
 
 export default function Index() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -14,6 +16,9 @@ export default function Index() {
         const storedLogin = await ReactNativeAsyncStorage.getItem("isLoggedIn");
         if (!storedLogin) {
           router.replace("/login");
+        }
+        else {
+          router.replace("/home");
         }
       } catch (error) {
         console.error("Auth check failed:", error);
@@ -23,22 +28,18 @@ export default function Index() {
     checkAuth();
   }, []);
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    await ReactNativeAsyncStorage.removeItem("isLoggedIn");
-    console.log("Logged out");
-    router.replace("/login");
-  };
-
   return (
+    <>
+    <Stack.Screen options={{ headerTitle: "" }} />
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#5A2A2A",
       }}
     >
-      <Button title="Logout" onPress={handleLogout} />
     </View>
+    </>
   );
 }
