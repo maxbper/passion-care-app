@@ -1,25 +1,18 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
-import { useRouter } from "expo-router";
 import { Stack } from "expo-router";
 import React from "react";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { auth } from "../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { useTranslation } from "react-i18next";
+import { login } from "../services/authService";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
   const { t } = useTranslation();
 
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in user:", userCredential.user.email);
-      await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
-      router.replace("/");
+      await login(email, password);
     } catch (error) {
       if (Platform.OS === "web") {
         alert(t("login_failed_title") + ": " + t("login_failed_message"));

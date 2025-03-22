@@ -2,13 +2,11 @@ import { View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { useTranslation } from "react-i18next";
 import "../constants/translations";
 import React from "react";
 
 export default function Index() {
   const router = useRouter();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const checkAuth = async () => {
