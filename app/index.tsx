@@ -1,28 +1,13 @@
 import { View } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { useEffect } from "react";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import "../constants/translations";
 import React from "react";
+import { checkAuth } from "../services/authService";
 
 export default function Index() {
-  const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const storedLogin = await ReactNativeAsyncStorage.getItem("isLoggedIn");
-        if (!storedLogin) {
-          router.replace("/login");
-        }
-        else {
-          router.replace("/home");
-        }
-      } catch (error) {
-        console.error("Auth check failed:", error);
-      }
-    };
-
     checkAuth();
   }, []);
 

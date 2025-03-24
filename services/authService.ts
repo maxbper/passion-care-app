@@ -23,3 +23,29 @@ export const logout = async () => {
     throw error;
   }
 };
+
+export const checkAuth = async () => {
+  try {
+    const storedLogin = await ReactNativeAsyncStorage.getItem("isLoggedIn");
+    if (!storedLogin) {
+      router.replace("/login");
+    } else {
+      router.replace("/home");
+    }
+  } catch (error) {
+    console.error("Auth check failed:", error);
+  }
+}
+
+export const checkAdmin = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    const idTokenResult = await user.getIdTokenResult();
+    if (idTokenResult.claims.role === "admin") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+    return false;
+}

@@ -1,27 +1,23 @@
-import { Text, View, Button } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { Text, View } from "react-native";
+import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
-import React from "react";
-import { auth } from "../firebaseConfig";
+import React, { useEffect } from "react";
+import { checkAdmin } from "../services/authService";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
-    const router = useRouter();
 
-    const checkAdmin = async () => {
-        const user = auth.currentUser;
-        if (user) {
-          const idTokenResult = await user.getIdTokenResult();
-          if (idTokenResult.claims.role === "admin") {
-            console.log("User is an admin");
-          } else {
-            console.log("User is not an admin");
-          }
-        }
-    };
-
-    checkAdmin();
+    useEffect(() => {
+        const fetchAdminStatus = async () => {
+            const admin = await checkAdmin();
+            if (admin) {
+                console.log("Admin");
+            } else {
+                console.log("Not Admin");
+            }
+        };
+        fetchAdminStatus();
+      }, []);
 
     return (
         <>
