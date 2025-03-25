@@ -13,6 +13,10 @@ const pt = {
     login_failed_message: "Email ou senha inválidos",
     homescreen_title: "Início",
     profilescreen_title: "Perfil",
+    name: "Nome",
+    age: "Idade",
+    cancerType: "Tipo de Cancro",
+    loading_user_data: "A carregar dados do utilizador...",
    };
 
 export default pt;

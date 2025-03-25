@@ -21,6 +21,7 @@ export default function BottomNav() {
             key={index}
             onPress={() => router.push(item.route)}
             style={styles.button}
+            disabled={pathname === item.route}
           >
             <IconComponent
               name={item.name}

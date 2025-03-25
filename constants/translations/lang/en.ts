@@ -13,6 +13,10 @@ const en = {
     login_failed_message: "Invalid email or password",
     homescreen_title: "Home",
     profilescreen_title: "Profile",
+    name: "Name",
+    age: "Age",
+    cancerType: "Cancer Type",
+    loading_user_data: "Loading user data...",
    };
 
 

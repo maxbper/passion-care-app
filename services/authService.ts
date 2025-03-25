@@ -7,6 +7,7 @@ export const login = async (email: string, password: string) => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
+        console.log(auth.currentUser.uid);
         router.replace("/");
     } catch (error: any) {
         throw error;
