@@ -21,6 +21,7 @@ export default function SidebarNav() {
                   key={index}
                   onPress={() => router.push(item.route)}
                   style={{alignItems: "center", marginVertical: 20 }}
+                  disabled={pathname === item.route}
                 >
                   <IconComponent
                     name={item.name}
