@@ -8,7 +8,7 @@ import { checkAuth } from "../services/authService";
 export default function Index() {
 
   useEffect(() => {
-    checkAuth();
+    checkAuth("/home");
   }, []);
 
   return (

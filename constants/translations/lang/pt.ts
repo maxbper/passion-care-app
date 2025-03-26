@@ -17,6 +17,7 @@ const pt = {
     age: "Idade",
     cancerType: "Tipo de Cancro",
     loading_user_data: "A carregar dados do utilizador...",
+    submit: "Submeter",
    };
 
 export default pt;

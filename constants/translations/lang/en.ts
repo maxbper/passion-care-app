@@ -17,6 +17,7 @@ const en = {
     age: "Age",
     cancerType: "Cancer Type",
     loading_user_data: "Loading user data...",
+    submit: "Submit",
    };
 
 

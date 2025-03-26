@@ -25,13 +25,15 @@ export const logout = async () => {
   }
 };
 
-export const checkAuth = async () => {
+export const checkAuth = async (path: any) => {
   try {
     const storedLogin = await ReactNativeAsyncStorage.getItem("isLoggedIn");
     if (!storedLogin) {
       router.replace("/login");
+      return false;
     } else {
-      router.replace("/home");
+      router.replace(path);
+        return true;
     }
   } catch (error) {
     console.error("Auth check failed:", error);
@@ -49,4 +51,12 @@ export const checkAdmin = async () => {
     }
   }
     return false;
+}
+
+export const getUid = () => {
+    const user = auth.currentUser;
+    if (user) {
+        return user.uid;
+    }
+    return null;
 }

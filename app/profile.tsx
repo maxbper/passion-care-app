@@ -5,7 +5,7 @@ import { db } from "../firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import { logout } from "../services/authService";
+import { checkAuth, logout } from "../services/authService";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +16,7 @@ export default function ProfileScreen() {
   const { t } = useTranslation();
 
   useEffect(() => {
+
     const fetchUserData = async () => {
       if (!userId) return;
       try {
