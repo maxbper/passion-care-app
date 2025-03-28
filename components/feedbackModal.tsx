@@ -80,7 +80,10 @@ const FeedbackModal = ({ visible, title, questions, onClose, onSubmit }) => {
   };
 
   const handleSubmit = async (responses) => {
-    if (isComplete) {
+    if (Platform.OS === "web") {
+        onSubmit(responses);
+        onClose();
+    } else if (isComplete) {
         setIsSubmitting(true);
         setTimeout(() => {
             setIsSubmitting(false);
