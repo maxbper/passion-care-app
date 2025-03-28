@@ -35,7 +35,7 @@ const DailyWellBeingForm = ({ }) => {
         if (lastShownDate !== today) {
           setModalVisible(true);
         }
-        setModalVisible(true);
+        // setModalVisible(true); // uncomment this line to show the form every time for testing purposes
       } catch (error) {
         console.error("Error checking daily form visibility:", error);
       }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { getAuth } from "firebase/auth";
@@ -47,7 +47,9 @@ export default function ProfileScreen() {
           <Text style={styles.label}>{t("cancerType")}: </Text><Text style={styles.value}>{userData.cancerType}</Text>
         </View>
       ) : (
-        <Text>{t("loading_user_data")}.</Text>
+        <>
+        <ActivityIndicator size="large" color="#5A2A2A" style={styles.loader} />
+        </>
       )}
       <TouchableOpacity style={styles.logoutButton} onPress={logout}>
         <MaterialIcons name="logout" size={24} color="#5A2A2A"/>
