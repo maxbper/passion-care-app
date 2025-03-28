@@ -37,6 +37,8 @@ export default function ProfileScreen() {
   }, [userId]);
 
   return (
+    <>
+    <Stack.Screen options={{ headerShown: false }} />
     <View style={styles.container}>
     <Stack.Screen options={{ headerTitle: t("profilescreen_title") }} />
       {userData ? (
@@ -56,6 +58,7 @@ export default function ProfileScreen() {
         <Text style={styles.logoutText}>{t("logout")}</Text>
         </TouchableOpacity>
     </View>
+    </>
   );
 }
 

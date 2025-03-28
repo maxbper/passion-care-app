@@ -35,7 +35,7 @@ const DailyWellBeingForm = ({ }) => {
         if (lastShownDate !== today) {
           setModalVisible(true);
         }
-        // setModalVisible(true); // uncomment this line to show the form every time for testing purposes
+        setModalVisible(true); // uncomment this line to show the form every time for testing purposes
       } catch (error) {
         console.error("Error checking daily form visibility:", error);
       }
@@ -106,7 +106,7 @@ const FeedbackModal = ({ visible, title, questions, onClose, onSubmit }) => {
           </View>
 
           {Platform.OS !== "web" && isSubmitting ? (
-              <LottieViewNative source={require("../assets/animations/submit_animation.json")} progress={0.5} autoPlay loop style={styles.submitAnimation} />
+              <LottieViewNative source={require("../assets/animations/submit_animation.json")} progress={0.2} autoPlay loop style={styles.submitAnimation} />
           ) : (
             <>
           <ScrollView style={styles.scrollView}>
