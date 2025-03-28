@@ -18,6 +18,8 @@ const pt = {
     cancerType: "Tipo de Cancro",
     loading_user_data: "A carregar dados do utilizador...",
     submit: "Submeter",
+    daily_form_title: "Formulário Diário de Bem-estar",
+    tasksscreen_title: "Tarefas de Hoje",
    };
 
 export default pt;

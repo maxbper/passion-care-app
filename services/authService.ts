@@ -25,14 +25,16 @@ export const logout = async () => {
   }
 };
 
-export const checkAuth = async (path: any) => {
+export const checkAuth = async (path : any) => {
   try {
     const storedLogin = await ReactNativeAsyncStorage.getItem("isLoggedIn");
     if (!storedLogin) {
       router.replace("/login");
       return false;
     } else {
-      router.replace(path);
+        if (path) {
+            router.push(path);
+        }
         return true;
     }
   } catch (error) {

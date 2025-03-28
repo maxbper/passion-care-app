@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform } from "react-native";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { getUid } from "../services/authService";
+import LottieViewNative from "lottie-react-native";
 
 const DailyWellBeingForm = ({ }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [userId, setUserId] = useState(null);
+  const { t } = useTranslation();
 
-  const title = "Daily Well-Being Check";
+  const title = t("daily_form_title");
   const questions = [
     "How are you feeling today?",
     "Did you experience pain?",
@@ -18,29 +20,29 @@ const DailyWellBeingForm = ({ }) => {
   useEffect(() => {
     const fetchUserIdAndCheckForm = async () => {
       const fetchedUid = await getUid();
-      if (fetchedUid) {
-        setUserId(fetchedUid);
-      } else {
-        return;
-      }
-      const checkIfFormShownToday = async () => {
-        try {
-          const today = new Date().toISOString().split("T")[0];
-          const lastShownDate = await ReactNativeAsyncStorage.getItem(`dailyForm_${userId}`);
+      if (!fetchedUid) return;
+  
+      setUserId(fetchedUid);
 
-          if (lastShownDate !== today) {
-            setModalVisible(true);
-          }
-        } catch (error) {
-          console.error("Error checking daily form visibility:", error);
-        }
-      };
-
-      checkIfFormShownToday();
+      await checkIfFormShownToday(fetchedUid);
     };
-
+  
+    const checkIfFormShownToday = async (uid) => {
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const lastShownDate = await ReactNativeAsyncStorage.getItem(`dailyForm_${uid}`);
+  
+        if (lastShownDate !== today) {
+          setModalVisible(true);
+        }
+        setModalVisible(true);
+      } catch (error) {
+        console.error("Error checking daily form visibility:", error);
+      }
+    };
+  
     fetchUserIdAndCheckForm();
-  }, [userId]);
+  }, []);
 
   const handleFormSubmit = async (responses) => {
     console.log("User responses:", responses);
@@ -67,6 +69,7 @@ const DailyWellBeingForm = ({ }) => {
 
 const FeedbackModal = ({ visible, title, questions, onClose, onSubmit }) => {
   const [responses, setResponses] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
 
   const handleSelect = (question, value) => {
@@ -76,14 +79,33 @@ const FeedbackModal = ({ visible, title, questions, onClose, onSubmit }) => {
     }));
   };
 
+  const handleSubmit = async (responses) => {
+    if (isComplete) {
+        setIsSubmitting(true);
+        setTimeout(() => {
+            setIsSubmitting(false);
+            onSubmit(responses);
+            onClose();
+        }, 2500);
+      }
+  };
+
   const isComplete = questions.every((q) => responses[q] !== undefined);
 
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>{title}</Text>
+      <View style={styles.modalContent}>
+      <View style={styles.topRightAnimation}>
+        <Text style={styles.title}>{title}</Text>
+          {Platform.OS !== "web" && <LottieViewNative source={require("../assets/animations/form_animation.json")} autoPlay loop style={styles.formAnimation} />}
+          
+          </View>
 
+          {Platform.OS !== "web" && isSubmitting ? (
+              <LottieViewNative source={require("../assets/animations/submit_animation.json")} progress={0.5} autoPlay loop style={styles.submitAnimation} />
+          ) : (
+            <>
           <ScrollView style={styles.scrollView}>
             {questions.map((question, index) => (
               <View key={index} style={styles.questionContainer}>
@@ -117,15 +139,14 @@ const FeedbackModal = ({ visible, title, questions, onClose, onSubmit }) => {
           <TouchableOpacity
             style={[styles.submitButton, !isComplete && styles.disabledButton]}
             onPress={() => {
-              if (isComplete) {
-                onSubmit(responses);
-                onClose();
-              }
+              handleSubmit(responses);
             }}
             disabled={!isComplete}
           >
             <Text style={styles.submitText}>{t("submit")}</Text>
           </TouchableOpacity>
+          </>
+            )}
 
         </View>
       </View>
@@ -151,6 +172,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 15,
+    flex: 1,
+    flexWrap: "wrap",
+    textAlign: "left",
   },
   scrollView: {
     width: "100%",
@@ -209,6 +233,21 @@ const styles = StyleSheet.create({
   closeText: {
     color: "red",
   },
+  topRightAnimation: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
+  },
+  formAnimation: {
+    width: 100,
+    height: 100,
+    marginLeft: 10,
+  },
+  submitAnimation: {
+    width: 300,
+    height: 300,
+    },
 });
 
-export { FeedbackModal, DailyWellBeingForm };
+export { DailyWellBeingForm };

@@ -7,7 +7,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   const navItems : { name: string; route: any; library: any }[] = [
-    { name: "tasks", route: "/profile", library: FontAwesome5 },
+    { name: "tasks", route: "/tasks", library: FontAwesome5 },
     { name: "home", route: "/home", library: Entypo },
     { name: "user", route: "/profile", library: AntDesign },
   ];

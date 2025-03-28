@@ -18,6 +18,8 @@ const en = {
     cancerType: "Cancer Type",
     loading_user_data: "Loading user data...",
     submit: "Submit",
+    daily_form_title: "Daily Well-being Form",
+    tasksscreen_title: "Today's Tasks",
    };
 
 
