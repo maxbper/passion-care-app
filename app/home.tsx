@@ -3,13 +3,18 @@ import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import { DailyWellBeingForm } from "../components/feedbackModal";
-import { showDailyWarning } from "../services/authService";
+import { checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
 
     useEffect(() => {
+        const checkAuthentication = async () => {
+            await checkAuth();
+        };
+        checkAuthentication();
+
         const checkDailyWarning = async () => {
             if (await showDailyWarning()) {
                 if (Platform.OS === "web") {

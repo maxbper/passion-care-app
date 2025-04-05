@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useEffect } from "react";
 import "../constants/translations";
 import React from "react";
@@ -8,7 +8,13 @@ import { checkAuth } from "../services/authService";
 export default function Index() {
 
   useEffect(() => {
-    checkAuth("/home");
+    const checkAuthentication = async () => {
+      const isLoggedIn = await checkAuth();
+      if (isLoggedIn) {
+        router.replace("/home");
+      }
+    };
+    checkAuthentication();
   }, []);
 
   return (

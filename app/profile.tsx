@@ -16,6 +16,10 @@ export default function ProfileScreen() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    const checkAuthentication = async () => {
+        await checkAuth();
+    };
+    checkAuthentication();
 
     const fetchUserData = async () => {
       if (!userId) return;

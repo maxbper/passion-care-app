@@ -2,9 +2,18 @@ import { Alert, Button, Text, View } from "react-native";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
+import { checkAuth } from "../services/authService";
 
 export default function DontExerciseScreen() {
     const { t } = useTranslation();
+
+    useEffect(() => {
+            const checkAuthentication = async () => {
+                await checkAuth();
+            };
+            checkAuthentication();
+        }
+    , []);
 
     return (
         <>
@@ -17,7 +26,7 @@ export default function DontExerciseScreen() {
                 backgroundColor: "#5A2A2A",
             }}
         >
-        <Text style={{color: "white", padding: 20, fontSize: 30, textAlign: "center"}}>{t("dont_exercise")}</Text>
+        <Text style={{color: "white", padding: 20, fontSize: 20, textAlign: "center"}}>{t("dont_exercise")}</Text>
         </View>
         </>
         );

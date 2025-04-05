@@ -1,11 +1,17 @@
 import { Entypo } from "@expo/vector-icons";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { TouchableOpacity, Text } from "react-native";
 import i18n from "../constants/translations";
 import { useTranslation } from "react-i18next";
+import React from "react";
 
 export default function Header() {
     const { t } = useTranslation();
+    const [color, setColor] = React.useState("#000");
+    const pathname = usePathname();
+    const isLoginPage = pathname === "/login";
+    const isDontExercisePage = pathname === "/dontExercise";
+    const awarenessRibbonColor = isLoginPage || isDontExercisePage;
 
     return (
         <Stack screenOptions={{ headerTransparent: true, headerTintColor: "#000",
@@ -17,7 +23,7 @@ export default function Header() {
               </TouchableOpacity>
             ),
             headerLeft: () => (
-              <Entypo name="awareness-ribbon" size={40} color="black" style={{ marginRight: 15 }} />
+              <Entypo name="awareness-ribbon" size={40} color={awarenessRibbonColor ? "white" : color} style={{ marginRight: 15 }} />
             ),
           }}
         />
