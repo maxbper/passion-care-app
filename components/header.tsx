@@ -8,7 +8,7 @@ export default function Header() {
     const { t } = useTranslation();
 
     return (
-        <Stack screenOptions={{ headerStyle: { backgroundColor: "#5A2A2A" }, headerTintColor: "#fff",
+        <Stack screenOptions={{ headerTransparent: true, headerTintColor: "#000",
             headerRight: () => (
               <TouchableOpacity onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")}>
                 <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", marginRight: 15 }}>
@@ -17,7 +17,7 @@ export default function Header() {
               </TouchableOpacity>
             ),
             headerLeft: () => (
-              <Entypo name="awareness-ribbon" size={40} color="white" style={{ marginRight: 15 }} />
+              <Entypo name="awareness-ribbon" size={40} color="black" style={{ marginRight: 15 }} />
             ),
           }}
         />

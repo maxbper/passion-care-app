@@ -8,12 +8,13 @@ import Header from "../components/header";
 export default function RootLayout() {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
+  const isDontExercisePage = pathname === "/dontExercise";
 
   return (
     <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column" , backgroundColor: "#fff" }}>
     {Platform.OS === "web" && !isLoginPage && <Sidebar />}
       {<Header />}
-        {Platform.OS !== "web" && !isLoginPage && <BottomNav/>}
+        {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav/>}
         </View>
   );
 }

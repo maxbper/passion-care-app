@@ -2,7 +2,7 @@ const pt = {
     welcome: "Bem-vindo",
     select_language: "Selecione o Idioma",
     flag: "🇵🇹",
-    app_title: "Aplicativo de Reabilitação CIPN",
+    app_title: "PASSiON Care",
     email: "Email",
     password: "Senha",
     placeholder_email: "Inserir email",
@@ -20,6 +20,45 @@ const pt = {
     submit: "Submeter",
     daily_form_title: "Formulário Diário de Bem-estar",
     tasksscreen_title: "Tarefas de Hoje",
+    yes: "Sim",
+    no: "Não",
+    warning: "Aviso",
+    daily_warning: "Este programa foi desenhado para pessoas sob quimioterapia que não apresentam sintomas como febre, dor intensa, diarreia, vómitos ou fadiga extrema. \nSe sente algum destes sintomas, recomendamos não iniciar o exercício e contactar o seu enfermeiro de reabilitação oncológica. \n\nDeseja continuar para o check-in diário?",
+    dont_exercise: "Hoje não é elegível para realizar exercício físico. \n\nPor favor, contacte o seu prestador de cuidados de saúde.",
+    assesment_result: "Resultado da Avaliação",
+    weekly_health_assessment: {
+        title: "Avaliação Semanal de Saúde",
+        description: "Este é um formulário semanal para avaliar o seu estado de saúde. \nPor favor, responda às perguntas honestamente.",
+        questions: {
+            0: "Febre >38°C?",
+            1: "Vómitos/diarreia 12h?",
+            2: "Fadiga extrema?",
+            3: "Dor intensa?",
+            4: "Tontura/desiquilíbrio?",
+            5: "Sonolência/perda de força?",
+            6: "Ferida, infecção, inflamação?",
+        },
+        results: {
+            suspend: "Avaliação clínica antes de continuar",
+            adaptedPlan: "Plano adaptado",
+            fullPlan: "Plano completo"
+        }
+    },
+    weekly_functional_assessment: {
+        title: "Avaliação Funcional Semanal",
+        description: "Este é um formulário semanal para avaliar o seu estado funcional. \nPor favor, responda às perguntas honestamente.",
+        questions: {
+            0: "Consegue manter-se de pé numa só perna por 10 segundos?",
+            1: "Consegue andar 6 minutos seguidos sem parar?",
+            2: "Consegue levantar-se 5x seguidas de uma cadeira sem usar as mãos?",
+            3: "De 0 a 10, qual o seu nível de fadiga hoje?",
+        },
+        results: {
+            plan3: "Sensorial, respiração, sentado",
+            plan2: "Combinado adaptado",
+            plan1: "Completo",
+        }
+    }
    };
 
 export default pt;

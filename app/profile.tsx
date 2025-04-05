@@ -38,7 +38,7 @@ export default function ProfileScreen() {
 
   return (
     <>
-    <Stack.Screen options={{ headerShown: false }} />
+    <Stack.Screen />
     <View style={styles.container}>
     <Stack.Screen options={{ headerTitle: t("profilescreen_title") }} />
       {userData ? (
@@ -46,7 +46,6 @@ export default function ProfileScreen() {
           <Text style={styles.label}>{t("name")}: </Text><Text style={styles.value}>{userData.name}</Text>
           <Text style={styles.label}>{t("age")}: </Text><Text style={styles.value}>{userData.age}</Text>
           <Text style={styles.label}>{t("email")}: </Text><Text style={styles.value}>{userData.email}</Text>
-          <Text style={styles.label}>{t("cancerType")}: </Text><Text style={styles.value}>{userData.cancerType}</Text>
         </View>
       ) : (
         <>
