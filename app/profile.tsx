@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { getAuth } from "firebase/auth";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { fetchUserData } from "../services/dbService";
 
 export default function ProfileScreen() {
   const [userData, setUserData] = useState(null);
-  const auth = getAuth();
-  const userId = auth.currentUser?.uid;
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -21,24 +17,13 @@ export default function ProfileScreen() {
     };
     checkAuthentication();
 
-    const fetchUserData = async () => {
-      if (!userId) return;
-      try {
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
+    const getUserData = async () => {
+      const data = await fetchUserData();
+      setUserData(data);
+    }
 
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());
-        } else {
-          console.log("No user data found!");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
+    getUserData();
+  }, []);
 
   return (
     <>

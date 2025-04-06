@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 
@@ -8,7 +8,7 @@ export const login = async (email: string, password: string) => {
         await signInWithEmailAndPassword(auth, email, password);
         await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
         await ReactNativeAsyncStorage.setItem("hasSeenDailyWarning", "false");
-        console.log(auth.currentUser.uid);
+        await checkAdmin();
         router.replace("/");
     } catch (error: any) {
         throw error;
@@ -25,20 +25,23 @@ export const showDailyWarning = async () => {
             return true;
         }
         else {
-            await ReactNativeAsyncStorage.setItem("hasSeenDailyWarning", "false");
+            await ReactNativeAsyncStorage.setItem("hasSeenDailyWarning", "true");
             return true;
         }
     } catch (error) {
         console.error("Error checking daily warning:", error);
         await ReactNativeAsyncStorage.setItem("hasSeenDailyWarning", "false");
-        return true;
     }
 };
 
 export const logout = async () => {
   try {
     await signOut(auth);
+    console.log("User logged out");
     await ReactNativeAsyncStorage.removeItem("isLoggedIn");
+    await ReactNativeAsyncStorage.removeItem("hasSeenDailyWarning");
+    await ReactNativeAsyncStorage.removeItem("isAdmin");
+    await ReactNativeAsyncStorage.removeItem("isMod");
     router.replace("/login");
   } catch (error) {
     console.error("Logout failed:", error);
@@ -65,13 +68,53 @@ export const checkAdmin = async () => {
   if (user) {
     const idTokenResult = await user.getIdTokenResult();
     if (idTokenResult.claims.role === "admin") {
-      return true;
+        await ReactNativeAsyncStorage.setItem("isAdmin", "true");
+        return true;
+    } else if (idTokenResult.claims.role === "mod") {
+        await ReactNativeAsyncStorage.setItem("isMod", "true");
+        return true;
     } else {
-      return false;
+        return false;
     }
   }
     return false;
 }
+
+/* export const checkAdmin = async () => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        return false;
+      }
+  
+      const userId = currentUser.uid;
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+
+      console.log("User ID:", userId);
+      console.log("Document Reference:", docSnap);
+      console.log("Document Snapshot:", docSnap.data().admin);
+  
+      if (docSnap.exists) {
+        const rolesData = docSnap.data();
+        if (rolesData && rolesData.admin && Array.isArray(rolesData.admin)) {
+          const isAdmin = rolesData.admin.some(adminRef => adminRef.id === userId);
+          await ReactNativeAsyncStorage.setItem("isAdmin", "true");
+          return isAdmin;
+        }
+        if (rolesData && rolesData.mod && Array.isArray(rolesData.mod)) {
+            const isMod = rolesData.mod.some(modRef => modRef.id === userId);
+            await ReactNativeAsyncStorage.setItem("isMod", "true");
+            return isMod;
+          }
+      }
+  
+      return false;
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      return false;
+    }
+} */
 
 export const getUid = () => {
     const user = auth.currentUser;

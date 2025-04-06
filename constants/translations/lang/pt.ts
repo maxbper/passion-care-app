@@ -39,9 +39,9 @@ const pt = {
             6: "Ferida, infecção, inflamação?",
         },
         results: {
-            suspend: "Avaliação clínica antes de continuar",
-            adaptedPlan: "Plano adaptado",
-            fullPlan: "Plano completo"
+            suspend: "É recomendado proceder a uma avaliação clínica antes de continuar o programa.",
+            adaptedPlan: "Com base neste resultado, recomenda-se um plano adaptado para esta semana. Proceda com a avaliação funcional.",
+            fullPlan: "Com base neste resultado, recomenda-se um plano completo para esta semana. Proceda com a avaliação funcional.",
         }
     },
     weekly_functional_assessment: {
@@ -54,9 +54,7 @@ const pt = {
             3: "De 0 a 10, qual o seu nível de fadiga hoje?",
         },
         results: {
-            plan3: "Sensorial, respiração, sentado",
-            plan2: "Combinado adaptado",
-            plan1: "Completo",
+            decision: "Obrigado. \nCom base neste resultado, será definido o seu plano para esta semana.",
         }
     }
    };

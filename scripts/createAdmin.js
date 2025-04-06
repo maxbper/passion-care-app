@@ -11,10 +11,23 @@ const setAdminRole = async (uid) => {
   console.log(`User with UID ${uid} is now an admin!`);
 };
 
+const setModRole = async (uid) => {
+  await admin.auth().setCustomUserClaims(uid, { role: "mod" });
+  console.log(`User with UID ${uid} is now a mod!`);
+};
+
 const userId = "uLcTin55ihhYGNltH6sZFTbBQJj1";
+
 setAdminRole(userId)
   .then(() => process.exit())
   .catch((error) => {
     console.error("Error setting admin:", error);
     process.exit(1);
-  });
+});
+
+setModRole(userId)
+  .then(() => process.exit())
+  .catch((error) => {
+    console.error("Error setting mod:", error);
+    process.exit(1);
+});

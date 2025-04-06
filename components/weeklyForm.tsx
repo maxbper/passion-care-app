@@ -5,6 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Slider from '@react-native-community/slider';
+import { fetchLastWeeklyFormDate, sendWeeklyForm } from '../services/dbService';
 
 const WeeklyHealthAssessment = ({ }) => {
     const { t } = useTranslation();
@@ -12,6 +13,8 @@ const WeeklyHealthAssessment = ({ }) => {
     const [isAssessmentVisible, setIsAssessmentVisible] = useState(false);
     const [scaleValue, setScaleValue] = useState(5);
     const [currentAssessmentType, setCurrentAssessmentType] = useState(''); 
+    const [healthAnswers, setHealthAnswers] = useState<string[]>([]);
+    const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
 
     const HealthAssessmentQuestions = [
         { id: 0, type: 'yesno', text: t("weekly_health_assessment.questions.0"), nextIfYes: 'suspend', nextIfNo: 1 },
@@ -24,19 +27,17 @@ const WeeklyHealthAssessment = ({ }) => {
     ];
 
     const FunctionalAssessmentQuestions = [
-        { id: 0, type: 'yesno', text: t("weekly_functional_assessment.questions.0"), nextIfYes: 1, nextIfNo: 'plan3' },
-        { id: 1, type: 'yesno', text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 'plan2' },
-        { id: 2, type: 'yesno', text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 'plan2' },
-        { id: 3, type: 'scale', text: t("weekly_functional_assessment.questions.3"), range: [0, 10], next: 'plan1' },
+        { id: 0, type: 'yesno', text: t("weekly_functional_assessment.questions.0"), nextIfYes: 1, nextIfNo: 1 },
+        { id: 1, type: 'yesno', text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 2 },
+        { id: 2, type: 'yesno', text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 3 },
+        { id: 3, type: 'scale', text: t("weekly_functional_assessment.questions.3"), range: [0, 10], next: 'decision' },
     ];
 
     const results = {
         suspend: { text: t("weekly_health_assessment.results.suspend") },
         adaptedPlan: { text: t("weekly_health_assessment.results.adaptedPlan") },
         fullPlan: { text: t("weekly_health_assessment.results.fullPlan") },
-        plan3: { text: t("weekly_functional_assessment.results.plan3") },
-        plan2: { text: t("weekly_functional_assessment.results.plan2") },
-        plan1: { text: t("weekly_functional_assessment.results.plan1") },
+        decision: { text: t("weekly_functional_assessment.results.decision") },
     };
 
     useFocusEffect(
@@ -46,32 +47,24 @@ const WeeklyHealthAssessment = ({ }) => {
     );
 
     const checkLastAssessmentDate = async () => {
-        //startHealthAssessmentInitial();
-        /* try {
-          const lastAssessmentDate = await ReactNativeAsyncStorage.getItem('lastAssessmentDate');
+        //startHealthAssessmentInitial(); // for testing purposes
+        try {
+            const lastAssessmentDate = await fetchLastWeeklyFormDate();
+            if (!lastAssessmentDate) {
+                startHealthAssessmentInitial();
+                return;
+            }
+            const currentDate = new Date();
+            const diffTime = currentDate.getTime() - new Date(lastAssessmentDate).getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-          if (!lastAssessmentDate) {
-            // First time, show the form
-            startAssessment();
-            return;
-          }
-
-          const lastDate = new Date(lastAssessmentDate);
-          const currentDate = new Date();
-
-          // Calculate the difference in days
-          const diffTime = currentDate - lastDate;
-          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-          // Show form if it's been 7 or more days
-          if (diffDays >= 7) {
-            startAssessment();
-          }
+            if (diffDays > 5) {
+                startHealthAssessmentInitial();
+            }
         } catch (error) {
-          console.error('Error checking assessment date:', error);
-          // If there's an error, show the form anyway
-          startAssessment();
-        } */
+            console.error('Error checking assessment date:', error);
+            startHealthAssessmentInitial();
+          }
     };
 
     const startHealthAssessmentInitial = () => {
@@ -132,10 +125,16 @@ const WeeklyHealthAssessment = ({ }) => {
         let nextQuestionId;
 
         if (currentAssessmentType === 'health') {
+            const updatedAnswers = [...healthAnswers];
+            updatedAnswers[currentQuestionId] = answer;
+            setHealthAnswers(updatedAnswers);
             const question = HealthAssessmentQuestions[currentQuestionId];
             nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
             showHealthQuestion(nextQuestionId);
         } else if (currentAssessmentType === 'functional') {
+            const updatedAnswers = [...functionalAnswers];
+            updatedAnswers[currentQuestionId] = answer;
+            setFunctionalAnswers(updatedAnswers);
             const question = FunctionalAssessmentQuestions[currentQuestionId];
             nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
             showFunctionalQuestion(nextQuestionId);
@@ -144,6 +143,9 @@ const WeeklyHealthAssessment = ({ }) => {
 
     const handleScaleAnswer = () => {
         if (!currentQuestion) return;
+        const updatedAnswers = [...functionalAnswers];
+        updatedAnswers[currentQuestion.currentQuestionId] = scaleValue.toString();
+        setFunctionalAnswers(updatedAnswers);
         const { next } = currentQuestion;
         showResult(next);
     };
@@ -159,20 +161,27 @@ const WeeklyHealthAssessment = ({ }) => {
         setIsAssessmentVisible(true);
     };
 
+    const makeDecision = async () => {
+        const health_result = await ReactNativeAsyncStorage.getItem('lastHealthAssessmentResult');
+
+        // TODO: take into consideration health_result and the answers to the functional assessment
+
+        const decision = "plan1"
+        return decision;
+    };
+
     const completeAssessment = async (resultKey) => {
         setIsAssessmentVisible(false);
-        if (resultKey === 'suspend' || resultKey === 'adaptedPlan' || resultKey === 'fullPlan') {
-            // health assessment
+        if (currentAssessmentType === 'health') {
             try {
-                await ReactNativeAsyncStorage.setItem('lastAssessmentDate', new Date().toISOString());
                 await ReactNativeAsyncStorage.setItem('lastHealthAssessmentResult', resultKey);
             } catch (error) {
                 console.error('Error saving health assessment date:', error);
             }
 
             if (resultKey === 'suspend') {
+                await sendWeeklyForm(healthAnswers, functionalAnswers, resultKey, true);
                 router.replace("/dontExercise");
-                // push to db
                 return;
             }
             else {
@@ -180,17 +189,17 @@ const WeeklyHealthAssessment = ({ }) => {
                 setTimeout(() => startFunctionalAssessment(), 250);
             }
         }
-        else if (resultKey === 'plan1' || resultKey === 'plan2' || resultKey === 'plan3') {
-            // functional assessment
-            try {
-                await ReactNativeAsyncStorage.setItem('lastAssessmentDate', new Date().toISOString());
-                await ReactNativeAsyncStorage.setItem('lastFunctionalAssessmentResult', resultKey);
-            } catch (error) {
-                console.error('Error saving functional assessment date:', error);
-            }
-            // blah blah blah plano 1 2 3 etc
+        else if (currentAssessmentType === 'functional') {
+            
+            const decision = await makeDecision();
+            await sendWeeklyForm(healthAnswers, functionalAnswers, decision, false);
+
+            setCurrentQuestion(null);
+            setHealthAnswers([]);
+            setFunctionalAnswers([]);
+            setCurrentAssessmentType('');
+            setScaleValue(5);
         }
-        setCurrentQuestion(null);
     };
 
     return (
@@ -205,10 +214,10 @@ const WeeklyHealthAssessment = ({ }) => {
 
                         {currentQuestion.type === 'yesno' && (
                             <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={[styles.button, styles.noButton]} onPress={() => handleYesNoAnswer(false)}>
+                                <TouchableOpacity style={[styles.button, currentAssessmentType === 'functional' ? styles.noButton : styles.yesButton]} onPress={() => handleYesNoAnswer(false)}>
                                     <Text style={styles.buttonText}>{t("no")}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={[styles.button, styles.yesButton]} onPress={() => handleYesNoAnswer(true)}>
+                                <TouchableOpacity style={[styles.button, currentAssessmentType === 'functional' ? styles.yesButton : styles.noButton]} onPress={() => handleYesNoAnswer(true)}>
                                     <Text style={styles.buttonText}>{t("yes")}</Text>
                                 </TouchableOpacity>
                             </View>

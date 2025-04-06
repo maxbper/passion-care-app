@@ -1,9 +1,9 @@
-import { Alert, Button, Platform, Text, View } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet } from "react-native";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import { DailyWellBeingForm } from "../components/feedbackModal";
-import { checkAuth, showDailyWarning } from "../services/authService";
+import { checkAdmin, checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 
 export default function HomeScreen() {
@@ -42,12 +42,23 @@ export default function HomeScreen() {
         checkDailyWarning();
       }, []);
 
+
     return (
         <>
         <Stack.Screen options={{ headerTitle: t("homescreen_title") }} />
-        <View>
+        <View style={styles.container}>
         {<WeeklyHealthAssessment />}
         </View>
         </>
         );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        marginTop: 50,
+        alignItems: "center",
+    }
+}
+);

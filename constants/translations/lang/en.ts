@@ -39,9 +39,9 @@ const en = {
             6: "Wound, infection, inflammation?",
         },
         results: {
-            suspend: "Clinical assessment before continuing",
-            adaptedPlan: "Functional assessment + Adapted plan",
-            fullPlan: "Functional assessment + Complete plan"
+            suspend: "It is recommended to proceed with a clinical assessment before continuing the program.",
+            adaptedPlan: "Based on this result, an adapted plan is recommended for this week. Proceed with the functional assessment.",
+            fullPlan: "Based on this result, a complete plan is recommended for this week. Proceed with the functional assessment.",
         }
     },
     weekly_functional_assessment: {
@@ -54,9 +54,7 @@ const en = {
             3: "On a scale of 0 to 10, what is your level of fatigue today?",
         },
         results : {
-            plan3: "Sensorial, breathing, sitting",
-            plan2: "Combined adapted",
-            plan1: "Complete",
+            decision: "Thank you. \nBased on this result, your plan for this week will be defined.",
         }
     },
    };
