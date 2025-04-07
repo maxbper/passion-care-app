@@ -3,7 +3,7 @@ import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState, useCallback } from "react";
 import { checkAuth } from "../services/authService";
-import { fetchExercise, fetchLastWorkoutDate, fetchWorkoutPlan } from "../services/dbService";
+import { fetchExercise, fetchLastWorkoutDate, fetchWorkoutPlan, uploadWorkout } from "../services/dbService";
 import { useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -16,8 +16,9 @@ export default function TasksScreen() {
     const [remainingTime, setRemainingTime] = useState(WORKOUT_DURATION);
     const [isRunning, setIsRunning] = useState(null);
     const [intervalId, setIntervalId] = useState(null);
-    const [isWorkoutActive, setIsWorkoutActive] = useState(false);
-    const [isFinishing, setIsFinishing] = useState(false);
+    const [isWorkoutActive, setIsWorkoutActive] = useState(true);
+    const [isFinishing, setIsFinishing] = useState(null);
+    const [lastDateChecked, setLastDateChecked] = useState(false);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -30,7 +31,7 @@ export default function TasksScreen() {
         setIsWorkoutActive(true);
         setIsRunning(true);
         setRemainingTime(WORKOUT_DURATION);
-
+        setIsFinishing(false);
     };
 
     useEffect(() => {
@@ -75,7 +76,7 @@ export default function TasksScreen() {
             clearInterval(intervalId);
             setIntervalId(null);
         }
-        // uploadWorkout();
+        uploadWorkout(WORKOUT_DURATION - remainingTime);
     };
 
     useFocusEffect(
@@ -101,7 +102,10 @@ export default function TasksScreen() {
                     setIsWorkoutStartModalVisible(true);
                 }
             };
-            checkLastWorkoutDate();
+            if (!lastDateChecked) {
+                checkLastWorkoutDate();
+                setLastDateChecked(true);
+            }
 
             const getWorkoutPlan = async () => {
                 const wp = await fetchWorkoutPlan();
@@ -124,7 +128,7 @@ export default function TasksScreen() {
                     clearInterval(intervalId);
                 }
             };
-        }, [])
+        }, [lastDateChecked])
     );
 
     return (

@@ -68,11 +68,8 @@ export const fetchLastWeeklyFormDate = async () => {
   }
 };
 
-export const sendWeeklyForm = async (hquestions, fquestions, decision, suspended) => {
+export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspended) => {
   try {
-    while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
     const userId = auth.currentUser?.uid;
 
     const weeklyFormRef = collection(db, 'users', userId, 'weeklyform');
@@ -121,6 +118,25 @@ export const fetchLastWorkoutDate = async () => {
     } catch (error) {
       console.error('Error fetching workout:', error);
       return null;
+    }
+};
+
+export const uploadWorkout = async (time) => {
+    try {
+        const userId = auth.currentUser?.uid;
+
+        const workoutRef = collection(db, 'users', userId, 'workouts');
+        const newWorkoutRef = doc(workoutRef);
+        const date = new Date();
+
+        await setDoc(newWorkoutRef, {
+            // exercises will be added here and received in the function
+            time: time,
+            date: date,
+        });
+
+    } catch (error) {
+        console.error('Error sending weekly form:', error);
     }
 };
 
