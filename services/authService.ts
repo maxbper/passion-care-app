@@ -1,7 +1,8 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth, db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { fetchIsSuspended } from "./dbService";
 
 export const login = async (email: string, password: string) => {
     try {
@@ -9,7 +10,12 @@ export const login = async (email: string, password: string) => {
         await ReactNativeAsyncStorage.setItem("isLoggedIn", "true");
         await ReactNativeAsyncStorage.setItem("hasSeenDailyWarning", "false");
         await checkAdmin();
-        router.replace("/");
+        const isSuspended = await fetchIsSuspended(auth.currentUser?.uid);
+        if (isSuspended) {
+            router.replace("/dontExercise");
+            return;
+        }
+        router.replace("/home");
     } catch (error: any) {
         throw error;
     }
@@ -37,7 +43,6 @@ export const showDailyWarning = async () => {
 export const logout = async () => {
   try {
     await signOut(auth);
-    console.log("User logged out");
     const keys = await ReactNativeAsyncStorage.getAllKeys();
     await ReactNativeAsyncStorage.multiRemove(keys);
     router.replace("/login");

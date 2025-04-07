@@ -4,6 +4,22 @@ import { getAuth } from 'firebase/auth';
 const db = getFirestore();
 const auth = getAuth();
 
+export const fetchIsSuspended = async (userId) => {
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return docSnap.data().suspended;
+        } else {
+          console.log("No user data found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+};
+
 export const fetchUserData = async () => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
