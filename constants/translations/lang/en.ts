@@ -57,6 +57,8 @@ const en = {
             decision: "Thank you. \nBased on this result, your plan for this week will be defined.",
         }
     },
+    start_workout_message: "It's workout time, let's get moving. \n The clock will start when you press start. \n\n Get ready!",
+    start: "Start",
    };
 
 

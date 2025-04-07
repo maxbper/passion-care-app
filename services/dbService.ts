@@ -97,6 +97,33 @@ export const sendWeeklyForm = async (hquestions, fquestions, decision, suspended
   }
 };
 
+export const fetchLastWorkoutDate = async () => {
+    try {
+      const userId = auth.currentUser.uid;
+      const weeklyFormRef = collection(db, 'users', userId, 'workouts');
+  
+      const q = query(weeklyFormRef, orderBy('date', 'desc'), limit(1));
+      const snapshot = await getDocs(q);
+  
+      const forms = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+  
+      if (forms.length == 0) {
+          return null;
+      } else {
+          const lastForm = forms[0];
+          const lastDate = lastForm.date.toDate();
+          return lastDate;
+      }
+  
+    } catch (error) {
+      console.error('Error fetching workout:', error);
+      return null;
+    }
+};
+
 export const fetchWorkoutPlan = async () => {
     const userId = auth.currentUser.uid;
     let plan = "";
@@ -128,7 +155,7 @@ export const fetchWorkoutPlan = async () => {
       } catch (error) {
         console.error("Error fetching workout plan:", error);
       }
-}
+};
 
 export const fetchExercise = async (exerciseId) => {
     try {
@@ -144,4 +171,4 @@ export const fetchExercise = async (exerciseId) => {
       } catch (error) {
         console.error("Error fetching exercise:", error);
       }
-}
+};

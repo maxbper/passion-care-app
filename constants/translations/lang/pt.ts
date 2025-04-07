@@ -56,7 +56,9 @@ const pt = {
         results: {
             decision: "Obrigado. \nCom base neste resultado, será definido o seu plano para esta semana.",
         }
-    }
+    },
+    start_workout_message: "É hora de treinar, vamos lá. \n O relógio irá começa a contar. \n\n Prepare-se!",
+    start: "Começar",
    };
 
 export default pt;
