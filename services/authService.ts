@@ -38,10 +38,8 @@ export const logout = async () => {
   try {
     await signOut(auth);
     console.log("User logged out");
-    await ReactNativeAsyncStorage.removeItem("isLoggedIn");
-    await ReactNativeAsyncStorage.removeItem("hasSeenDailyWarning");
-    await ReactNativeAsyncStorage.removeItem("isAdmin");
-    await ReactNativeAsyncStorage.removeItem("isMod");
+    const keys = await ReactNativeAsyncStorage.getAllKeys();
+    await ReactNativeAsyncStorage.multiRemove(keys);
     router.replace("/login");
   } catch (error) {
     console.error("Logout failed:", error);
@@ -79,42 +77,6 @@ export const checkAdmin = async () => {
   }
     return false;
 }
-
-/* export const checkAdmin = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        return false;
-      }
-  
-      const userId = currentUser.uid;
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-
-      console.log("User ID:", userId);
-      console.log("Document Reference:", docSnap);
-      console.log("Document Snapshot:", docSnap.data().admin);
-  
-      if (docSnap.exists) {
-        const rolesData = docSnap.data();
-        if (rolesData && rolesData.admin && Array.isArray(rolesData.admin)) {
-          const isAdmin = rolesData.admin.some(adminRef => adminRef.id === userId);
-          await ReactNativeAsyncStorage.setItem("isAdmin", "true");
-          return isAdmin;
-        }
-        if (rolesData && rolesData.mod && Array.isArray(rolesData.mod)) {
-            const isMod = rolesData.mod.some(modRef => modRef.id === userId);
-            await ReactNativeAsyncStorage.setItem("isMod", "true");
-            return isMod;
-          }
-      }
-  
-      return false;
-    } catch (error) {
-      console.error("Error checking admin status:", error);
-      return false;
-    }
-} */
 
 export const getUid = () => {
     const user = auth.currentUser;

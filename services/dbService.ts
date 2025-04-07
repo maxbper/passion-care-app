@@ -70,13 +70,62 @@ export const sendWeeklyForm = async (hquestions, fquestions, decision, suspended
         date: date,
     });
 
-    if (suspended) {
-        await setDoc(doc(db, 'users', userId), {
-            suspended: suspended,
-        }, { merge: true });
-    }
+    await setDoc(doc(db, 'users', userId), {
+        suspended: suspended,
+        workout_plan: decision,
+    }, { merge: true });
+
 
   } catch (error) {
     console.error('Error sending weekly form:', error);
   }
 };
+
+export const fetchWorkoutPlan = async () => {
+    const userId = auth.currentUser.uid;
+    let plan = "";
+
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          plan = docSnap.data().workout_plan;
+        } else {
+          console.log("No user workout found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching user workout:", error);
+      }
+
+    try {
+        const docRef = doc(db, "exercises", "workouts");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          return docSnap.data()[plan];
+        } else {
+          console.log("No workout plan found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching workout plan:", error);
+      }
+}
+
+export const fetchExercise = async (exerciseId) => {
+    try {
+        const docRef = doc(db, "exercises", exerciseId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          return docSnap.data();
+        } else {
+          console.log("No exercise found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching exercise:", error);
+      }
+}

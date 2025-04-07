@@ -2,9 +2,9 @@ import { Alert, Button, Platform, Text, View, StyleSheet } from "react-native";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
-import { DailyWellBeingForm } from "../components/feedbackModal";
 import { checkAdmin, checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
+import { fetchWorkoutPlan } from "../services/dbService";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -48,6 +48,7 @@ export default function HomeScreen() {
         <Stack.Screen options={{ headerTitle: t("homescreen_title") }} />
         <View style={styles.container}>
         {<WeeklyHealthAssessment />}
+        <Text>Level of the user, step count, some progress bar, and some message of encouragement</Text>
         </View>
         </>
         );
