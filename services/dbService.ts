@@ -21,6 +21,9 @@ export const fetchIsSuspended = async (userId) => {
 };
 
 export const fetchUserData = async () => {
+    while (auth.currentUser == null) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
     const userId = auth.currentUser?.uid;
     if (!userId) return;
       try {
@@ -37,6 +40,36 @@ export const fetchUserData = async () => {
         console.error("Error fetching user data:", error);
       }
 }
+
+export const fetchAdminList = async () => {
+    try {
+        const docRef = doc(db, "users", "roles");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return docSnap.data().admins;
+        } else {
+          console.log("No admin list found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching admin list data:", error);
+      }
+};
+
+export const fetchModList = async () => {
+    try {
+        const docRef = doc(db, "users", "roles");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          return docSnap.data().mods;
+        } else {
+          console.log("No mod list found!");
+          return null;
+        }
+      } catch (error) {
+        console.error("Error fetching mod list data:", error);
+      }
+};
 
 export const fetchLastWeeklyFormDate = async () => {
   try {
@@ -69,7 +102,6 @@ export const fetchLastWeeklyFormDate = async () => {
 };
 
 export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspended) => {
-    console.log(hquestions, fquestions, decision, suspended);
   try {
     const userId = auth.currentUser?.uid;
 
@@ -97,7 +129,10 @@ export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspend
 
 export const fetchLastWorkoutDate = async () => {
     try {
-      const userId = auth.currentUser.uid;
+        while (auth.currentUser == null) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      const userId = auth.currentUser?.uid;
       const weeklyFormRef = collection(db, 'users', userId, 'workouts');
   
       const q = query(weeklyFormRef, orderBy('date', 'desc'), limit(1));
@@ -142,7 +177,10 @@ export const uploadWorkout = async (time) => {
 };
 
 export const fetchWorkoutPlan = async () => {
-    const userId = auth.currentUser.uid;
+    while (auth.currentUser == null) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
     let plan = "";
 
     try {
@@ -175,6 +213,9 @@ export const fetchWorkoutPlan = async () => {
 };
 
 export const fetchExercise = async (exerciseId) => {
+    while (auth.currentUser == null) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
     try {
         const docRef = doc(db, "exercises", exerciseId);
         const docSnap = await getDoc(docRef);

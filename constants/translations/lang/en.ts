@@ -23,7 +23,7 @@ const en = {
     yes: "Yes",
     no: "No",
     warning: "Warning",
-    daily_warning: "This program is designed for people undergoing chemotherapy who do not have symptoms such as fever, severe pain, diarrhea, vomiting, or extreme fatigue. \nIf you experience any of these symptoms, we recommend not starting the exercise and contacting your oncology rehabilitation nurse. \n\nDo you want to continue to the daily check-in?",
+    daily_warning: "This program is designed for people undergoing chemotherapy who do not have symptoms such as fever, severe pain, diarrhea, vomiting, or extreme fatigue. \nIf you experience any of these symptoms, we recommend not starting the exercise and contacting your oncology rehabilitation nurse. \n\nDo you want to continue?",
     dont_exercise: "You are not eligible to exercise today. \n\nPlease contact your healthcare provider.",
     assesment_result: "Assessment Result",
     weekly_health_assessment: {

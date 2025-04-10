@@ -23,7 +23,7 @@ const pt = {
     yes: "Sim",
     no: "Não",
     warning: "Aviso",
-    daily_warning: "Este programa foi desenhado para pessoas sob quimioterapia que não apresentam sintomas como febre, dor intensa, diarreia, vómitos ou fadiga extrema. \nSe sente algum destes sintomas, recomendamos não iniciar o exercício e contactar o seu enfermeiro de reabilitação oncológica. \n\nDeseja continuar para o check-in diário?",
+    daily_warning: "Este programa foi desenhado para pessoas sob quimioterapia que não apresentam sintomas como febre, dor intensa, diarreia, vómitos ou fadiga extrema. \nSe sente algum destes sintomas, recomendamos não iniciar o exercício e contactar o seu enfermeiro de reabilitação oncológica. \n\nDeseja continuar?",
     dont_exercise: "Hoje não é elegível para realizar exercício físico. \n\nPor favor, contacte o seu prestador de cuidados de saúde.",
     assesment_result: "Resultado da Avaliação",
     weekly_health_assessment: {

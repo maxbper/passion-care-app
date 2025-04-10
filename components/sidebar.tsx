@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +9,7 @@ export default function SidebarNav() {
 
     const navItems: { name: string; label: string; route: any; library: any }[] = [
         { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
+        { name: "tasks", label: t("tasksscreen_title"), route: "/tasks", library: FontAwesome5 },
         { name: "user", label: t("profilescreen_title"), route: "/profile", library: AntDesign },
         ];
 
@@ -28,7 +29,7 @@ export default function SidebarNav() {
                     size={24}
                     color={pathname === item.route ? "#5A2A2A" : "grey"}
                   />
-                  <Text style={{ fontSize: 12 }}>{item.label}</Text>
+                  <Text style={{ fontSize: 12 , textAlign: "center"}}>{item.label}</Text>
                 </TouchableOpacity>
               );
             })}

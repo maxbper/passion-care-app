@@ -25,7 +25,7 @@ export default function BottomNav() {
           >
             <IconComponent
               name={item.name}
-              size={24}
+              size={pathname === item.route ? 29 : 24}
               color={pathname === item.route ? "#5A2A2A" : "grey"}
             />
           </TouchableOpacity>
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     alignSelf: "center",
+    alignItems: "center",
     flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 50,

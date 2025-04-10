@@ -2,7 +2,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { fetchIsSuspended } from "./dbService";
+import { fetchAdminList, fetchIsSuspended, fetchModList } from "./dbService";
 
 export const login = async (email: string, password: string) => {
     try {
@@ -67,19 +67,18 @@ export const checkAuth = async () => {
 }
 
 export const checkAdmin = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    const idTokenResult = await user.getIdTokenResult();
-    if (idTokenResult.claims.role === "admin") {
+    const adminList =  await fetchAdminList();
+    const modList = await fetchModList();
+    const uid = auth.currentUser.uid;
+
+    if (adminList && adminList.includes(uid)) {
         await ReactNativeAsyncStorage.setItem("isAdmin", "true");
         return true;
-    } else if (idTokenResult.claims.role === "mod") {
+    }
+    if (modList && modList.includes(uid)) {
         await ReactNativeAsyncStorage.setItem("isMod", "true");
         return true;
-    } else {
-        return false;
     }
-  }
     return false;
 }
 
