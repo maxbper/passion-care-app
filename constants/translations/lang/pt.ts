@@ -34,14 +34,13 @@ const pt = {
             1: "Vómitos/diarreia 12h?",
             2: "Fadiga extrema?",
             3: "Dor intensa?",
-            4: "Tontura/desiquilíbrio?",
-            5: "Sonolência/perda de força?",
-            6: "Ferida, infecção, inflamação?",
+            4: "Ferida, infecção, inflamação?",
+            5: "Impacta a capacidade de realizar exercício?",
+            6: "Contra-indicação médica para a prática de exercício?",
         },
         results: {
             suspend: "É recomendado proceder a uma avaliação clínica antes de continuar o programa.",
-            adaptedPlan: "Com base neste resultado, recomenda-se um plano adaptado para esta semana. Proceda com a avaliação funcional.",
-            fullPlan: "Com base neste resultado, recomenda-se um plano completo para esta semana. Proceda com a avaliação funcional.",
+            fullPlan: "Está elegível para realizar exercício esta semana. Prossiga com a avaliação funcional.",
         }
     },
     weekly_functional_assessment: {
@@ -51,7 +50,9 @@ const pt = {
             0: "Consegue manter-se de pé numa só perna por 10 segundos?",
             1: "Consegue andar 6 minutos seguidos sem parar?",
             2: "Consegue levantar-se 5x seguidas de uma cadeira sem usar as mãos?",
-            3: "De 0 a 10, qual o seu nível de fadiga hoje?",
+            3: "Confirma que não está a sentir tonturas?",
+            4: "De 0  a 7, qual o nível de dormencia ou formigueiro que está a sentir?",
+            5: "De 0 a 7, qual o seu nível de fadiga hoje?",
         },
         results: {
             decision: "Obrigado. \nCom base neste resultado, será definido o seu plano para esta semana.",

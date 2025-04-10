@@ -69,6 +69,7 @@ export const fetchLastWeeklyFormDate = async () => {
 };
 
 export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspended) => {
+    console.log(hquestions, fquestions, decision, suspended);
   try {
     const userId = auth.currentUser?.uid;
 

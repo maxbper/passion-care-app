@@ -13,7 +13,7 @@ const WeeklyHealthAssessment = ({ }) => {
     const [isAssessmentVisible, setIsAssessmentVisible] = useState(false);
     const [scaleValue, setScaleValue] = useState(5);
     const [currentAssessmentType, setCurrentAssessmentType] = useState(''); 
-    const [healthAnswers, setHealthAnswers] = useState<string[]>([]);
+    const [healthAnswers, setHealthAnswers] = useState<boolean[]>([]);
     const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
 
     const HealthAssessmentQuestions = [
@@ -21,16 +21,18 @@ const WeeklyHealthAssessment = ({ }) => {
         { id: 1, type: 'yesno', text: t("weekly_health_assessment.questions.1"), nextIfYes: 'suspend', nextIfNo: 2 },
         { id: 2, type: 'yesno', text: t("weekly_health_assessment.questions.2"), nextIfYes: 'suspend', nextIfNo: 3 },
         { id: 3, type: 'yesno', text: t("weekly_health_assessment.questions.3"), nextIfYes: 'suspend', nextIfNo: 4 },
-        { id: 4, type: 'yesno', text: t("weekly_health_assessment.questions.4"), nextIfYes: 'adaptedPlan', nextIfNo: 5 },
-        { id: 5, type: 'yesno', text: t("weekly_health_assessment.questions.5"), nextIfYes: 'adaptedPlan', nextIfNo: 6 },
-        { id: 6, type: 'yesno', text: t("weekly_health_assessment.questions.6"), nextIfYes: 'suspend', nextIfNo: 'fullPlan' }
+        { id: 4, type: 'yesno', text: t("weekly_health_assessment.questions.4"), nextIfYes: 5, nextIfNo: 6 },
+        { id: 5, type: 'yesno', text: t("weekly_health_assessment.questions.5"), nextIfYes: 'suspend', nextIfNo: 6 },
+        { id: 6, type: 'yesno', text: t("weekly_health_assessment.questions.6"), nextIfYes: 7, nextIfNo: 'fullPlan' },
     ];
 
     const FunctionalAssessmentQuestions = [
         { id: 0, type: 'yesno', text: t("weekly_functional_assessment.questions.0"), nextIfYes: 1, nextIfNo: 1 },
         { id: 1, type: 'yesno', text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 2 },
         { id: 2, type: 'yesno', text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 3 },
-        { id: 3, type: 'scale', text: t("weekly_functional_assessment.questions.3"), range: [0, 10], next: 'decision' },
+        { id: 3, type: 'yesno', text: t("weekly_functional_assessment.questions.3"), nextIfYes: 4, nextIfNo: 4 },
+        { id: 4, type: 'scale', text: t("weekly_functional_assessment.questions.4"), range: [0,7], next: 5 },
+        { id: 5, type: 'scale', text: t("weekly_functional_assessment.questions.5"), range: [0,7], next: 'decision'},
     ];
 
     const results = {
@@ -146,8 +148,7 @@ const WeeklyHealthAssessment = ({ }) => {
         const updatedAnswers = [...functionalAnswers];
         updatedAnswers[currentQuestion.currentQuestionId] = scaleValue.toString();
         setFunctionalAnswers(updatedAnswers);
-        const { next } = currentQuestion;
-        showResult(next);
+        showFunctionalQuestion(currentQuestion.next);
     };
 
     const showResult = async (resultKey) => {
@@ -162,21 +163,41 @@ const WeeklyHealthAssessment = ({ }) => {
     };
 
     const makeDecision = async () => {
-        const health_result = await ReactNativeAsyncStorage.getItem('lastHealthAssessmentResult');
+        let score = 0;
+        const adaptedPlan = (parseInt(functionalAnswers[4]) >= 4) || functionalAnswers[3] === 'false';;
 
-        // TODO: take into consideration health_result and the answers to the functional assessment
+        functionalAnswers.forEach((answer, index) => {
+            if(index < 4) {
+                if (!answer) {
+                    score += 1;
+                }
+            }
+            else {
+                score += parseInt(answer);
+            }
+        }
+        );
 
-        const decision = "plan1"
+        let decision: string;
+        if(score <= 4) {
+            decision = adaptedPlan ? "plan1_adapted" : "plan1_normal";
+        }
+        else if (score <= 9) {
+            decision = adaptedPlan ? "plan2_adapted" : "plan2_normal";
+        }
+        else {
+            decision = adaptedPlan ? "plan3_adapted" : "plan3_normal";
+        }
+
         return decision;
     };
 
     const completeAssessment = async (resultKey) => {
         setIsAssessmentVisible(false);
         if (currentAssessmentType === 'health') {
-            try {
-                await ReactNativeAsyncStorage.setItem('lastHealthAssessmentResult', resultKey);
-            } catch (error) {
-                console.error('Error saving health assessment date:', error);
+
+            if(!healthAnswers[4]) {
+                healthAnswers[5] = false;
             }
 
             if (resultKey === 'suspend') {

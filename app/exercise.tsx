@@ -1,10 +1,18 @@
 import { Stack, useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { checkAuth } from "../services/authService";
 
 export default function ExerciseScreen() {
   const { exercise } = useLocalSearchParams();
   const parsedExercise = typeof exercise === "string" ? JSON.parse(exercise) : exercise;
+
+  useEffect(() => {
+      const checkAuthentication = async () => {
+          await checkAuth();
+      };
+      checkAuthentication();
+    }, []);
 
   return (
     <>

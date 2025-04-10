@@ -34,14 +34,13 @@ const en = {
             1: "Vomiting/diarrhea 12h?",
             2: "Extreme fatigue?",
             3: "Intense pain?",
-            4: "Dizziness/imbalance?",
-            5: "Drowsiness/loss of strength?",
-            6: "Wound, infection, inflammation?",
+            4: "Wound, infection, inflammation?",
+            5: "Does it impact the ability to perform exercise?",
+            6: "Medical contraindication for exercise?",
         },
         results: {
             suspend: "It is recommended to proceed with a clinical assessment before continuing the program.",
-            adaptedPlan: "Based on this result, an adapted plan is recommended for this week. Proceed with the functional assessment.",
-            fullPlan: "Based on this result, a complete plan is recommended for this week. Proceed with the functional assessment.",
+            fullPlan: "You are eligible to exercise this week. Proceed with the functional assessment.",
         }
     },
     weekly_functional_assessment: {
@@ -51,7 +50,9 @@ const en = {
             0: "Can you stand on one leg for 10 seconds?",
             1: "Can you walk for 6 minutes without stopping?",
             2: "Can you get up from a chair 5 times in a row without using your hands?",
-            3: "On a scale of 0 to 10, what is your level of fatigue today?",
+            3: "Do you confirm that you are not feeling dizzy?",
+            4: "On a scale of 0 to 7, what is the level of numbness or tingling you are feeling?",
+            5: "On a scale of 0 to 7, what is your level of fatigue today?",
         },
         results : {
             decision: "Thank you. \nBased on this result, your plan for this week will be defined.",
