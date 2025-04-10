@@ -51,7 +51,7 @@ const pt = {
             1: "Consegue andar 6 minutos seguidos sem parar?",
             2: "Consegue levantar-se 5x seguidas de uma cadeira sem usar as mãos?",
             3: "Confirma que não está a sentir tonturas?",
-            4: "De 0  a 7, qual o nível de dormencia ou formigueiro que está a sentir?",
+            4: "De 0 a 7, qual o nível de dormencia ou formigueiro que está a sentir?",
             5: "De 0 a 7, qual o seu nível de fadiga hoje?",
         },
         results: {
