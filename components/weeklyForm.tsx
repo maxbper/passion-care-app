@@ -49,7 +49,7 @@ const WeeklyHealthAssessment = ({ }) => {
     );
 
     const checkLastAssessmentDate = async () => {
-        //startHealthAssessmentInitial(); // for testing purposes
+        startHealthAssessmentInitial(); // for testing purposes
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
             if (!lastAssessmentDate) {
@@ -207,7 +207,6 @@ const WeeklyHealthAssessment = ({ }) => {
             }
             else {
                 startFunctionalAssessmentInitial();
-                setTimeout(() => startFunctionalAssessment(), 250);
             }
         }
         else if (currentAssessmentType === 'functional') {
