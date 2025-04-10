@@ -5,11 +5,17 @@ import React, { useEffect } from "react";
 import { checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { setIsSuspended } from "../services/dbService";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
     const [isAdmin, setIsAdmin] = React.useState(false);
     const [isMod, setIsMod] = React.useState(false);
+
+    const suspend = async () => {
+        await setIsSuspended(true);
+        router.replace("/dontExercise");
+    }
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -26,7 +32,8 @@ export default function HomeScreen() {
         isAdminOrMod();
 
         const checkDailyWarning = async () => {
-            if (await showDailyWarning()) {
+            const showWarning = await showDailyWarning();
+            if (showWarning) {
                 if (Platform.OS === "web") {
                     alert(t("warning") + ": " + t("daily_warning"));
                 } else {
@@ -36,7 +43,7 @@ export default function HomeScreen() {
                         [
                             {
                             text: t("no"),
-                            onPress: () => router.replace("/dontExercise"),
+                            onPress: () => suspend(),
                             style: "cancel",
                             },
                             {
@@ -49,7 +56,7 @@ export default function HomeScreen() {
                 }
             }
         };
-        if (isAdmin || isMod) {
+        if (!isAdmin && !isMod) {
             checkDailyWarning();
         }
       }, []);

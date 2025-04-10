@@ -4,8 +4,13 @@ import { getAuth } from 'firebase/auth';
 const db = getFirestore();
 const auth = getAuth();
 
-export const fetchIsSuspended = async (userId) => {
-    if (!userId) return;
+export const fetchIsSuspended = async (userId=null) => {
+    if (!userId) {
+        while (auth.currentUser == null) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        userId = auth.currentUser?.uid;
+    }
     try {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
@@ -125,6 +130,16 @@ export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspend
   } catch (error) {
     console.error('Error sending weekly form:', error);
   }
+};
+
+export const setIsSuspended = async (suspended, userId=auth.currentUser?.uid) => {
+    try {
+        await setDoc(doc(db, 'users', userId), {
+            suspended: suspended,
+        }, { merge: true });
+    } catch (error) {
+        console.error('Error setting suspended status:', error);
+    }
 };
 
 export const fetchLastWorkoutDate = async () => {

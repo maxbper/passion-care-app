@@ -3,6 +3,7 @@ import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect } from "react";
 import { checkAuth } from "../services/authService";
+import { fetchIsSuspended } from "../services/dbService";
 
 export default function DontExerciseScreen() {
     const { t } = useTranslation();
@@ -12,6 +13,16 @@ export default function DontExerciseScreen() {
                 await checkAuth();
             };
             checkAuthentication();
+
+            const checkIsSuspended = async () => {
+                const isSuspended = await fetchIsSuspended();
+                if (!isSuspended) {
+                    router.replace("/home");
+                }
+            }
+            checkIsSuspended();
+        const interval = setInterval(checkIsSuspended, 60000);
+        return () => clearInterval(interval);
         }
     , []);
 
