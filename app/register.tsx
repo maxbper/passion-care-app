@@ -1,7 +1,5 @@
-import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActionSheetIOS } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { router, Stack } from "expo-router";
-import RNPickerSelect from "react-native-picker-select";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
 import { checkAuth, logout } from "../services/authService";
@@ -28,6 +26,22 @@ export default function RegisterScreen() {
         cancer_type: "",
         chemo_goal: "",
       });
+
+      const cancer_types = [
+        { label: t("cancer.breast"), value: "breast" },
+        { label: t("cancer.colorectal"), value: "colorectal" },
+        { label: t("cancer.ovarian"), value: "ovarian" },
+        { label: t("cancer.myeloma"), value: "myeloma" },
+        { label: t("cancer.lymphoma"), value: "lymphoma" },
+        { label: t("cancer.lung"), value: "lung" },
+        { label: t("cancer.urothelial"), value: "urothelial" },
+        { label: t("cancer.germcell"), value: "germcell" },
+        { label: t("cancer.headneck"), value: "headneck" },
+        { label: t("cancer.prostate"), value: "prostate" },
+        { label: t("cancer.pancreatic"), value: "pancreatic" },
+        { label: t("cancer.stomach"), value: "stomach" },
+        { label: t("cancer.bile"), value: "bile" },
+      ];
     
       const handleChange = (key, value) => {
         setForm({ ...form, [key]: value });
@@ -105,23 +119,23 @@ export default function RegisterScreen() {
     <View style={styles.container}>
     
     
-    <Text style={styles.sectionTitle}>Basic Information</Text>
+    <Text style={styles.sectionTitle}>{t("basic_info")}</Text>
 
     <View style={styles.row}>
       <View style={styles.halfInput}>
-        <Text>Name</Text>
+        <Text>{t("name")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder={t("name")}
           value={form.name}
           onChangeText={text => handleChange("name", text)}
         />
       </View>
       <View style={styles.halfInput}>
-        <Text>Email</Text>
+        <Text>{t("email")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t("email")}
           value={form.email}
           onChangeText={text => handleChange("email", text)}
         />
@@ -130,10 +144,10 @@ export default function RegisterScreen() {
 
     <View style={styles.row}>
       <View style={styles.quarterInput}>
-        <Text>Age</Text>
+        <Text>{t("age")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Age"
+          placeholder={t("age")}
           value={form.age}
           keyboardType="numeric"
           onChangeText={text => {
@@ -143,10 +157,10 @@ export default function RegisterScreen() {
       </View>
 
       <View style={styles.quarterInput}>
-        <Text>Height</Text>
+        <Text>{t("height")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Height"
+          placeholder={t("height")}
           value={form.height}
           keyboardType="numeric"
           onChangeText={text => {
@@ -156,10 +170,10 @@ export default function RegisterScreen() {
       </View>
 
         <View style={styles.quarterInput}>
-        <Text>Weight</Text>
+        <Text>{t("weight")}</Text>
         <TextInput
             style={styles.input}
-            placeholder="Weight"
+            placeholder={t("weight")}
             value={form.weight}
             keyboardType="numeric"
           onChangeText={text => {
@@ -170,119 +184,114 @@ export default function RegisterScreen() {
     </View>
 
     <View style={styles.singleInput}>
-        <Text>Gender</Text>
+        <Text>{t("gender")}</Text>
         <CustomDropdown
-            label="Gender"
+            label={t("gender")}
             value={form.gender}
             onChange={(val) => handleChange("gender", val)}
             options={[
-                { label: "Male", value: "male" },
-                { label: "Female", value: "female" },
-                { label: "Other", value: "other" },
+                { label: t("male"), value: "male" },
+                { label: t("female"), value: "female" },
+                { label: t("other"), value: "other" },
             ]}
             />
       </View>
 
 
     
-    <Text style={styles.sectionTitle}>Lifestyle and Medical History</Text>
+    <Text style={styles.sectionTitle}>{t("medical_info")}</Text>
 
     <View style={styles.singleInput}>
-      <Text>Medical History</Text>
+      <Text>{t("medical_history")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Medical History"
+        placeholder={t("medical_history")}
         value={form.medical_history}
         onChangeText={text => handleChange("medical_history", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Usual Medication</Text>
+      <Text>{t("usual_medications")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Usual Medication"
+        placeholder={t("usual_medications")}
         value={form.usual_medication}
         onChangeText={text => handleChange("usual_medication", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Exercise History (type, freq, duration)</Text>
+      <Text>{t("exercise_history")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Exercise History"
+        placeholder={t("exercise_history")}
         value={form.exercise_history}
         onChangeText={text => handleChange("exercise_history", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Exercise Preferences and Constraints</Text>
+      <Text>{t("exercise_preferences")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Exercise Preferences"
+        placeholder={t("exercise_preferences")}
         value={form.exercise_preferences}
         onChangeText={text => handleChange("exercise_preferences", text)}
       />
     </View>
 
     
-    <Text style={styles.sectionTitle}>Clinical Details</Text>
+    <Text style={styles.sectionTitle}>{t("chemo_info")}</Text>
 
     <View style={styles.singleInput}>
-    <Text>Previous CIPN diagnosis?</Text>
-        <View style={styles.input}>
-        <Picker
-            selectedValue={form.previous_cipn_diagnosis}
-            onValueChange={(itemValue) => handleChange("previous_cipn_diagnosis", itemValue)}
-        >
-            <Picker.Item label="Select Option" value="" />
-            <Picker.Item label="Yes" value="yes" />
-            <Picker.Item label="No" value="no" />
-        </Picker>
-    </View>
+    <Text>{t("previous_cipn_diagnosis")}</Text>
+            <CustomDropdown
+        label={t("previous_cipn_diagnosis")}
+        value={form.previous_cipn_diagnosis}
+        onChange={(value) => handleChange("previous_cipn_diagnosis", value)}
+        options={[
+            { label: t("yes"), value: "yes" },
+            { label: t("no"), value: "no" },
+        ]}
+        />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Neurotoxic Agent</Text>
+      <Text>{t("neurotoxic_agents")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Neurotoxic Agent"
+        placeholder={t("neurotoxic_agents")}
         value={form.neurotoxic_agent}
         onChangeText={text => handleChange("neurotoxic_agent", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Chemotherapy Protocol</Text>
+      <Text>{t("chemo_protocol")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Chemotherapy Protocol"
+        placeholder={t("chemo_protocol")}
         value={form.chemo_protocol}
         onChangeText={text => handleChange("chemo_protocol", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-    <Text>Cancer Type</Text>
-        <View style={styles.input}>
-        <Picker
-            selectedValue={form.cancer_type}
-            onValueChange={(itemValue) => handleChange("cancer_type", itemValue)}
-        >
-            <Picker.Item  style={{fontSize: 13}} label="Select Option" value="" />
-            <Picker.Item label="wandawjkjawnfawfaw" value="yes" />
-            <Picker.Item label="No" value="no" />
-        </Picker>
-    </View>
+    <Text>{t("cancer_type")}</Text>
+        <CustomDropdown
+            label={t("cancer_type")}
+            value={form.cancer_type}
+            onChange={(value) => handleChange("cancer_type", value)}
+            options={cancer_types}
+    />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Goal of chemo - Adjuvant or Palliative?</Text>
+      <Text>{t("chemo_goal")}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Goal of chemo"
+        placeholder={t("chemo_goal")}
         value={form.chemo_goal}
         onChangeText={text => handleChange("chemo_goal", text)}
       />

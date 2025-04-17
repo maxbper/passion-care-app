@@ -9,8 +9,8 @@ import { setIsSuspended } from "../services/dbService";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
-    const [isAdmin, setIsAdmin] = React.useState(false);
-    const [isMod, setIsMod] = React.useState(false);
+    const [isAdmin, setIsAdmin] = React.useState(true);
+    const [isMod, setIsMod] = React.useState(true);
 
     const suspend = async () => {
         await setIsSuspended(true);
@@ -59,7 +59,7 @@ export default function HomeScreen() {
         if (!isAdmin && !isMod) {
             checkDailyWarning();
         }
-      }, []);
+      }, [isAdmin, isMod]);
 
 
     return (

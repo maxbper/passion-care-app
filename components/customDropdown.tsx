@@ -3,13 +3,16 @@ import { Platform, View, Text, TouchableOpacity, StyleSheet } from "react-native
 import RNPickerSelect from "react-native-picker-select";
 import { Picker } from "@react-native-picker/picker";
 import { ActionSheetIOS } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const CustomDropdown = ({ label, value, onChange, options }) => {
+    const { t } = useTranslation();
+
     const showIOSActionSheet = () => {
       const labels = options.map(opt => opt.label);
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: [...labels, "Cancel"],
+          options: [...labels, t("cancel")],
           cancelButtonIndex: labels.length,
           title: label,
         },
@@ -25,7 +28,7 @@ const CustomDropdown = ({ label, value, onChange, options }) => {
       return (
         <View style={styles.container}>
           <TouchableOpacity style={styles.iosButton} onPress={showIOSActionSheet}>
-            <Text>{options.find(o => o.value === value)?.label || "Select..."}</Text>
+            <Text>{options.find(o => o.value === value)?.label || t("select_option")}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -39,6 +42,7 @@ const CustomDropdown = ({ label, value, onChange, options }) => {
             style={{
               inputWeb: styles.webInput,
             }}
+            placeholder={{ label: t("select_option"), value: null }}
           />
         </View>
       );
@@ -50,6 +54,7 @@ const CustomDropdown = ({ label, value, onChange, options }) => {
             onValueChange={(val) => onChange(val)}
             style={styles.androidPicker}
           >
+            <Picker.Item label={t("select_option")} value="" style={{fontSize: 13}} />
             {options.map((opt) => (
               <Picker.Item key={opt.value} label={opt.label} value={opt.value} style={{fontSize: 13}} />
             ))}
