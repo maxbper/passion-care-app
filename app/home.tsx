@@ -35,7 +35,7 @@ export default function HomeScreen() {
             const showWarning = await showDailyWarning();
             if (showWarning) {
                 if (Platform.OS === "web") {
-                    alert(t("warning") + ": " + t("daily_warning"));
+                    alert(t("warning") + ":\n" + t("daily_warning"));
                 } else {
                     Alert.alert(
                         t("warning"),

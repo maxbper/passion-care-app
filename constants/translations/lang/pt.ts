@@ -60,6 +60,7 @@ const pt = {
     },
     start_workout_message: "É hora de treinar, vamos lá. \n O relógio irá começa a contar. \n\n Prepare-se!",
     start: "Começar",
+    registerscreen_title: "Novo Utilizador",
    };
 
 export default pt;

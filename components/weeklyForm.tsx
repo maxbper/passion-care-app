@@ -49,7 +49,7 @@ const WeeklyHealthAssessment = ({ }) => {
     );
 
     const checkLastAssessmentDate = async () => {
-        startHealthAssessmentInitial(); // for testing purposes
+        // startHealthAssessmentInitial(); // for testing purposes
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
             if (!lastAssessmentDate) {

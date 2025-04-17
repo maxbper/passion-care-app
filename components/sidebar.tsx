@@ -1,17 +1,42 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 export default function SidebarNav() {
     const { t } = useTranslation();
     const pathname = usePathname();
+    const [isAdmin, setIsAdmin] = React.useState(false);
+    const [isMod, setIsMod] = React.useState(false);
 
-    const navItems: { name: string; label: string; route: any; library: any }[] = [
+    const navItemsUser: { name: string; label: string; route: any; library: any }[] = [
         { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
         { name: "tasks", label: t("tasksscreen_title"), route: "/tasks", library: FontAwesome5 },
         { name: "user", label: t("profilescreen_title"), route: "/profile", library: AntDesign },
         ];
+
+    const navItemsAdmin: { name: string; label: string; route: any; library: any }[] = [
+        { name: "adduser", label: t("registerscreen_title"), route: "/register", library: AntDesign },
+        { name: "users", label: "Dashboard", route: "/dashboard", library: Feather },
+    ];
+
+    let navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;
+
+    useEffect(() => {
+      const isAdminOrMod = async () => {
+          const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
+          const mod = await ReactNativeAsyncStorage.getItem("isMod");
+          setIsAdmin(admin === "true");
+          setIsMod(mod === "true");
+      };
+      isAdminOrMod();
+
+      navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;
+    }, []);
+
 
   return (
     <View style={{ width: 80, backgroundColor: "#fff", height: "100%" , paddingTop: 20, justifyContent: "center"}}>

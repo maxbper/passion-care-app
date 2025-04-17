@@ -60,6 +60,7 @@ const en = {
     },
     start_workout_message: "It's workout time, let's get moving. \n The clock will start when you press start. \n\n Get ready!",
     start: "Start",
+    registerscreen_title: "New User",
    };
 
 

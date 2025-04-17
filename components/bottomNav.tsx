@@ -1,16 +1,40 @@
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { usePathname, useRouter } from "expo-router";
-import { Entypo, AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, AntDesign, FontAwesome5, Feather } from "@expo/vector-icons";
+import { t } from "i18next";
+import React, { useEffect } from "react";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+    const [isMod, setIsMod] = React.useState(false);
 
-  const navItems : { name: string; route: any; library: any }[] = [
+  const navItemsUser : { name: string; route: any; library: any }[] = [
     { name: "tasks", route: "/tasks", library: FontAwesome5 },
     { name: "home", route: "/home", library: Entypo },
     { name: "user", route: "/profile", library: AntDesign },
   ];
+
+  const navItemsAdmin: { name: string; label: string; route: any; library: any }[] = [
+    { name: "adduser", label: t("registerscreen_title"), route: "/register", library: AntDesign },
+    { name: "users", label: "Dashboard", route: "/dashboard", library: Feather },
+];
+
+    let navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;
+
+    useEffect(() => {
+        const isAdminOrMod = async () => {
+            const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
+            const mod = await ReactNativeAsyncStorage.getItem("isMod");
+            setIsAdmin(admin === "true");
+            setIsMod(mod === "true");
+        };
+        isAdminOrMod();
+  
+        navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;
+      }, []);
 
   return (
     <View style={[styles.container]}>
