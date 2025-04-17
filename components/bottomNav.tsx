@@ -9,7 +9,7 @@ export default function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = React.useState(false);
-    const [isMod, setIsMod] = React.useState(false);
+  const [isMod, setIsMod] = React.useState(false);
 
   const navItemsUser : { name: string; route: any; library: any }[] = [
     { name: "tasks", route: "/tasks", library: FontAwesome5 },
@@ -36,6 +36,11 @@ export default function BottomNav() {
         navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;
       }, []);
 
+
+    if (pathname === "/exercise") {
+        return null;
+    }
+    
   return (
     <View style={[styles.container]}>
         {navItems.map((item, index) => {

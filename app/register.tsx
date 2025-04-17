@@ -1,31 +1,32 @@
-import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActionSheetIOS } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { router, Stack } from "expo-router";
+import RNPickerSelect from "react-native-picker-select";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import { checkAuth, showDailyWarning } from "../services/authService";
-import WeeklyHealthAssessment from "../components/weeklyForm";
+import { checkAuth, logout } from "../services/authService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import CustomDropdown from "../components/customDropdown";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
-    const [isAdmin, setIsAdmin] = React.useState(false);
-    const [isMod, setIsMod] = React.useState(false);
 
     const [form, setForm] = useState({
         email: "",
         name: "",
         age: "",
-        gender: "",
-        medicalHistory: "",
-        exerciseHistory: "",
         height: "",
         weight: "",
-        previousCipn: "",
-        chemotherapyType: "",
-        cycles: "",
-        neurotherapy: "",
-        cipnRisk: "",
+        gender: "",
+        medical_history: "",
+        usual_medication: "",
+        exercise_history: "",
+        exercise_preferences: "",
+        previous_cipn_diagnosis: "",
+        neurotoxic_agent: "",
+        chemo_protocol: "",
+        cancer_type: "",
+        chemo_goal: "",
       });
     
       const handleChange = (key, value) => {
@@ -52,23 +53,26 @@ export default function RegisterScreen() {
 
       const isFormValid = () => {
         return (
-          form.email.trim() !== "" &&
-          form.name.trim() !== "" &&
-          form.age.trim() !== "" &&
-          form.gender.trim() !== "" &&
-          form.height.trim() !== "" &&
-          form.weight.trim() !== "" &&
-          form.medicalHistory.trim() !== "" &&
-          form.exerciseHistory.trim() !== "" &&
-          form.previousCipn.trim() !== "" &&
-          form.chemotherapyType.trim() !== "" &&
-          form.cycles.trim() !== "" &&
-          form.neurotherapy.trim() !== "" &&
-          form.cipnRisk.trim() !== ""
+            form.email.trim() !== "" &&
+            form.name.trim() !== "" &&
+            form.age.trim() !== "" &&
+            form.gender.trim() !== "" &&
+            form.height.trim() !== "" &&
+            form.weight.trim() !== "" &&
+            form.medical_history.trim() !== "" &&
+            form.usual_medication.trim() !== "" &&
+            form.exercise_history.trim() !== "" &&
+            form.exercise_preferences.trim() !== "" &&
+            form.previous_cipn_diagnosis.trim() !== "" &&
+            form.neurotoxic_agent.trim() !== "" &&
+            form.chemo_protocol.trim() !== "" &&
+            form.cancer_type.trim() !== "" &&
+            form.chemo_goal.trim() !== ""
         );
       };
 
-      const handleRegister = () => {
+      const handleRegister = async () => {
+        await logout();
         if (isFormValid()) {
           // registration logic here -> dbService file
           console.log(form);
@@ -167,29 +171,39 @@ export default function RegisterScreen() {
 
     <View style={styles.singleInput}>
         <Text>Gender</Text>
-        <View style={styles.input}>
-          <Picker
-            selectedValue={form.gender}
-            onValueChange={(itemValue) => handleChange("gender", itemValue)}
-          >
-            <Picker.Item label="Select Gender" value="" />
-            <Picker.Item label="Male" value="male" />
-            <Picker.Item label="Female" value="female" />
-            <Picker.Item label="Other" value="other" />
-          </Picker>
-        </View>
+        <CustomDropdown
+            label="Gender"
+            value={form.gender}
+            onChange={(val) => handleChange("gender", val)}
+            options={[
+                { label: "Male", value: "male" },
+                { label: "Female", value: "female" },
+                { label: "Other", value: "other" },
+            ]}
+            />
       </View>
 
+
     
-    <Text style={styles.sectionTitle}>Lifestyle & Medical History</Text>
+    <Text style={styles.sectionTitle}>Lifestyle and Medical History</Text>
 
     <View style={styles.singleInput}>
       <Text>Medical History</Text>
       <TextInput
         style={styles.input}
         placeholder="Medical History"
-        value={form.medicalHistory}
-        onChangeText={text => handleChange("medicalHistory", text)}
+        value={form.medical_history}
+        onChangeText={text => handleChange("medical_history", text)}
+      />
+    </View>
+
+    <View style={styles.singleInput}>
+      <Text>Usual Medication</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Usual Medication"
+        value={form.usual_medication}
+        onChangeText={text => handleChange("usual_medication", text)}
       />
     </View>
 
@@ -198,8 +212,18 @@ export default function RegisterScreen() {
       <TextInput
         style={styles.input}
         placeholder="Exercise History"
-        value={form.exerciseHistory}
-        onChangeText={text => handleChange("exercise", text)}
+        value={form.exercise_history}
+        onChangeText={text => handleChange("exercise_history", text)}
+      />
+    </View>
+
+    <View style={styles.singleInput}>
+      <Text>Exercise Preferences and Constraints</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Exercise Preferences"
+        value={form.exercise_preferences}
+        onChangeText={text => handleChange("exercise_preferences", text)}
       />
     </View>
 
@@ -210,8 +234,8 @@ export default function RegisterScreen() {
     <Text>Previous CIPN diagnosis?</Text>
         <View style={styles.input}>
         <Picker
-            selectedValue={form.previousCipn}
-            onValueChange={(itemValue) => handleChange("previousCipn", itemValue)}
+            selectedValue={form.previous_cipn_diagnosis}
+            onValueChange={(itemValue) => handleChange("previous_cipn_diagnosis", itemValue)}
         >
             <Picker.Item label="Select Option" value="" />
             <Picker.Item label="Yes" value="yes" />
@@ -221,42 +245,46 @@ export default function RegisterScreen() {
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Risk of Developing cipn (yes/no)</Text>
+      <Text>Neurotoxic Agent</Text>
       <TextInput
         style={styles.input}
-        placeholder="cipn Risk"
-        value={form.cipnRisk}
-        onChangeText={text => handleChange("cipnRisk", text)}
+        placeholder="Neurotoxic Agent"
+        value={form.neurotoxic_agent}
+        onChangeText={text => handleChange("neurotoxic_agent", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Chemotherapy Type</Text>
+      <Text>Chemotherapy Protocol</Text>
       <TextInput
         style={styles.input}
-        placeholder="Chemotherapy Type"
-        value={form.chemotherapyType}
-        onChangeText={text => handleChange("chemotherapyType", text)}
+        placeholder="Chemotherapy Protocol"
+        value={form.chemo_protocol}
+        onChangeText={text => handleChange("chemo_protocol", text)}
       />
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Number of Chemotherapy Cycles</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Number of Cycles"
-        value={form.cycles}
-        onChangeText={text => handleChange("cycles", text)}
-      />
+    <Text>Cancer Type</Text>
+        <View style={styles.input}>
+        <Picker
+            selectedValue={form.cancer_type}
+            onValueChange={(itemValue) => handleChange("cancer_type", itemValue)}
+        >
+            <Picker.Item  style={{fontSize: 13}} label="Select Option" value="" />
+            <Picker.Item label="wandawjkjawnfawfaw" value="yes" />
+            <Picker.Item label="No" value="no" />
+        </Picker>
+    </View>
     </View>
 
     <View style={styles.singleInput}>
-      <Text>Neurotherapy Details</Text>
+      <Text>Goal of chemo - Adjuvant or Palliative?</Text>
       <TextInput
         style={styles.input}
-        placeholder="Neurotherapy"
-        value={form.neurotherapy}
-        onChangeText={text => handleChange("neurotherapy", text)}
+        placeholder="Goal of chemo"
+        value={form.chemo_goal}
+        onChangeText={text => handleChange("chemo_goal", text)}
       />
     </View>
 
@@ -322,4 +350,34 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     });
+      
+    const pickerSelectStyles = StyleSheet.create({
+        inputIOS: {
+          fontSize: 16,
+          padding: 12,
+          borderWidth: 1,
+          borderColor: '#ccc',
+          borderRadius: 4,
+          color: 'black',
+          marginBottom: 10,
+        },
+        inputAndroid: {
+          fontSize: 16,
+          padding: 8,
+          borderWidth: 0.5,
+          borderColor: '#ccc',
+          borderRadius: 8,
+          color: 'black',
+          marginBottom: 10,
+        },
+        inputWeb: {
+          fontSize: 16,
+          padding: 10,
+          borderWidth: 1,
+          borderColor: '#ccc',
+          borderRadius: 4,
+          color: 'black',
+          marginBottom: 10,
+        },
+      });
       
