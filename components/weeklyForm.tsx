@@ -49,7 +49,7 @@ const WeeklyHealthAssessment = ({ }) => {
     );
 
     const checkLastAssessmentDate = async () => {
-        // startHealthAssessmentInitial(); // for testing purposes
+        startHealthAssessmentInitial(); // for testing purposes
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
             if (!lastAssessmentDate) {
@@ -256,6 +256,10 @@ const WeeklyHealthAssessment = ({ }) => {
                                     minimumTrackTintColor="#007AFF"
                                     maximumTrackTintColor="#D3D3D3"
                                 />
+                                <View style={styles.plusMinusContainer}>
+                                    <Text>-</Text>
+                                    <Text>+</Text>
+                                </View>
                                 <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
                                     <Text style={styles.buttonText}>{t("submit")}</Text>
                                 </TouchableOpacity>
@@ -359,6 +363,11 @@ const styles = StyleSheet.create({
     slider: {
         width: '90%',
         height: 40,
+    },
+    plusMinusContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '90%',
         marginBottom: 20,
     },
 });
