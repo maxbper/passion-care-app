@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, initializeAuth, getReactNativePersistence, browserLocalPersistence } from "firebase/auth";
+import { getAuth, initializeAuth, getReactNativePersistence, browserLocalPersistence, sendPasswordResetEmail } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from "react-native";
 import { getFirestore } from "firebase/firestore";
@@ -18,6 +18,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const resetPassword = (email) => {
+  const auth = getAuth(app); 
+  return sendPasswordResetEmail(auth, email); 
+}
+
 let auth;
 if (Platform.OS === "web") {
   auth = getAuth(app);
@@ -28,6 +33,6 @@ if (Platform.OS === "web") {
   });
 }
 
-export { auth, db };
+export { auth, db, resetPassword };
 
 

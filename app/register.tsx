@@ -2,12 +2,16 @@ import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput,
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import { checkAuth, logout } from "../services/authService";
+import { checkAuth, logout, refreshSignIn } from "../services/authService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import CustomDropdown from "../components/customDropdown";
+import { addUserToList, registerUser } from "../services/dbService";
+import { auth, resetPassword } from "../firebaseConfig";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [adminPassword, setAdminPassword] = useState("");
 
     const [form, setForm] = useState({
         email: "",
@@ -85,19 +89,40 @@ export default function RegisterScreen() {
         );
       };
 
+      const register = async () => {
+        let admin = auth.currentUser;
+        while (admin == null) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            admin = auth.currentUser;
+        }
+        await registerUser(form);
+        const userId = auth.currentUser.uid;
+
+        try {
+            await resetPassword(admin.email);
+        } catch (error) {
+            console.error("Error resetting password:", error);
+        }
+
+        await refreshSignIn(admin.email, adminPassword);
+        await addUserToList(userId);
+
+        console.log(auth.currentUser.uid);
+
+        setModalVisible(false)
+        router.replace("/register");
+    }
+
       const handleRegister = async () => {
-        await logout();
         if (isFormValid()) {
-          // registration logic here -> dbService file
-          console.log(form);
+          setModalVisible(true);
         } else {
-          Alert.alert("Error", "Please fill in all fields.");
           if (Platform.OS === "web") {
-                alert("Formulario incompleto");
+                alert(t("incomplete_form"));
             } else {
                 Alert.alert(
                     t("warning"),
-                    "Formulario incompleto",
+                    t("incomplete_form"),
                     [
                         {
                         text: "OK",
@@ -116,7 +141,8 @@ export default function RegisterScreen() {
         <>
   <Stack.Screen options={{ headerTitle: t("registerscreen_title") }} />
   <ScrollView style={{ marginTop: 60 }}>
-    <View style={styles.container}>
+
+  <View style={styles.container}>
     
     
     <Text style={styles.sectionTitle}>{t("basic_info")}</Text>
@@ -299,11 +325,38 @@ export default function RegisterScreen() {
 
     <View style={styles.button}>
       <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
-        <Text style={{ color: "#fff", textAlign: "center" }}>Register</Text>
+        <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
+      </TouchableOpacity>
+    </View>
+    <View style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() =>logout()}>
+        <Text style={{ color: "#fff", textAlign: "center" }}>logout</Text>
       </TouchableOpacity>
     </View>
     </View>
   </ScrollView>
+  {isModalVisible && (
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.title}>{t("password")}</Text>
+                        <View style={styles.halfInput}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={t("password")}
+                            value={adminPassword}
+                            secureTextEntry
+                            onChangeText={text => setAdminPassword(text)}
+                            />
+                        </View>
+
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={[styles.button]} onPress={() => register()}>
+                                    <Text style={styles.buttonText}>{t("register")}</Text>
+                                </TouchableOpacity>
+                            </View>
+                    </View>
+                </View>
+            )}
 </>
 
       );
@@ -357,6 +410,39 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
+    },
+    modalContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        width: '80%',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
     },
     });
       

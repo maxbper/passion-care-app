@@ -94,7 +94,9 @@ const en = {
         pancreatic: "Pancreatic Cancer",
         stomach: "Stomach Cancer",
         bile: "Bile Duct Cancer"
-      }
+      },
+    incomplete_form: "The form is not complete. \n\nPlease fill in all fields.",
+    register: "Register",
    };
 
 

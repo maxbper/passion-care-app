@@ -94,7 +94,9 @@ const pt = {
         pancreatic: "Cancro do Pâncreas",
         stomach: "Cancro do Estômago",
         bile: "Cancro das Vias biliares",
-    }
+    },
+    incomplete_form: "O formulário não está completo. \n\nPor favor, preencha todos os campos.",
+    register: "Registar",
    };
 
 export default pt;

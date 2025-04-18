@@ -1,5 +1,5 @@
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
 const db = getFirestore();
 const auth = getAuth();
@@ -245,3 +245,50 @@ export const fetchExercise = async (exerciseId) => {
         console.error("Error fetching exercise:", error);
       }
 };
+
+export const registerUser = async (form) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
+        const userId = userCredential.user.uid;
+
+        const docRef = doc(db, "users", userId);
+
+        await setDoc(docRef, {
+            name: form.name,
+            age: form.age,
+            email: form.email,
+            height: form.height,
+            weight: form.weight,
+            gender: form.gender,
+            medical_history: form.medical_history,
+            usual_medication: form.usual_medication,
+            exercise_history: form.exercise_history,
+            exercise_preferences: form.exercise_preferences,
+            previous_cipn_diagnosis: form.previous_cipn_diagnosis,
+            neurotoxic_agent: form.neurotoxic_agent,
+            chemo_protocol: form.chemo_protocol,
+            cancer_type: form.cancer_type,
+            chemo_goal: form.chemo_goal,
+            suspended: false,
+            workout_plan: "",
+        });
+
+    } catch (error) {
+        console.error("Error registering user:", error);
+    }
+};
+
+export const addUserToList = async (uid) => {
+    while (auth.currentUser == null) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    const adminUid = auth.currentUser.uid;
+
+    try {
+        await setDoc(doc(db, "users", adminUid), {
+            users: arrayUnion(uid),
+        }, { merge: true });
+    } catch (error) {
+        console.error("Error adding user to list:", error);
+    }
+}

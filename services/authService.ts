@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithCustomToken, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -88,4 +88,9 @@ export const getUid = () => {
         return user.uid;
     }
     return null;
+}
+
+export const refreshSignIn = async (email, password) => {
+    await signOut(auth);
+    await signInWithEmailAndPassword(auth, email, password);
 }
