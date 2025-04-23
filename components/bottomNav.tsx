@@ -15,6 +15,7 @@ export default function BottomNav() {
     { name: "tasks", route: "/tasks", library: FontAwesome5 },
     { name: "home", route: "/home", library: Entypo },
     { name: "user", route: "/profile", library: AntDesign },
+    { name: "watch", route: "/wearable", library: Feather },
   ];
 
   const navItemsAdmin: { name: string; label: string; route: any; library: any }[] = [
