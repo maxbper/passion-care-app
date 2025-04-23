@@ -217,7 +217,7 @@ export const fetchWorkoutPlan = async () => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          return docSnap.data()[plan];
+          return [docSnap.data()[plan], plan];
         } else {
           console.log("No workout plan found!");
           return null;
@@ -227,7 +227,7 @@ export const fetchWorkoutPlan = async () => {
       }
 };
 
-export const fetchExercise = async (exerciseId) => {
+export const fetchExercise = async (exerciseId, plan) => {
     while (auth.currentUser == null) {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
@@ -236,7 +236,7 @@ export const fetchExercise = async (exerciseId) => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          return docSnap.data();
+          return [docSnap.data()["name"], docSnap.data()[plan]];
         } else {
           console.log("No exercise found!");
           return null;
