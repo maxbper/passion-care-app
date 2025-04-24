@@ -113,11 +113,9 @@ export default function ExerciseScreen() {
 
       <Modal visible={paused} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.modalButton} onPress={handlePause}>
-              <FontAwesome name={!paused ? "pause" : "play"} size={56} color="#5A2A2A" />
+            <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
+              <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#5A2A2A" />
             </TouchableOpacity>
-          </View>
         </View>
       </Modal>
 
@@ -184,12 +182,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 30,
-    borderRadius: 20,
-    alignItems: 'center',
   },
   modalButton: {
     margin: 20,
