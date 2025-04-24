@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable } from 'react-native';
 import { router, Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { checkAuth } from '../services/authService';
 import { FontAwesome } from '@expo/vector-icons';
@@ -16,6 +16,8 @@ export default function ExerciseScreen() {
   const [paused, setPaused] = useState(false);
   const [pauseStart, setPauseStart] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -25,7 +27,7 @@ export default function ExerciseScreen() {
   }, []);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || !hasStarted) return;
 
     if (currentIndex === -3 || currentIndex === -2 || currentIndex === -1) {
       // Handle 3-2-1 countdown
@@ -37,10 +39,10 @@ export default function ExerciseScreen() {
       // Handle workout timers
       setTimeLeft(parsedWorkoutPlan[currentIndex].duration);
     }
-  }, [currentIndex]);
+  }, [currentIndex, hasStarted]);
 
   useEffect(() => {
-    if (paused || timeLeft <= 0) return;
+    if (paused || timeLeft <= 0 || !hasStarted || transitioning) return;
 
     timerRef.current = setTimeout(() => {
       setTimeLeft((prev) => prev - 1);
@@ -48,10 +50,15 @@ export default function ExerciseScreen() {
 
     if (timeLeft === 1 && currentIndex >= 0) {
       setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1);
+        setTransitioning(true);
       }, 1000);
+      setTimeout(() => {
+        setTransitioning(false);
+        setCurrentIndex((prev) => prev + 1)
+      }, 2000);
+
     }
-  }, [timeLeft, paused]);
+  }, [timeLeft, paused, hasStarted, transitioning]);
 
   const handlePause = async () => {
     if (!paused) {
@@ -60,7 +67,7 @@ export default function ExerciseScreen() {
       if (timerRef.current) clearTimeout(timerRef.current);
     } else {
       if (pauseStart && Date.now() - pauseStart > MAX_PAUSE_TIME) {
-        alert("Pause too long. Redirecting...");
+        alert("Pause too long. Redirecting..."); // change this component on mobile?
         router.replace("/tasks");
       } else {
         setPaused(false);
@@ -76,6 +83,10 @@ export default function ExerciseScreen() {
     router.replace("/tasks");
   };
 
+  const handleStart = () => {
+    setHasStarted(true);
+  };
+
   if (currentIndex >= parsedWorkoutPlan.length) {
     return (
       <View style={styles.container}>
@@ -85,12 +96,22 @@ export default function ExerciseScreen() {
     );
   }
 
+  if(!hasStarted) {
+    return (
+      <Pressable onPress={handleStart} style={styles.greenBackground}>
+      <Text style={styles.initialText}>Tap anywhere to start...</Text>
+      </Pressable>
+    );
+  }
+
+
   return (
     <>
-    <Stack.Screen options={{ headerTitle: "" }} />
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: transitioning ? '#00FF00' : '#F9FAFB' }]}>
       {currentIndex < 0 ? (
+        <View style={styles.redBackground}>
         <Text style={styles.countdown}>{Math.abs(currentIndex)}</Text>
+        </View>
       ) : (
         <>
           <Image
@@ -127,15 +148,34 @@ export default function ExerciseScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F3F3',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
+  },
+  redBackground: {
+    alignItems: 'center',
+    backgroundColor: 'red',
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  greenBackground: {
+    alignItems: 'center',
+    backgroundColor: '#00FF00',
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  initialText: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'center',
+    paddingTop: 20,
+    fontWeight: 'bold',
   },
   countdown: {
     fontSize: 80,
     fontWeight: 'bold',
-    color: '#5A2A2A',
+    color: '#fff',
   },
   exerciseGif: {
     width: '100%',
@@ -169,8 +209,11 @@ const styles = StyleSheet.create({
     bottom: 40,
     backgroundColor: '#F9FAFB',
     paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingHorizontal: 12,
     borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
   },
   pauseText: {
     color: 'white',
