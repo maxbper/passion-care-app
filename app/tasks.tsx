@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { CheckCircle2, Lock } from "lucide-react-native";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { checkAuth } from "../services/authService";
 import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 
 export default function TasksScreen() {
   const [warmupCompleted, setWarmupCompleted] = useState(false);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [lastDateChecked, setLastDateChecked] = useState(false);
   const [workoutPlan, setWorkoutPlan] = useState<any[]>([]);
+  const { t } = useTranslation();
 
   const handleWarmup = () => {
     // redirect to exercise screen with warmup exercises
@@ -65,7 +67,7 @@ export default function TasksScreen() {
             const warmupCompetedTime = await ReactNativeAsyncStorage.getItem("warmupCompletedTime");
             if (warmupCompetedTime) {
                 const now = Date.now();
-                if(now - parseInt(warmupCompetedTime, 10) <= 30 * 60 * 1000){
+                if(now - parseInt(warmupCompetedTime, 10) <= 30 * 60 * 1000){ // 30 minutes
                     setWarmupCompleted(true);
                 }
                 else {
@@ -142,16 +144,18 @@ export default function TasksScreen() {
 
 
   return (
+    <>
+    <Stack.Screen options={{ headerTitle: t("tasksscreen_title") }} />
     <View style={styles.container}>
-      <Block title="Warmup" onPress={handleWarmup} completed={warmupCompleted} />
-      <Block
-        title="Workout"
-        onPress={handleWorkout}
-        disabled={!warmupCompleted}
-        completed={workoutCompleted}
-      />
-      <Block title="Extra" onPress={() => {}} />
-    </View>
+          <Block title="Warmup" onPress={handleWarmup} completed={warmupCompleted} />
+          <Block
+              title="Workout"
+              onPress={handleWorkout}
+              disabled={!warmupCompleted}
+              completed={workoutCompleted} />
+          <Block title="Extra" onPress={() => { } } />
+      </View>
+      </>
   );
 }
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
-import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { checkAuth } from '../services/authService';
 import { FontAwesome } from '@expo/vector-icons';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
-const MAX_PAUSE_TIME = 0.1 * 60 * 1000; // 10 minutes in ms (6s for testing)
+const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
 export default function ExerciseScreen() {
   const { workoutPlan, warmup } = useLocalSearchParams();
@@ -86,17 +86,18 @@ export default function ExerciseScreen() {
   }
 
   return (
+    <>
+    <Stack.Screen options={{ headerTitle: "" }} />
     <View style={styles.container}>
       {currentIndex < 0 ? (
         <Text style={styles.countdown}>{Math.abs(currentIndex)}</Text>
       ) : (
         <>
-            <Image
-              source={require("../assets/images/adaptive-icon.png")}
-              style={styles.exerciseGif}
-              resizeMode="contain"
-            />
-          
+          <Image
+            source={require("../assets/images/adaptive-icon.png")}
+            style={styles.exerciseGif}
+            resizeMode="contain" />
+
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
           <Text style={styles.timer}>{timeLeft}s</Text>
 
@@ -104,13 +105,13 @@ export default function ExerciseScreen() {
             {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} reps` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} sets` : ''}
           </Text>
 
-      <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
-          <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#5A2A2A" />
-      </TouchableOpacity>
-      </>
+          <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
+            <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#5A2A2A" />
+          </TouchableOpacity>
+        </>
       )}
 
-    <Modal visible={paused} transparent animationType="fade">
+      <Modal visible={paused} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.modalButton} onPress={handlePause}>
@@ -121,6 +122,7 @@ export default function ExerciseScreen() {
       </Modal>
 
     </View>
+    </>
   );
 }
 
