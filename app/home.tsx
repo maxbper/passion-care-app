@@ -88,7 +88,6 @@ export default function HomeScreen() {
 
     return (
         <>
-            <Stack.Screen options={{ headerTitle: t("homescreen_title") }} />
             <View style={styles.container}>
                 {!isAdmin && !isMod && (
                     <>
@@ -110,8 +109,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        marginTop: 50,
         alignItems: "center",
+        backgroundColor: "#F9FAFB",
     },
     card: {
         width: "90%",
@@ -119,6 +118,10 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
     },
     levelText: {
         fontSize: 24,

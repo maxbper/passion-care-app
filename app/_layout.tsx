@@ -1,20 +1,35 @@
-import { usePathname } from "expo-router";
+import { Slot, usePathname } from "expo-router";
 import { Platform, View } from "react-native";
 import BottomNav from "../components/bottomNav";
 import Sidebar from "../components/sidebar";
 import React from "react";
 import Header from "../components/header";
+import ProfileModal from "../components/profileModal";
+import { ProfileModalProvider, useProfileModal } from "../context/ProfileModalContext";
 
-export default function RootLayout() {
+function LayoutContent() {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
+  const { isVisible, hideModal } = useProfileModal();
 
   return (
-    <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column" , backgroundColor: "#fff" }}>
+    <>
+    <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column", backgroundColor: "#F9FAFB" }}>
+    <Header />
     {Platform.OS === "web" && !isLoginPage && <Sidebar />}
-      {<Header />}
-        {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav/>}
-        </View>
+    <Slot />
+        {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav />}
+      </View>
+      <ProfileModal visible={isVisible} onClose={hideModal} />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ProfileModalProvider>
+      <LayoutContent />
+    </ProfileModalProvider>
   );
 }

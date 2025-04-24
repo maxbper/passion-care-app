@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   block: {
     padding: 20,
-    borderRadius: 16,
+    borderRadius: 10,
     backgroundColor: "#FFFFFF",
     marginBottom: 16,
     flexDirection: "row",
