@@ -5,12 +5,14 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
+import { useUserColor } from "../context/cancerColor";
 
 export default function SidebarNav() {
     const { t } = useTranslation();
     const pathname = usePathname();
     const [isAdmin, setIsAdmin] = React.useState(false);
     const [isMod, setIsMod] = React.useState(false);
+    const cancerColor = useUserColor();
 
     const navItemsUser: { name: string; label: string; route: any; library: any }[] = [
         { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
@@ -52,7 +54,7 @@ export default function SidebarNav() {
                   <IconComponent
                     name={item.name}
                     size={24}
-                    color={pathname === item.route ? "#5A2A2A" : "grey"}
+                    color={pathname === item.route ? cancerColor : "grey"}
                   />
                   <Text style={{ fontSize: 12 , textAlign: "center"}}>{item.label}</Text>
                 </TouchableOpacity>

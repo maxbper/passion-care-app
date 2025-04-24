@@ -6,10 +6,12 @@ import { checkAuth, logout } from "../services/authService";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { fetchUserData } from "../services/dbService";
+import { useUserColor } from "../context/cancerColor";
 
 export default function ProfileScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
+  const cancerColor = useUserColor();
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -38,11 +40,11 @@ export default function ProfileScreen() {
         </View>
       ) : (
         <>
-        <ActivityIndicator size="large" color="#5A2A2A" style={styles.loader} />
+        <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
         </>
       )}
       <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        <MaterialIcons name="logout" size={24} color="#5A2A2A"/>
+        <MaterialIcons name="logout" size={24} color={cancerColor}/>
         <Text style={styles.logoutText}>{t("logout")}</Text>
         </TouchableOpacity>
     </View>

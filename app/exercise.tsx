@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   pauseButton: {
     position: 'absolute',
     bottom: 40,
-    backgroundColor: '#ccc',
+    backgroundColor: '#F9FAFB',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 30,

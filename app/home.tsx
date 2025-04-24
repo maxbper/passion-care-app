@@ -7,6 +7,7 @@ import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { setIsSuspended } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
+import { useUserColor } from "../context/cancerColor";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function HomeScreen() {
     const [level, setLevel] = useState(1);
     const [progress, setProgress] = useState(0);
     const [message, setMessage] = useState("");
+    const cancerColor = useUserColor();
 
     const messages = [
         "You're doing great! Keep it up!",
@@ -93,7 +95,7 @@ export default function HomeScreen() {
                     <>
                     <View style={styles.card}>
                         <Text style={styles.levelText}>Level {level} 🏅</Text>
-                        <ProgressBar progress={progress} color="green" style={styles.progressBar} />
+                        <ProgressBar progress={progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{message}</Text>
                         <WeeklyHealthAssessment />

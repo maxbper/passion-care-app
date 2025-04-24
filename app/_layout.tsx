@@ -6,6 +6,7 @@ import React from "react";
 import Header from "../components/header";
 import ProfileModal from "../components/profileModal";
 import { ProfileModalProvider, useProfileModal } from "../context/ProfileModalContext";
+import UserBasedDetailColorProvider from "../context/cancerColorProvider";
 
 function LayoutContent() {
   const pathname = usePathname();
@@ -28,8 +29,10 @@ function LayoutContent() {
 
 export default function RootLayout() {
   return (
+    <UserBasedDetailColorProvider>
     <ProfileModalProvider>
       <LayoutContent />
     </ProfileModalProvider>
+    </UserBasedDetailColorProvider>
   );
 }

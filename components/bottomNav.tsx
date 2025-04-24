@@ -4,12 +4,14 @@ import { Entypo, AntDesign, FontAwesome5, Feather } from "@expo/vector-icons";
 import { t } from "i18next";
 import React, { useEffect } from "react";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { useUserColor } from "../context/cancerColor";
 
 export default function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isMod, setIsMod] = React.useState(false);
+  const cancerColor = useUserColor();
 
   const navItemsUser : { name: string; route: any; library: any }[] = [
     { name: "tasks", route: "/tasks", library: FontAwesome5 },
@@ -55,8 +57,8 @@ export default function BottomNav() {
           >
             <IconComponent
               name={item.name}
-              size={pathname === item.route ? 29 : 24}
-              color={pathname === item.route ? "#5A2A2A" : "grey"}
+              size={29}
+              color={pathname === item.route ? cancerColor : "grey"}
             />
           </TouchableOpacity>
         );

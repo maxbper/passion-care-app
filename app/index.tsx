@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import "../constants/translations";
 import React from "react";
 import { checkAuth } from "../services/authService";
+import { useUserColor } from "../context/cancerColor";
 
 export default function Index() {
+  const cancerColor = useUserColor();
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -25,7 +27,7 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#5A2A2A",
+        backgroundColor: cancerColor,
       }}
     >
     </View>
