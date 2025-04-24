@@ -6,7 +6,7 @@ const cancerTypeColorMap: Record<CancerType | string, string> = {
     ovarian: "#BFD8B8",
     myeloma: "#800020",
     lymphoma: "#BFD834",
-    lung: "#FFFFFF", 
+    lung: "#000000", 
     urothelial: "#FFFF00", 
     germcell: "#A020F0", 
     headneck: "#800000", 

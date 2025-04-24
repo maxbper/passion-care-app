@@ -22,7 +22,7 @@ export default function Header() {
 
     return (
       <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", marginTop: insets.top, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
-      <Entypo name="awareness-ribbon" size={40} color={awarenessRibbonColor ? "white" : cancerColor} style={{ marginRight: 15, textShadowColor:'black', textShadowOffset: { width: 0.01, height: 0.01 }, textShadowRadius: 1, }} />
+      <Entypo name="awareness-ribbon" size={40} color={awarenessRibbonColor ? "white" : (cancerColor === "#000000" ? "white" : cancerColor)} style={{ marginRight: 15, textShadowColor:'black', textShadowOffset: { width: 0.01, height: 0.01 }, textShadowRadius: 1, }} />
       {!dontShowModal && (
         <TouchableOpacity onPress={showModal}>
         <Entypo name="dots-three-vertical" size={20} color="black" style={{ marginRight: 15 }} />

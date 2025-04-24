@@ -2,6 +2,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import GlobalDetailColorContext from './cancerColor';
 import { getCancerTypeColor, CancerType } from '../constants/colors/colors';
 import { getAuth, User } from 'firebase/auth';
+import { fetchCancerType } from '../services/dbService';
 
 interface UserBasedDetailColorProviderProps {
   children: ReactNode;
@@ -18,7 +19,7 @@ function UserBasedDetailColorProvider({ children }: UserBasedDetailColorProvider
         let fetchedCancerType: CancerType | null = null;
 
         try {
-           fetchedCancerType = 'breast'; // fetch cancer type from db
+           fetchedCancerType = await fetchCancerType();
           const determinedColor = getCancerTypeColor(fetchedCancerType);
 
           if (determinedColor !== detailColor) {

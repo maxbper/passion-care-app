@@ -1,8 +1,6 @@
 import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-
-const db = getFirestore();
-const auth = getAuth();
+import { createUserWithEmailAndPassword, getAuth, } from 'firebase/auth';
+import { db, auth } from '../firebaseConfig';
 
 export const fetchIsSuspended = async (userId=null) => {
     if (!userId) {
@@ -24,6 +22,27 @@ export const fetchIsSuspended = async (userId=null) => {
         console.error("Error fetching user data:", error);
       }
 };
+
+export const fetchCancerType = async () => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const userId = auth.currentUser?.uid;
+  if (!userId) return;
+    try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data().cancer_type;
+      } else {
+        console.log("No user data found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+}
 
 export const fetchUserData = async () => {
     while (auth.currentUser == null) {
