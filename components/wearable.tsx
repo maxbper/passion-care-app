@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Text, View} from 'react-native';
+import { Button, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import { useUserColor } from '../context/cancerColor';
 
 const redirectUri = AuthSession.makeRedirectUri();
 
@@ -11,10 +14,12 @@ const discovery = {
     revocationEndpoint: 'https://api.fitbit.com/oauth2/revoke',
   };
   
-export default function WearableScreen() {
+export default function WearableComponent() {
     const [fitbitData, setFitbitData] = useState<any>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
+
+    const cancerColor = useUserColor();
 
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
@@ -48,9 +53,6 @@ export default function WearableScreen() {
       
 
     useEffect(() => {
-        if (accessToken) {
-            fetchFitbitData(accessToken);
-        }
 
         const exchangeCodeForTokens = async () => {
             if (response?.type === 'success') {
@@ -95,23 +97,21 @@ export default function WearableScreen() {
     }, [response, request, accessToken]);
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {accessToken ? (
-            <>
-            <Text>Your Fitbit access token: {accessToken}</Text>
-            <Text>Steps: {fitbitData}</Text>
-            </>
-
-              
-        ) : (
-            <Button
-            disabled={!request}
-            title="Authorize Fitbit"
-            onPress={() => {
-                promptAsync();
-            }}
-            />
-        )}
-        </View>
+        <TouchableOpacity onPress={() => promptAsync()} style={styles.button}>
+                <Feather name="watch" size={36} color={cancerColor}/>
+        </TouchableOpacity>
     );
 }
+
+const styles = StyleSheet.create({
+    button: {
+        marginVertical: 40,
+        backgroundColor: "#fff",
+        borderRadius: 50,
+        width: 100,
+        height: 100,
+        elevation: 3,
+        alignItems: "center",
+        justifyContent: "center",
+      },
+ });

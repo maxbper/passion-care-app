@@ -6,6 +6,8 @@ import { useUserColor } from '../context/cancerColor';
 import { logout } from '../services/authService';
 import i18n from "../constants/translations";
 import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import WearableComponent from '../components/wearable';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -49,9 +51,7 @@ export default function ProfileModal({ visible, onClose }) {
                 <Text style={{ fontSize: 36}}> {flag} </Text>
                 {/* <Text style={styles.text}>{t("change_language")}</Text> */}
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>{}} style={styles.button}>
-                <Feather name="watch" size={36} color={cancerColor}/>
-        </TouchableOpacity>
+        <WearableComponent />
           <TouchableOpacity style={styles.button} onPress={logout}>
             <MaterialIcons name="logout" size={36} color={cancerColor}/>
             {/* <Text style={styles.text}>{t("logout")}</Text> */}
