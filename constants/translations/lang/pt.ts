@@ -103,6 +103,14 @@ const pt = {
     web_admin_message: "A versão web da aplicação está disponível apenas para administradores.",
     tap: "Toque em qualquer lugar para começar...",
     pause_warning: "Pausa demasiado longa. A redirecionar...",
+    level: "Nível",
+    encouragement_messages: {
+        0: "Bom trabalho! Continua assim!",
+        1: "Cada passo conta. Estás no caminho certo!",
+        2: "O teu esforço é inspirador!",
+        3: "Muito forte! Estás a melhorar a cada dia!",
+        4: "Ótimo trabalho! Acredita na tua jornada.",
+    },
    };
 
 export default pt;

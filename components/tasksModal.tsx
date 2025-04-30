@@ -25,7 +25,7 @@ export default function TasksModal() {
   const handleWorkout = () => {
     router.push({
         pathname: "/exercise",
-        params: { workoutPlan: JSON.stringify(workoutPlan) },
+        params: { workoutPlan: JSON.stringify(workoutPlan), workout: "true" },
     });
   };
 

@@ -103,6 +103,14 @@ const en = {
     web_admin_message: "The web version of the app is only available for admins.",
     tap: "Tap anywhere to start...",
     pause_warning: "Pause too long. Redirecting...",
+    level: "Level",
+    encouragement_messages: {
+        0: "You're doing great! Keep it up!",
+        1: "Every step counts. You're on the right track!",
+        2: "Your dedication is inspiring!",
+        3: "Stay strong, you're improving every day!",
+        4: "Great work! Believe in your journey.",
+    },
    };
 
 

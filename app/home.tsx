@@ -18,16 +18,16 @@ export default function HomeScreen() {
     const [isMod, setIsMod] = useState(true);
     const [level, setLevel] = useState(1);
     const [progress, setProgress] = useState(0);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState(t("encouragement_messages.0"));
     const cancerColor = useUserColor();
     const [warningShown, setWarningShown] = useState(false);
 
     const messages = [
-        "You're doing great! Keep it up!",
-        "Every step counts. You're on the right track!",
-        "Your dedication is inspiring!",
-        "Stay strong, you're improving every day!",
-        "Great work! Believe in your journey."
+        t("encouragement_messages.0"),
+        t("encouragement_messages.1"),
+        t("encouragement_messages.2"),
+        t("encouragement_messages.3"),
+        t("encouragement_messages.4"),
     ];
 
     const suspend = async () => {
@@ -87,9 +87,12 @@ export default function HomeScreen() {
         if (!isAdmin && !isMod) {
             fetchXP();
             const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-            setMessage(randomMsg);
+            setTimeout(() => {
+                setMessage(randomMsg);
+              }, 300000);
         }
-    }, [isAdmin, isMod]);
+        
+    }, [isAdmin, isMod, message]);
 
     return (
         <>
@@ -110,7 +113,7 @@ export default function HomeScreen() {
             <View style={styles.container}>
                     <>
                     <View style={styles.card}>
-                        <Text style={styles.levelText}>Level {level} 🏅</Text>
+                        <Text style={styles.levelText}>{t("level")} {level} 🏅</Text>
                         <ProgressBar progress={progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{message}</Text>

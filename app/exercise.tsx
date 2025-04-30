@@ -9,9 +9,10 @@ import { useTranslation } from 'react-i18next';
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
 export default function ExerciseScreen() {
-  const { workoutPlan, warmup } = useLocalSearchParams();
+  const { workoutPlan, warmup, workout } = useLocalSearchParams();
   const parsedWorkoutPlan = workoutPlan ? JSON.parse(workoutPlan as string) : workoutPlan;
   const isWarmup = warmup ? JSON.parse(warmup as string) : "false";
+  const isWorkout = workout ? JSON.parse(workout as string) : "false";
   const [currentIndex, setCurrentIndex] = useState(-3); // For 3-2-1 countdown
   const [timeLeft, setTimeLeft] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -115,6 +116,9 @@ export default function ExerciseScreen() {
   const handleGoBack = async () => {
     if(isWarmup) {
       await ReactNativeAsyncStorage.setItem("warmupCompletedTime", Date.now().toString());
+    }
+    if(isWorkout) {
+      // push to db
     }
     router.replace("/home");
   };
