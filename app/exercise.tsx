@@ -18,6 +18,7 @@ export default function ExerciseScreen() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
+  const [noTimer, setNoTimer] = useState(false);
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -37,25 +38,51 @@ export default function ExerciseScreen() {
       }, 1000);
     } else if (currentIndex >= 0 && currentIndex < parsedWorkoutPlan.length) {
       // Handle workout timers
-      setTimeLeft(parsedWorkoutPlan[currentIndex].duration);
+      if(parsedWorkoutPlan[currentIndex].duration) {
+        setTimeLeft(parsedWorkoutPlan[currentIndex].duration);
+      } else {
+        setNoTimer(true);
+        setTimeLeft(parsedWorkoutPlan[currentIndex].reps);
+      }
     }
   }, [currentIndex, hasStarted]);
 
   useEffect(() => {
     if (paused || timeLeft <= 0 || !hasStarted || transitioning) return;
 
-    timerRef.current = setTimeout(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+    if (!noTimer) {
+      timerRef.current = setTimeout(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    }
+    else {
+      timerRef.current = setTimeout(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 2000);
+    }
 
     if (timeLeft === 1 && currentIndex >= 0) {
-      setTimeout(() => {
-        setTransitioning(true);
-      }, 1000);
-      setTimeout(() => {
-        setTransitioning(false);
-        setCurrentIndex((prev) => prev + 1)
-      }, 2000);
+      if (!noTimer) {
+        setTimeout(() => {
+          setTransitioning(true);
+          setNoTimer(false);
+        }, 1000);
+        setTimeout(() => {
+          setTransitioning(false);
+          setCurrentIndex((prev) => prev + 1)
+        }, 2000);
+      }
+      else {
+        setTimeout(() => {
+          setTransitioning(true);
+          setNoTimer(false);
+        }, 2000);
+        setTimeout(() => {
+          setTransitioning(false);
+          setCurrentIndex((prev) => prev + 1)
+        }, 3000);
+      }
+
 
     }
   }, [timeLeft, paused, hasStarted, transitioning]);
@@ -68,7 +95,7 @@ export default function ExerciseScreen() {
     } else {
       if (pauseStart && Date.now() - pauseStart > MAX_PAUSE_TIME) {
         alert("Pause too long. Redirecting..."); // change this component on mobile?
-        router.replace("/tasks");
+        router.replace("/home");
       } else {
         setPaused(false);
         setPauseStart(null);
@@ -80,7 +107,7 @@ export default function ExerciseScreen() {
     if(isWarmup) {
       await ReactNativeAsyncStorage.setItem("warmupCompletedTime", Date.now().toString());
     }
-    router.replace("/tasks");
+    router.replace("/home");
   };
 
   const handleStart = () => {
@@ -120,7 +147,11 @@ export default function ExerciseScreen() {
             resizeMode="contain" />
 
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
-          <Text style={styles.timer}>{timeLeft}s</Text>
+          {parsedWorkoutPlan[currentIndex]?.duration ? (
+            <Text style={styles.timer}>{timeLeft}s</Text>
+          ) : (
+            <Text style={styles.timer}>{timeLeft} reps</Text>
+          )}
 
           <Text style={styles.details}>
             {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} reps` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} sets` : ''}

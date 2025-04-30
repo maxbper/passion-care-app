@@ -145,9 +145,9 @@ export default function TasksModal() {
 
   return (
     <>
-          <Block title="Warmup" onPress={handleWarmup} completed={warmupCompleted} />
+          <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
           <Block
-              title="Workout"
+              title={t("workout")} 
               onPress={handleWorkout}
               disabled={!warmupCompleted}
               completed={workoutCompleted} />

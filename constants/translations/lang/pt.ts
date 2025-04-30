@@ -98,6 +98,8 @@ const pt = {
     },
     incomplete_form: "O formulário não está completo. \n\nPor favor, preencha todos os campos.",
     register: "Registar",
+    warmup: "Aquecimento",
+    workout: "Treino",
    };
 
 export default pt;

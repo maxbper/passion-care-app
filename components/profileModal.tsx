@@ -46,7 +46,7 @@ export default function ProfileModal({ visible, onClose }) {
       <Animated.View style={[styles.overlay, { left: slideAnim }]}>
         <Pressable style={styles.backdrop} onPress={onClose} />
 
-        <View style={styles.modal}>
+        <Pressable style={styles.modal} onPress={onClose}>
         <TouchableOpacity onPress={changeLanguage} style={styles.button}>
                 <Text style={{ fontSize: 36}}> {flag} </Text>
                 {/* <Text style={styles.text}>{t("change_language")}</Text> */}
@@ -56,7 +56,7 @@ export default function ProfileModal({ visible, onClose }) {
             <MaterialIcons name="logout" size={36} color={cancerColor}/>
             {/* <Text style={styles.text}>{t("logout")}</Text> */}
           </TouchableOpacity>
-        </View>
+        </Pressable>
       </Animated.View>
       </>
   );

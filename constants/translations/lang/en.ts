@@ -98,6 +98,8 @@ const en = {
       },
     incomplete_form: "The form is not complete. \n\nPlease fill in all fields.",
     register: "Register",
+    warmup: "Warm-up",
+    workout: "Workout",
    };
 
 
