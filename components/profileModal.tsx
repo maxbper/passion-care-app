@@ -35,6 +35,11 @@ export default function ProfileModal({ visible, onClose }) {
     setFlag(t("flag"));
   };
 
+  const handleLogout = async () => {
+    await onClose();
+    logout();
+  };
+
   return (
     <>
     <Animated.View
@@ -52,7 +57,7 @@ export default function ProfileModal({ visible, onClose }) {
                 {/* <Text style={styles.text}>{t("change_language")}</Text> */}
         </TouchableOpacity>
         <WearableComponent />
-          <TouchableOpacity style={styles.button} onPress={logout}>
+          <TouchableOpacity style={styles.button} onPress={handleLogout}>
             <MaterialIcons name="logout" size={36} color={cancerColor}/>
             {/* <Text style={styles.text}>{t("logout")}</Text> */}
           </TouchableOpacity>
