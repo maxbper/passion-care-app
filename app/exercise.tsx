@@ -5,6 +5,7 @@ import { checkAuth } from '../services/authService';
 import { FontAwesome } from '@expo/vector-icons';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
+import LoopingImage from '../components/imageLoop';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -154,10 +155,12 @@ export default function ExerciseScreen() {
         </View>
       ) : (
         <>
-          <Image
+          {/* <Image
             source={require("../assets/images/adaptive-icon.png")}
             style={styles.exerciseGif}
-            resizeMode="contain" />
+            resizeMode="contain" /> */}
+
+          <LoopingImage />
 
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
           {parsedWorkoutPlan[currentIndex]?.duration ? (
