@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { checkAuth, logout, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { setIsSuspended } from "../services/dbService";
+import { fetchXp, setIsSuspended } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
@@ -77,15 +77,15 @@ export default function HomeScreen() {
             setWarningShown(true);
         }
 
-        const fetchXP = async () => {
-            const userXP = 1500;
+        const getXP = async () => {
+            const userXP = await fetchXp();
             const calculatedLevel = Math.floor(userXP / 1000) + 1;
             setLevel(calculatedLevel);
             setProgress((userXP % 1000) / 1000);
         };
 
         if (!isAdmin && !isMod) {
-            fetchXP();
+            getXP();
             const randomMsg = messages[Math.floor(Math.random() * messages.length)];
             setTimeout(() => {
                 setMessage(randomMsg);

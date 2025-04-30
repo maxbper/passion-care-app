@@ -30,7 +30,6 @@ export default function DontExerciseScreen() {
 
     return (
         <>
-        <Stack.Screen options={{ headerTitle: "" }} />
         <View
             style={{
                 flex: 1,
