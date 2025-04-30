@@ -1,10 +1,18 @@
+import { MaterialIcons } from '@expo/vector-icons';
+import { t } from 'i18next';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Dimensions, Pressable, StyleSheet, View, Text, Button } from 'react-native';
+import { Animated, Dimensions, Pressable, StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
+import { useUserColor } from '../context/cancerColor';
+import { logout } from '../services/authService';
+import i18n from "../constants/translations";
+import { Feather } from '@expo/vector-icons';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function ProfileModal({ visible, onClose }) {
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
+  const cancerColor = useUserColor();
+  const [flag, setFlag] = React.useState(t("flag"));
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -20,6 +28,11 @@ export default function ProfileModal({ visible, onClose }) {
     extrapolate: 'clamp',
   });
 
+  const changeLanguage = () => {
+    i18n.changeLanguage(i18n.language === "en" ? "pt" : "en");
+    setFlag(t("flag"));
+  };
+
   return (
     <>
     <Animated.View
@@ -30,8 +43,19 @@ export default function ProfileModal({ visible, onClose }) {
 
       <Animated.View style={[styles.overlay, { left: slideAnim }]}>
         <Pressable style={styles.backdrop} onPress={onClose} />
+
         <View style={styles.modal}>
-          <Text style={{ fontSize: 18 }}>Profile Info</Text>
+        <TouchableOpacity onPress={changeLanguage} style={styles.button}>
+                <Text style={{ fontSize: 36}}> {flag} </Text>
+                {/* <Text style={styles.text}>{t("change_language")}</Text> */}
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{}} style={styles.button}>
+                <Feather name="watch" size={36} color={cancerColor}/>
+        </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={logout}>
+            <MaterialIcons name="logout" size={36} color={cancerColor}/>
+            {/* <Text style={styles.text}>{t("logout")}</Text> */}
+          </TouchableOpacity>
         </View>
       </Animated.View>
       </>
@@ -57,18 +81,32 @@ const styles = StyleSheet.create({
     zIndex: 999,
 },
   backdrop: {
-    width: '45%',
+    width: '70%',
     backgroundColor: 'rgba(0,0,0,0)',
   },
   modal: {
-    width: '55%',
-    backgroundColor: '#fff',
-    padding: 20,
+    width: '30%',
+    backgroundColor: 'transparent',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.3,
-    borderRadius: 10,
+    borderRadius: 35,
     justifyContent: 'center',
+  },
+  button: {
+    marginVertical: 40,
+    backgroundColor: "#fff",
+    borderRadius: 50,
+    width: 100,
+    height: 100,
+    elevation: 3,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: "#000",
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });

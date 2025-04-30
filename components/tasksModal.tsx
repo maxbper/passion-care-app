@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { CheckCircle2, Lock } from "lucide-react-native";
-import { router, Stack } from "expo-router";
+import { router } from "expo-router";
 import { checkAuth } from "../services/authService";
 import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 
-export default function TasksScreen() {
+export default function TasksModal() {
   const [warmupCompleted, setWarmupCompleted] = useState(false);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [lastDateChecked, setLastDateChecked] = useState(false);
@@ -145,8 +145,6 @@ export default function TasksScreen() {
 
   return (
     <>
-    <Stack.Screen options={{ headerTitle: t("tasksscreen_title") }} />
-    <View style={styles.container}>
           <Block title="Warmup" onPress={handleWarmup} completed={warmupCompleted} />
           <Block
               title="Workout"
@@ -154,20 +152,14 @@ export default function TasksScreen() {
               disabled={!warmupCompleted}
               completed={workoutCompleted} />
           <Block title="Extra" onPress={() => { } } />
-      </View>
       </>
   );
 }
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#F9FAFB",
-    justifyContent: 'center',
-  },
   block: {
+    alignSelf: "center",
     padding: 20,
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
@@ -180,6 +172,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
+    width: "90%",
   },
   blockText: {
     fontSize: 18,

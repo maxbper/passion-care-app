@@ -17,12 +17,12 @@ function LayoutContent() {
   return (
     <>
     <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column", backgroundColor: "#F9FAFB" }}>
-    <Header />
-    {Platform.OS === "web" && !isLoginPage && <Sidebar />}
-    <Slot />
-        {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav />}
-      </View>
-      <ProfileModal visible={isVisible} onClose={hideModal} />
+      <Header />
+      {Platform.OS === "web" && !isLoginPage && <Sidebar />}
+      <Slot />
+        {/* {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav />} */}
+    </View>
+    <ProfileModal visible={isVisible} onClose={hideModal} />
     </>
   );
 }

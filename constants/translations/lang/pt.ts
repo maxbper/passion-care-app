@@ -2,6 +2,7 @@ const pt = {
     welcome: "Bem-vindo",
     select_language: "Selecione o Idioma",
     flag: "🇵🇹",
+    change_language: "Idioma",
     app_title: "PASSiON Care",
     email: "Email",
     password: "Senha",

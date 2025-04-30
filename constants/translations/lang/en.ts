@@ -2,6 +2,7 @@ const en = {
     welcome: "Welcome",
     select_language: "Select Language",
     flag: "🇬🇧",
+    change_language: "Language",
     app_title: "PASSiON Care",
     email: "Email",
     password: "Password",

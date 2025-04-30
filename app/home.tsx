@@ -8,16 +8,17 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { setIsSuspended } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
+import TasksModal from "../components/tasksModal";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
     const [isAdmin, setIsAdmin] = useState(true);
     const [isMod, setIsMod] = useState(true);
-    const [xp, setXP] = useState(0);
     const [level, setLevel] = useState(1);
     const [progress, setProgress] = useState(0);
     const [message, setMessage] = useState("");
     const cancerColor = useUserColor();
+    const [warningShown, setWarningShown] = useState(false);
 
     const messages = [
         "You're doing great! Keep it up!",
@@ -71,17 +72,19 @@ export default function HomeScreen() {
                 }
             }
         };
+        if (!warningShown) {
+            checkDailyWarning();
+            setWarningShown(true);
+        }
 
         const fetchXP = async () => {
-            const userXP = 1500; // Replace with actual user fetch
-            setXP(userXP);
+            const userXP = 1500;
             const calculatedLevel = Math.floor(userXP / 1000) + 1;
             setLevel(calculatedLevel);
             setProgress((userXP % 1000) / 1000);
         };
 
         if (!isAdmin && !isMod) {
-            checkDailyWarning();
             fetchXP();
             const randomMsg = messages[Math.floor(Math.random() * messages.length)];
             setMessage(randomMsg);
@@ -90,19 +93,20 @@ export default function HomeScreen() {
 
     return (
         <>
+        {warningShown && <WeeklyHealthAssessment />}
+        {!isAdmin && !isMod && (
             <View style={styles.container}>
-                {!isAdmin && !isMod && (
                     <>
                     <View style={styles.card}>
                         <Text style={styles.levelText}>Level {level} 🏅</Text>
                         <ProgressBar progress={progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{message}</Text>
-                        <WeeklyHealthAssessment />
                     </View>
+                    <TasksModal />
                     </>
-                )}
             </View>
+            )}
         </>
     );
 }
@@ -110,8 +114,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 20,
         justifyContent: "center",
-        alignItems: "center",
         backgroundColor: "#F9FAFB",
     },
     card: {
@@ -120,10 +124,12 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         alignItems: "center",
+        alignSelf: "center",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 4,
+        marginBottom: 50,
     },
     levelText: {
         fontSize: 24,
