@@ -14,7 +14,7 @@ const cancerTypeColorMap: Record<CancerType | string, string> = {
     pancreatic: "#FFDAB9", 
     stomach: "#367588", 
     bile: "#808000", 
-    DEFAULT: "#E6E6FA",
+    DEFAULT: "#734F96",
 };
 
 export const getCancerTypeColor = (cancerType?: string | null): string => {

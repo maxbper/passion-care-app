@@ -14,13 +14,10 @@ export default function SidebarNav() {
     const [isMod, setIsMod] = React.useState(false);
     const cancerColor = useUserColor();
 
-    const navItemsUser: { name: string; label: string; route: any; library: any }[] = [
-        { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
-        { name: "tasks", label: t("tasksscreen_title"), route: "/tasks", library: FontAwesome5 },
-        { name: "user", label: t("profilescreen_title"), route: "/profile", library: AntDesign },
-        ];
+    const navItemsUser: { name: string; label: string; route: any; library: any }[] = [];
 
     const navItemsAdmin: { name: string; label: string; route: any; library: any }[] = [
+        { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
         { name: "adduser", label: t("registerscreen_title"), route: "/register", library: AntDesign },
         { name: "users", label: "Dashboard", route: "/dashboard", library: Feather },
     ];

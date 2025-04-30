@@ -62,7 +62,7 @@ const en = {
     start_workout_message: "It's workout time, let's get moving. \n The clock will start when you press start. \n\n Get ready!",
     start: "Start",
     registerscreen_title: "New User",
-    basic_info: "Basic Information",
+    basic_info: "Patient Information",
     height: "Height",
     weight: "Weight",
     gender: "Gender",
@@ -100,6 +100,9 @@ const en = {
     register: "Register",
     warmup: "Warm-up",
     workout: "Workout",
+    web_admin_message: "The web version of the app is only available for admins.",
+    tap: "Tap anywhere to start...",
+    pause_warning: "Pause too long. Redirecting...",
    };
 
 

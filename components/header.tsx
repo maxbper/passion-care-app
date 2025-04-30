@@ -1,6 +1,6 @@
 import { Entypo } from "@expo/vector-icons";
 import { router, Stack, usePathname } from "expo-router";
-import { TouchableOpacity, Text, Button, View } from "react-native";
+import { TouchableOpacity, Text, Button, View, Platform } from "react-native";
 import i18n from "../constants/translations";
 import { useTranslation } from "react-i18next";
 import React from "react";
@@ -15,7 +15,7 @@ export default function Header() {
     const isDontExercisePage = pathname === "/dontExercise";
     const isExercisePage = pathname === "/exercise";
     const awarenessRibbonColor = isLoginPage || isDontExercisePage;
-    const dontShowModal = isLoginPage || isDontExercisePage || isExercisePage;
+    const dontShowModal = isLoginPage || isDontExercisePage || isExercisePage || Platform.OS === "web";
     const { showModal } = useProfileModal();
     const insets = useSafeAreaInsets();
     const cancerColor = useUserColor();

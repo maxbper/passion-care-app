@@ -22,7 +22,7 @@ function LayoutContent() {
       <Slot />
         {/* {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav />} */}
     </View>
-    <ProfileModal visible={isVisible} onClose={hideModal} />
+    {Platform.OS !== "web" && <ProfileModal visible={isVisible} onClose={hideModal} />}
     </>
   );
 }

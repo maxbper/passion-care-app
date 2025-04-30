@@ -1,14 +1,16 @@
-import { Alert, Button, Platform, Text, View, StyleSheet } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import { checkAuth, showDailyWarning } from "../services/authService";
+import { checkAuth, logout, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { setIsSuspended } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
+import AdminModal from "../components/adminModal";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -50,9 +52,7 @@ export default function HomeScreen() {
         const checkDailyWarning = async () => {
             const showWarning = await showDailyWarning();
             if (showWarning) {
-                if (Platform.OS === "web") {
-                    alert(t("warning") + ":\n" + t("daily_warning"));
-                } else {
+                if (Platform.OS !== "web") {
                     Alert.alert(
                         t("warning"),
                         t("daily_warning"),
@@ -72,7 +72,7 @@ export default function HomeScreen() {
                 }
             }
         };
-        if (!warningShown) {
+        if (!isAdmin && !isMod && !warningShown) {
             checkDailyWarning();
             setWarningShown(true);
         }
@@ -93,8 +93,20 @@ export default function HomeScreen() {
 
     return (
         <>
-        {warningShown && <WeeklyHealthAssessment />}
-        {!isAdmin && !isMod && (
+        {!isAdmin && !isMod ? (
+            <>
+            {Platform.OS === "web" ? (
+                <View style={styles.card}>
+                <Text style={styles.levelText}>{t("warning")}</Text>
+                <Text style={styles.xpText}>{t("web_admin_message")}</Text>
+                <TouchableOpacity style={styles.button} onPress={logout}>
+                    <MaterialIcons name="logout" size={36} color={cancerColor}/>
+                    <Text style={styles.text}>{t("logout")}</Text>
+                </TouchableOpacity>
+                </View>
+            ) : (
+            <>
+            {warningShown && <WeeklyHealthAssessment />}
             <View style={styles.container}>
                     <>
                     <View style={styles.card}>
@@ -105,6 +117,13 @@ export default function HomeScreen() {
                     </View>
                     <TasksModal />
                     </>
+            </View>
+            </>
+            )}
+            </>
+            ) : (
+            <View style={styles.container}>
+                <AdminModal />
             </View>
             )}
         </>
@@ -153,4 +172,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingHorizontal: 20,
     },
+    button: {
+        backgroundColor: "#fff",
+        borderRadius: 50,
+        width: 100,
+        height: 100,
+        elevation: 3,
+        alignItems: "center",
+        justifyContent: "center",
+      },
+      text: {
+        color: "#000",
+        fontSize: 14,
+        fontWeight: "bold",
+      },
 });

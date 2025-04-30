@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable, Alert } from 'react-native';
 import { router, Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { checkAuth } from '../services/authService';
 import { FontAwesome } from '@expo/vector-icons';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from 'react-i18next';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -19,6 +20,7 @@ export default function ExerciseScreen() {
   const [hasStarted, setHasStarted] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [noTimer, setNoTimer] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -82,8 +84,6 @@ export default function ExerciseScreen() {
           setCurrentIndex((prev) => prev + 1)
         }, 3000);
       }
-
-
     }
   }, [timeLeft, paused, hasStarted, transitioning]);
 
@@ -95,7 +95,17 @@ export default function ExerciseScreen() {
     } else {
       if (pauseStart && Date.now() - pauseStart > MAX_PAUSE_TIME) {
         alert("Pause too long. Redirecting..."); // change this component on mobile?
-        router.replace("/home");
+        Alert.alert(
+            t("warning"),
+            t("pause_warning"),
+            [
+                {
+                    text: "OK",
+                    onPress: () => router.replace("/home"),
+                },
+            ],
+            { cancelable: false }
+        );
       } else {
         setPaused(false);
         setPauseStart(null);
@@ -126,7 +136,7 @@ export default function ExerciseScreen() {
   if(!hasStarted) {
     return (
       <Pressable onPress={handleStart} style={styles.greenBackground}>
-      <Text style={styles.initialText}>Tap anywhere to start...</Text>
+      <Text style={styles.initialText}>{t("tap")}</Text>
       </Pressable>
     );
   }

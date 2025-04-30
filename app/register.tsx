@@ -1,4 +1,5 @@
 import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
@@ -7,10 +8,13 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import CustomDropdown from "../components/customDropdown";
 import { addUserToList, registerUser } from "../services/dbService";
 import { auth, resetPassword } from "../firebaseConfig";
+import { useUserColor } from "../context/cancerColor";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
     const [isModalVisible, setModalVisible] = useState(false);
+    const insets = useSafeAreaInsets();
+    const cancerColor = useUserColor();
     const [adminPassword, setAdminPassword] = useState("");
 
     const [form, setForm] = useState({
@@ -139,8 +143,7 @@ export default function RegisterScreen() {
 
       return (
         <>
-  <Stack.Screen options={{ headerTitle: t("registerscreen_title") }} />
-  <ScrollView style={{ marginTop: 60 }}>
+  <ScrollView style={{ marginTop: insets.top + 60 }}>
 
   <View style={styles.container}>
     
@@ -323,14 +326,9 @@ export default function RegisterScreen() {
       />
     </View>
 
-    <View style={styles.button}>
-      <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
+    <View style={[styles.button]}>
+      <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegister()}>
         <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.button}>
-      <TouchableOpacity style={styles.button} onPress={() =>logout()}>
-        <Text style={{ color: "#fff", textAlign: "center" }}>logout</Text>
       </TouchableOpacity>
     </View>
     </View>
@@ -373,7 +371,6 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: "600",
-        marginTop: 20,
         marginBottom: 8,
     },
     input: {
@@ -402,7 +399,6 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     button: {
-        backgroundColor: "#5A2A2A",
         color: "#fff",
         borderRadius: 5,
         paddingHorizontal: 12,

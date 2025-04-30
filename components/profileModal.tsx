@@ -1,13 +1,13 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import { t } from 'i18next';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 import { useUserColor } from '../context/cancerColor';
 import { logout } from '../services/authService';
 import i18n from "../constants/translations";
-import { Feather } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import WearableComponent from '../components/wearable';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -15,6 +15,7 @@ export default function ProfileModal({ visible, onClose }) {
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
   const cancerColor = useUserColor();
   const [flag, setFlag] = React.useState(t("flag"));
+  const [isAdminOrMod, setIsAdminOrMod] = React.useState(false);
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -22,8 +23,15 @@ export default function ProfileModal({ visible, onClose }) {
       duration: 350,
       useNativeDriver: false,
     }).start();
-  }, [visible]);
 
+    const isAdminOrMod = async () => {
+      const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
+      const mod = await ReactNativeAsyncStorage.getItem("isMod");
+      setIsAdminOrMod(admin === "true" || mod === "true");
+    };
+    isAdminOrMod();
+  }, [visible]);
+  
   const opacityAnim = slideAnim.interpolate({
     inputRange: [0, screenWidth],
     outputRange: [1, 0],
@@ -40,6 +48,11 @@ export default function ProfileModal({ visible, onClose }) {
     logout();
   };
 
+  const handleHome = async () => {
+    await onClose();
+    router.push("/home");
+  };
+
   return (
     <>
     <Animated.View
@@ -54,12 +67,14 @@ export default function ProfileModal({ visible, onClose }) {
         <Pressable style={styles.modal} onPress={onClose}>
         <TouchableOpacity onPress={changeLanguage} style={styles.button}>
                 <Text style={{ fontSize: 36}}> {flag} </Text>
-                {/* <Text style={styles.text}>{t("change_language")}</Text> */}
         </TouchableOpacity>
-        <WearableComponent />
+        {isAdminOrMod ? (
+          <TouchableOpacity style={styles.button} onPress={handleHome}>
+          <Entypo name="home" size={36} color={cancerColor}/>
+        </TouchableOpacity>
+        ) : (<WearableComponent />)}
           <TouchableOpacity style={styles.button} onPress={handleLogout}>
             <MaterialIcons name="logout" size={36} color={cancerColor}/>
-            {/* <Text style={styles.text}>{t("logout")}</Text> */}
           </TouchableOpacity>
         </Pressable>
       </Animated.View>

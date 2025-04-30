@@ -62,7 +62,7 @@ const pt = {
     start_workout_message: "É hora de treinar, vamos lá. \n O relógio irá começa a contar. \n\n Prepare-se!",
     start: "Começar",
     registerscreen_title: "Novo Utilizador",
-    basic_info: "Informação Básica",
+    basic_info: "Informação do Paciente",
     height: "Altura",
     weight: "Peso",
     gender: "Género",
@@ -100,6 +100,9 @@ const pt = {
     register: "Registar",
     warmup: "Aquecimento",
     workout: "Treino",
+    web_admin_message: "A versão web da aplicação está disponível apenas para administradores.",
+    tap: "Toque em qualquer lugar para começar...",
+    pause_warning: "Pausa demasiado longa. A redirecionar...",
    };
 
 export default pt;
