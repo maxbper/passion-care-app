@@ -94,7 +94,6 @@ export default function ExerciseScreen() {
       if (timerRef.current) clearTimeout(timerRef.current);
     } else {
       if (pauseStart && Date.now() - pauseStart > MAX_PAUSE_TIME) {
-        alert("Pause too long. Redirecting..."); // change this component on mobile?
         Alert.alert(
             t("warning"),
             t("pause_warning"),
