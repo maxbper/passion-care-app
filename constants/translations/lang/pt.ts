@@ -111,6 +111,9 @@ const pt = {
         3: "Muito forte! Estás a melhorar a cada dia!",
         4: "Ótimo trabalho! Acredita na tua jornada.",
     },
+    not_available: "Indisponível",
+    fitbit_data: "Dados do Fitbit",
+    fitbit_not_connected: " Fitbit não conectado",
    };
 
 export default pt;

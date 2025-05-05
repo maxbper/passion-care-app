@@ -111,6 +111,9 @@ const en = {
         3: "Stay strong, you're improving every day!",
         4: "Great work! Believe in your journey.",
     },
+    not_available: "Not available",
+    fitbit_data: "Fitbit Data",
+    fitbit_not_connected: " Fitbit not connected",
    };
 
 
