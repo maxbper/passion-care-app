@@ -119,6 +119,9 @@ const pt = {
     register_patient: "Registar Paciente",
     register_mod: "Registar Moderador",
     register_admin: "Registar Administrador",
+    users: "Pacientes",
+    mods: "Moderadores",
+    admins: "Administradores",
    };
 
 export default pt;

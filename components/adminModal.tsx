@@ -94,7 +94,10 @@ const Block = ({
   return (
     <>
         <Block title={t("register")} onPress={() => setRegisterClicked(true)} />
-        <Block title="Dashboard" onPress={() => router.push("/dashboard")} />
+        <Block title="Dashboard" onPress={() => router.push({
+            pathname: "/dashboard",
+            params: { admin: isAdmin.toString(), mod: isMod.toString() },
+        })} />
         {Platform.OS === "web" && (
         <>
         <Block title={t("change_language") + " " + t("flag")} onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} />

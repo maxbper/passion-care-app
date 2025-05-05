@@ -42,7 +42,7 @@ export const fetchCancerType = async () => {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-}
+};
 
 export const fetchXp = async () => {
     while (auth.currentUser == null) {
@@ -62,7 +62,7 @@ export const fetchXp = async () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
-}
+};
 
 export const fetchUserData = async () => {
     while (auth.currentUser == null) {
@@ -83,7 +83,7 @@ export const fetchUserData = async () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
-}
+};
 
 export const fetchAdminList = async () => {
     try {
@@ -371,4 +371,101 @@ export const addUserToList = async (uid) => {
     } catch (error) {
         console.error("Error adding user to list:", error);
     }
+};
+
+export const fetchUserList = async () => {
+  const userId = auth.currentUser?.uid;
+  let userList = [];
+
+  if (!userId) return;
+    try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        userList = docSnap.data().users;
+      } else {
+        console.log("No user list found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+
+    const users = await Promise.all(
+      userList?.map(async (uid) => {
+        try {
+          const docRef = doc(db, "users", uid);
+          const docSnap = await getDoc(docRef);
+  
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            return {
+              id: uid,
+              name: userData.name,
+            };
+          } else {
+            console.log("No user data found for", uid);
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching user data for", uid, ":", error);
+          return null;
+        }
+      })
+    );
+    return users.filter((user) => user !== null);
+
 }
+
+export const fetchAdminsAndMods = async () => {
+  const adminList = await fetchAdminList();
+  const modList = await fetchModList();
+
+  const adminPromises = adminList?.map(async (adminId) => {
+    try {
+      const docRef = doc(db, "users", adminId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const adminData = docSnap.data();
+        return {
+          id: adminId,
+          name: adminData.name,
+        };
+      } else {
+        console.log("No admin data found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      return null;
+    }
+  });
+
+  const modPromises = modList?.map(async (modId) => {
+    try {
+      const docRef = doc(db, "users", modId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const modData = docSnap.data();
+        return {
+          id: modId,
+          name: modData.name,
+        };
+      } else {
+        console.log("No mod data found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching mod data:", error);
+      return null;
+    }
+  });
+
+  const admins = (await Promise.all(adminPromises)).filter((admin) => admin !== null);
+  const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
+
+  return [admins, mods];
+};

@@ -9,7 +9,6 @@ import CustomDropdown from "../components/customDropdown";
 import { addUserToList, registerAdmin, registerMod, registerUser } from "../services/dbService";
 import { auth, resetPassword } from "../firebaseConfig";
 import { useUserColor } from "../context/cancerColor";
-import { MaterialIcons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
@@ -199,7 +198,7 @@ export default function RegisterScreen() {
         }
         }
 
-      const handleRegisterAdmin = async () => {
+      const handleRegisterAdminOrMod = async () => {
         if (form.email.trim() !== "") {
           setModalVisible(true);
         } else {
@@ -221,29 +220,6 @@ export default function RegisterScreen() {
         }
         }
 
-        const handleRegisterMod = async () => {
-          if (form.email.trim() !== "" &&
-              form.name.trim() !== "") {
-            setModalVisible(true);
-          } else {
-            if (Platform.OS === "web") {
-                  alert(t("incomplete_form"));
-              } else {
-                  Alert.alert(
-                      t("warning"),
-                      t("incomplete_form"),
-                      [
-                          {
-                          text: "OK",
-                          onPress: () => {},
-                          },
-                      ],
-                      { cancelable: false }
-                  );
-              }
-          }
-          }
-
         if (adminRegister) {
             return (
               <View style={styles.container2}>
@@ -252,12 +228,18 @@ export default function RegisterScreen() {
                 <View style={[styles.singleInput, { width: "100%" }]}>
                 <TextInput
                   style={styles.input}
+                  placeholder={t("name")}
+                  value={form.name}
+                  onChangeText={text => (handleChange("name", text))}
+                />
+                <TextInput
+                  style={styles.input}
                   placeholder={t("email")}
                   value={form.email}
                   onChangeText={text => (handleChange("email", text))}
                 />
                 </View>
-                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterAdmin()}>
+                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterAdminOrMod()}>
                   <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
                 </TouchableOpacity>
                 </View>
@@ -315,7 +297,7 @@ export default function RegisterScreen() {
                   onChangeText={text => (handleChange("email", text))}
                 />
                 </View>
-                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterMod()}>
+                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterAdminOrMod()}>
                   <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
                 </TouchableOpacity>
                 </View>

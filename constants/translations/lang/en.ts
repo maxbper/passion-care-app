@@ -119,6 +119,9 @@ const en = {
     register_patient: "Register Patient",
     register_mod: "Register Mod",
     register_admin: "Register Admin",
+    users: "Patients",
+    mods: "Mods",
+    admins: "Admins",
    };
 
 
