@@ -114,6 +114,11 @@ const pt = {
     not_available: "Indisponível",
     fitbit_data: "Dados do Fitbit",
     fitbit_not_connected: " Fitbit não conectado",
+    wrong_password: "Senha incorreta. Por favor, tente novamente.",
+    user_registered: "Utilizador registado com sucesso.",
+    register_patient: "Registar Paciente",
+    register_mod: "Registar Moderador",
+    register_admin: "Registar Administrador",
    };
 
 export default pt;

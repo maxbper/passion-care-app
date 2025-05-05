@@ -310,11 +310,52 @@ export const registerUser = async (form) => {
             chemo_goal: form.chemo_goal,
             suspended: false,
             workout_plan: "",
+            xp: 0,
         });
 
     } catch (error) {
         console.error("Error registering user:", error);
     }
+};
+
+export const registerMod = async (form) => {
+  try {
+      const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
+      const userId = userCredential.user.uid;
+
+      const docRef = doc(db, "users", userId);
+
+      await setDoc(docRef, {
+          name: form.name,
+          email: form.email,
+          users: [],
+      });
+
+  } catch (error) {
+      console.error("Error registering mod:", error);
+  }
+
+  try {
+    const uid = auth.currentUser.uid;
+    await setDoc(doc(db, "users", "roles"), {
+        mods: arrayUnion(uid),
+    }, { merge: true });
+  } catch (error) {
+      console.error("Error adding mod to list:", error);
+  }
+};
+
+export const registerAdmin = async (form) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
+    const userId = userCredential.user.uid;
+
+    await setDoc(doc(db, "users", "roles"), {
+        admins: arrayUnion(userId),
+    }, { merge: true });
+  } catch (error) {
+      console.error("Error adding admin to list:", error);
+  }
 };
 
 export const addUserToList = async (uid) => {

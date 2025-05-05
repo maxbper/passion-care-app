@@ -1,14 +1,15 @@
-import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router, Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import { checkAuth, logout, refreshSignIn } from "../services/authService";
+import { checkAuth, checkPassword, logout, refreshSignIn } from "../services/authService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import CustomDropdown from "../components/customDropdown";
-import { addUserToList, registerUser } from "../services/dbService";
+import { addUserToList, registerAdmin, registerMod, registerUser } from "../services/dbService";
 import { auth, resetPassword } from "../firebaseConfig";
 import { useUserColor } from "../context/cancerColor";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
@@ -16,6 +17,10 @@ export default function RegisterScreen() {
     const insets = useSafeAreaInsets();
     const cancerColor = useUserColor();
     const [adminPassword, setAdminPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { isAdminRegister, isModRegister } = useLocalSearchParams();
+    const adminRegister = isAdminRegister ? JSON.parse(isAdminRegister as string) : false;
+    const modRegister = isModRegister ? JSON.parse(isModRegister as string) : false;
 
     const [form, setForm] = useState({
         email: "",
@@ -69,6 +74,12 @@ export default function RegisterScreen() {
             if (!isAdminOrMod) {
                 router.replace("/home");
             }
+            if (adminRegister && !admin) {
+                router.replace("/home");
+            }
+            if (modRegister && !admin) {
+                router.replace("/home");
+            }
         };
         isAdminOrMod();
       }, []);
@@ -94,27 +105,76 @@ export default function RegisterScreen() {
       };
 
       const register = async () => {
+        setLoading(true);
+
         let admin = auth.currentUser;
+        const passwordCorrect = await checkPassword(admin, adminPassword);
+        if (!passwordCorrect) {
+            if (Platform.OS === "web") {
+                alert(t("wrong_password"));
+            } else {
+                Alert.alert(
+                    t("warning"),
+                    t("wrong_password"),
+                    [
+                        {
+                        text: "OK",
+                        onPress: () => {},
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            }
+            setAdminPassword("");
+            setLoading(false);
+            return;
+        }
+
         while (admin == null) {
             await new Promise(resolve => setTimeout(resolve, 1000));
             admin = auth.currentUser;
         }
-        await registerUser(form);
+
+        if (adminRegister) {
+          await registerAdmin(form);
+        }
+        else if (modRegister) {
+          await registerMod(form);
+        }
+        else {
+          await registerUser(form);
+        }
+        
         const userId = auth.currentUser.uid;
 
         try {
-            await resetPassword(admin.email);
+            await resetPassword(form.email);
         } catch (error) {
             console.error("Error resetting password:", error);
         }
 
         await refreshSignIn(admin.email, adminPassword);
-        await addUserToList(userId);
-
-        console.log(auth.currentUser.uid);
+        if (!adminRegister && !modRegister) {
+          await addUserToList(userId);
+        }
 
         setModalVisible(false)
-        router.replace("/register");
+        setLoading(false);
+        if (Platform.OS === "web") {
+          alert(t("user_registered"));
+        } else {
+            Alert.alert(
+                t("success"),
+                t("user_registered"),
+                [
+                    {
+                    text: "OK",
+                    onPress: () => {router.replace("/home")},
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
     }
 
       const handleRegister = async () => {
@@ -137,6 +197,161 @@ export default function RegisterScreen() {
                 );
             }
         }
+        }
+
+      const handleRegisterAdmin = async () => {
+        if (form.email.trim() !== "") {
+          setModalVisible(true);
+        } else {
+          if (Platform.OS === "web") {
+                alert(t("incomplete_form"));
+            } else {
+                Alert.alert(
+                    t("warning"),
+                    t("incomplete_form"),
+                    [
+                        {
+                        text: "OK",
+                        onPress: () => {},
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            }
+        }
+        }
+
+        const handleRegisterMod = async () => {
+          if (form.email.trim() !== "" &&
+              form.name.trim() !== "") {
+            setModalVisible(true);
+          } else {
+            if (Platform.OS === "web") {
+                  alert(t("incomplete_form"));
+              } else {
+                  Alert.alert(
+                      t("warning"),
+                      t("incomplete_form"),
+                      [
+                          {
+                          text: "OK",
+                          onPress: () => {},
+                          },
+                      ],
+                      { cancelable: false }
+                  );
+              }
+          }
+          }
+
+        if (adminRegister) {
+            return (
+              <View style={styles.container2}>
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>{t("register_admin")}</Text>
+                <View style={[styles.singleInput, { width: "100%" }]}>
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("email")}
+                  value={form.email}
+                  onChangeText={text => (handleChange("email", text))}
+                />
+                </View>
+                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterAdmin()}>
+                  <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
+                </TouchableOpacity>
+                </View>
+                {isModalVisible && (
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.title}>{t("password")}</Text>
+                        {loading ? (
+                    <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+                    ) : (
+                      <>
+                        <View style={styles.halfInput}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={t("password")}
+                            value={adminPassword}
+                            secureTextEntry
+                            onChangeText={text => setAdminPassword(text)}
+                            />
+                        </View>
+
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => register()}>
+                                    <Text style={styles.buttonText}>{t("register")}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.buttonText}>{t("cancel")}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            </>
+                            )}
+                    </View>
+                </View>
+            )}
+              </View>
+            );
+        }
+
+        if (modRegister) {
+            return (
+              <View style={styles.container2}>
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>{t("register_mod")}</Text>
+                <View style={[styles.singleInput, { width: "100%" }]}>
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("name")}
+                  value={form.name}
+                  onChangeText={text => (handleChange("name", text))}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("email")}
+                  value={form.email}
+                  onChangeText={text => (handleChange("email", text))}
+                />
+                </View>
+                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => handleRegisterMod()}>
+                  <Text style={{ color: "#fff", textAlign: "center" }}>{t("register")}</Text>
+                </TouchableOpacity>
+                </View>
+                {isModalVisible && (
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.title}>{t("password")}</Text>
+                        {loading ? (
+                    <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+                    ) : (
+                      <>
+                        <View style={styles.halfInput}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={t("password")}
+                            value={adminPassword}
+                            secureTextEntry
+                            onChangeText={text => setAdminPassword(text)}
+                            />
+                        </View>
+
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => register()}>
+                                    <Text style={styles.buttonText}>{t("register")}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.buttonText}>{t("cancel")}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            </>
+                            )}
+                    </View>
+                </View>
+            )}
+              </View>
+            );
         }
       
 
@@ -337,6 +552,10 @@ export default function RegisterScreen() {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.title}>{t("password")}</Text>
+                        {loading ? (
+                    <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+                    ) : (
+                      <>
                         <View style={styles.halfInput}>
                         <TextInput
                             style={styles.input}
@@ -348,10 +567,15 @@ export default function RegisterScreen() {
                         </View>
 
                             <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={[styles.button]} onPress={() => register()}>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => register()}>
                                     <Text style={styles.buttonText}>{t("register")}</Text>
                                 </TouchableOpacity>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor }]} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.buttonText}>{t("cancel")}</Text>
+                                </TouchableOpacity>
                             </View>
+                            </>
+                            )}
                     </View>
                 </View>
             )}
@@ -368,6 +592,12 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: "#fff",
     },
+    container2: {
+      flex: 1,
+      padding: 20,
+      justifyContent: "center",
+      backgroundColor: "#F9FAFB",
+  },
     sectionTitle: {
         fontSize: 18,
         fontWeight: "600",
@@ -399,13 +629,13 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     button: {
-        color: "#fff",
-        borderRadius: 5,
+        borderRadius: 10,
         paddingHorizontal: 12,
         paddingVertical: 6,
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
+        margin: 5,
     },
     modalContainer: {
         position: 'absolute',
@@ -431,6 +661,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     buttonContainer: {
+        borderRadius: 10,
         flexDirection: 'row',
         justifyContent: 'space-around',
         width: '100%',
@@ -440,6 +671,29 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    loader: {
+      flex: 1,
+      alignSelf: "center",
+      margin: 45,
+    },
+    card: {
+      width: "90%",
+      backgroundColor: "#FFF",
+      padding: 20,
+      borderRadius: 10,
+      alignItems: "center",
+      alignSelf: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      marginBottom: 50,
+  },
+  cardTitle: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 10,
+  },
     });
       
     const pickerSelectStyles = StyleSheet.create({

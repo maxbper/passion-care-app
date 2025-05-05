@@ -3,11 +3,31 @@ import { Text, Pressable, StyleSheet, Platform } from "react-native";
 import { CheckCircle2, Lock } from "lucide-react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { logout } from "../services/authService";
+import { checkAuth, logout } from "../services/authService";
 import i18n from "../constants/translations";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AdminModal() {
   const { t } = useTranslation();
+  const [registerClicked, setRegisterClicked] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isMod, setIsMod] = useState(false);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+        await checkAuth();
+    };
+    checkAuthentication();
+
+    const isAdminOrMod = async () => {
+        const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
+        const mod = await ReactNativeAsyncStorage.getItem("isMod");
+        setIsAdmin(admin === "true");
+        setIsMod(mod === "true");
+    };
+    isAdminOrMod();
+
+}, [isAdmin, isMod]);
 
 const Block = ({
     title,
@@ -43,10 +63,37 @@ const Block = ({
     );
   };
 
+  if (registerClicked) {
+    return (
+        <>
+      <Block
+        title={t("register_patient")}
+        onPress={() => router.push("/register")}
+      />
+      <Block
+        title={t("register_mod")}
+        onPress={() => router.push({
+            pathname: "/register",
+            params: { isModRegister: "true" },
+        })}
+        disabled={!isAdmin}
+      />
+      <Block
+        title={t("register_admin")}
+        onPress={() => router.push({
+            pathname: "/register",
+            params: { isAdminRegister: "true" },
+        })}
+        disabled={!isAdmin}
+      />
+      </>
+    );
+  }
+
 
   return (
     <>
-        <Block title={t("register")} onPress={() => router.push("/register")} />
+        <Block title={t("register")} onPress={() => setRegisterClicked(true)} />
         <Block title="Dashboard" onPress={() => router.push("/dashboard")} />
         {Platform.OS === "web" && (
         <>

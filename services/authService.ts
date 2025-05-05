@@ -1,4 +1,4 @@
-import { signInWithCustomToken, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { EmailAuthProvider, reauthenticateWithCredential, signInWithCustomToken, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -94,3 +94,18 @@ export const refreshSignIn = async (email, password) => {
     await signOut(auth);
     await signInWithEmailAndPassword(auth, email, password);
 }
+
+export const checkPassword = async (user, password) => {
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      password
+    );
+
+    try {
+        await reauthenticateWithCredential(user, credential);
+        return true;
+      } catch (error) {
+        return false;
+      }
+
+  }

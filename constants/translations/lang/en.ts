@@ -114,6 +114,11 @@ const en = {
     not_available: "Not available",
     fitbit_data: "Fitbit Data",
     fitbit_not_connected: " Fitbit not connected",
+    wrong_password: "Wrong password. Please try again.",
+    user_registered: "User registered successfully.",
+    register_patient: "Register Patient",
+    register_mod: "Register Mod",
+    register_admin: "Register Admin",
    };
 
 
