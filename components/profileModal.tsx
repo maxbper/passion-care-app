@@ -111,11 +111,10 @@ const styles = StyleSheet.create({
   modal: {
     width: '30%',
     backgroundColor: 'transparent',
-    elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.3,
-    borderRadius: 35,
+    borderRadius: 0,
     justifyContent: 'center',
   },
   button: {
