@@ -40,7 +40,6 @@ export const refreshTokens = async (tokens) => {
           return refreshed.accessToken;
 
         } else {
-          console.error('Failed to refresh Fitbit token:', refreshed);
           return null;
         }
       } catch (err) {

@@ -27,13 +27,7 @@ export default function Header() {
         <TouchableOpacity onPress={showModal}>
         <Entypo name="dots-three-vertical" size={20} color="black" style={{ marginRight: 15 }} />
         </TouchableOpacity>
-  )}
+      )}
     </View>
     )
 }
-
-{/* <TouchableOpacity onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")}>
-                <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff", marginRight: 15 }}>
-                  {t("flag")}
-                </Text>
-              </TouchableOpacity> */}

@@ -53,6 +53,10 @@ export default function ProfileModal({ visible, onClose }) {
     router.push("/home");
   };
 
+  if (!visible) {
+    return null;
+  }
+
   return (
     <>
     <Animated.View
