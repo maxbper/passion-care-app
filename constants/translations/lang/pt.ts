@@ -29,6 +29,7 @@ const pt = {
     assesment_result: "Resultado da Avaliação",
     weekly_health_assessment: {
         title: "Avaliação Semanal de Saúde",
+        type: "Saúde",
         description: "Este é um formulário semanal para avaliar o seu estado de saúde. \nPor favor, responda às perguntas honestamente.",
         questions: {
             0: "Febre >38°C?",
@@ -46,6 +47,7 @@ const pt = {
     },
     weekly_functional_assessment: {
         title: "Avaliação Funcional Semanal",
+        type: "Funcional",
         description: "Este é um formulário semanal para avaliar o seu estado funcional. \nPor favor, responda às perguntas honestamente.",
         questions: {
             0: "Consegue manter-se de pé numa só perna por 10 segundos?",
@@ -128,6 +130,14 @@ const pt = {
     delete_sure: "Tem a certeza que deseja eliminar esta conta?",
     no_users: "Não existem utilizadores para mostrar.",
     admin_panel: "Painel de Administração",
+    workout_plans: {
+        plan1_adapted: "Plano Adaptado 1",
+        plan1_normal: "Plano 1",
+        plan2_adapted: "Plano Adaptado 2",
+        plan2_normal: "Plano 2",
+        plan3_adapted: "Plano Adaptado 3",
+        plan3_normal: "Plano 3",
+    } 
    };
 
 export default pt;

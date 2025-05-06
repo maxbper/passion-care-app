@@ -10,8 +10,8 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 export default function AdminModal() {
   const { t } = useTranslation();
   const [registerClicked, setRegisterClicked] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isMod, setIsMod] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMod, setIsMod] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = async () => {

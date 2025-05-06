@@ -29,6 +29,7 @@ const en = {
     assesment_result: "Assessment Result",
     weekly_health_assessment: {
         title: "Weekly Health Assessment",
+        type: "Health",
         description: "This is a weekly form to assess your health status. \nPlease answer the questions honestly.",
         questions: {
             0: "Fever >38°C?",
@@ -46,6 +47,7 @@ const en = {
     },
     weekly_functional_assessment: {
         title: "Weekly Functional Assessment",
+        type: "Functional",
         description: "This is a weekly form to assess your functional status. \nPlease answer the questions honestly.",
         questions: {
             0: "Can you stand on one leg for 10 seconds?",
@@ -128,6 +130,14 @@ const en = {
     delete_sure: "Are you sure you want to delete this account?",
     no_users: "This moderator has no patients.",
     admin_panel: "Admin Panel",
+    workout_plans: {
+        plan1_adapted: "Adapted Plan 1",
+        plan1_normal: "Plan 1",
+        plan2_adapted: "Adapted Plan 2",
+        plan2_normal: "Plan 2",
+        plan3_adapted: "Adapted Plan 3",
+        plan3_normal: "Plan 3",
+    }
    };
 
 

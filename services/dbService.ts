@@ -505,4 +505,22 @@ export const deleteAdminOrMod = async (received_uid) => {
   } catch (error) {
     console.error("Error deleting user doc:", error);
   }
+};
+
+export const fetchWeeklyForms = async (uid) => {
+      try {
+        const weeklyFormRef = collection(db, 'users', uid, 'weeklyform');
+        const q = query(weeklyFormRef, orderBy('date', 'asc'));
+        const snapshot = await getDocs(q);
+  
+        const forms = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+  
+        return forms;
+      } catch (error) {
+        console.error('Error fetching weekly form:', error);
+        return null;
+      }
 }
