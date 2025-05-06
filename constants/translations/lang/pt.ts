@@ -116,12 +116,18 @@ const pt = {
     fitbit_not_connected: " Fitbit não conectado",
     wrong_password: "Senha incorreta. Por favor, tente novamente.",
     user_registered: "Utilizador registado com sucesso.",
+    success: "Sucesso",
     register_patient: "Registar Paciente",
     register_mod: "Registar Moderador",
     register_admin: "Registar Administrador",
     users: "Pacientes",
     mods: "Moderadores",
     admins: "Administradores",
+    manage: "Editar",
+    delete: "Eliminar",
+    delete_sure: "Tem a certeza que deseja eliminar esta conta?",
+    no_users: "Não existem utilizadores para mostrar.",
+    admin_panel: "Painel de Administração",
    };
 
 export default pt;

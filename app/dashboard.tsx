@@ -6,7 +6,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchAdminsAndMods, fetchUserList, setIsSuspended } from "../services/dbService";
+import { deleteAdminOrMod, fetchAdminsAndMods, fetchUserList, setIsSuspended } from "../services/dbService";
+import { Trash, Lock } from "lucide-react-native";
+import { auth } from "../firebaseConfig";
 
 export default function DashboardScreen() {
     const { t } = useTranslation();
@@ -17,6 +19,9 @@ export default function DashboardScreen() {
     const { admin, mod} = useLocalSearchParams();
     const isAdmin = admin ? JSON.parse(admin as string) : false;
     const modUid = mod ? JSON.parse(mod as string) : false;
+    const [isDeletingMods, setIsDeletingMods] = React.useState(false);
+    const [isDeletingAdmins, setIsDeletingAdmins] = React.useState(false);
+    const myUid = auth.currentUser?.uid;
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -52,65 +57,147 @@ export default function DashboardScreen() {
         }
         fetchData();
 
-    }, []);
+    }, [isDeletingAdmins, isDeletingMods]);
 
     const Block = ({
         title,
+        subtitle,
         onPress,
+        onDangerPress,
         disabled,
         completed,
+        danger,
       }: {
         title: string;
+        subtitle?: string;
         onPress: () => void;
+        onDangerPress?: () => void;
         disabled?: boolean;
         completed?: boolean;
+        danger?: boolean;
       }) => {
         let containerStyle = [styles.block];
         if (completed) {
           containerStyle.push(styles.completed);
         } else if (disabled) {
           containerStyle.push(styles.disabled);
+        } else if (danger) {
+          containerStyle.push(styles.danger);
         }
-    
+      
         return (
           <Pressable
-            onPress={onPress}
+            onPress={danger ? onDangerPress : onPress}
             disabled={disabled || completed}
             style={containerStyle}
           >
             <Text style={styles.blockText}>{title}</Text>
+            {danger ? (
+              <Trash size={24} color="#ef4444" />
+            ) : disabled ? (
+                <Lock size={24} color="#6b7280" />
+            ) : <Text style={styles.emailText}>{subtitle}</Text>}
           </Pressable>
         );
       };
 
+    const handleManageMods = () => {
+        if (isDeletingMods) {
+            setIsDeletingMods(false);
+        }
+        else {
+            setIsDeletingMods(true);
+        }
+    } 
+      
+    const handleManageAdmins = () => {
+        if (isDeletingAdmins) {
+            setIsDeletingAdmins(false);
+        }
+        else {
+            setIsDeletingAdmins(true);
+        }
+    }
+
+    const handleDelete = (uid) => {
+        if (uid === auth.currentUser?.uid) {
+            setIsDeletingAdmins(false);
+            setIsDeletingMods(false);
+            return;
+        }
+        Alert.alert(
+            t("delete"),
+            t("delete_sure"),
+            [
+                {
+                    text: t("cancel"),
+                    onPress: () => {
+                    },
+                    style: "cancel",
+                },
+                {
+                    text: t("delete"),
+                    onPress: async () => {
+                        await deleteAdminOrMod(uid);
+                        setIsDeletingAdmins(false);
+                        setIsDeletingMods(false);
+                    },
+                    style: "destructive",
+                },
+            ],
+            { cancelable: false }
+        );
+    }
+
     if (isAdmin) {
         return (
             <View style={[styles.container, {marginTop: insets.top + 60}]}>
-            <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
+            <View style={{ position: "relative", marginBottom: 20 }}>
+            <Text style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
                 {t("mods")}
             </Text>
+            <Pressable
+                onPress={handleManageMods}
+                style={{ position: "absolute", right: 0, top: 0, padding: 10, paddingRight: 20, zIndex: 996 }}
+            >
+                <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
+            </Pressable>
+            </View>
             <ScrollView>
                 {modList.map((mod, index) => (
                     <Block
                         key={index}
                         title={mod.name}
+                        subtitle={mod.email}
                         onPress={() => router.push({
                             pathname: "/dashboard",
                             params: { mod: JSON.stringify(mod.id) }})}
+                        danger={isDeletingMods}
+                        onDangerPress={() => handleDelete(mod.id)}
                     />
                 ))}
             </ScrollView>
-            <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
+            <View style={{ position: "relative", marginBottom: 20 }}>
+            <Text style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
                 {t("admins")}
             </Text>
+            <Pressable
+                onPress={handleManageAdmins}
+                style={{ position: "absolute", right: 0, top: 0, padding: 10, paddingRight: 20 }}
+            >
+                <Text style={{ fontSize: 12 }}>{isDeletingAdmins ? t("cancel") : t("manage")}</Text>
+            </Pressable>
+            </View>
             <ScrollView>
                 {adminList.map((admin, index) => (
                     <Block
                         key={index}
                         title={admin.name}
-                        onPress={() => router.push({
-                                    pathname: "/profile",
-                                    params: { uid: JSON.stringify(admin.id) }})}
+                        subtitle={admin.email}
+                        onPress={() => {}}
+                        danger={isDeletingAdmins && admin.id !== myUid}
+                        disabled={isDeletingAdmins && admin.id === myUid}
+                        onDangerPress={() => handleDelete(admin.id)}
                     />
                 ))}
             </ScrollView>
@@ -124,7 +211,8 @@ export default function DashboardScreen() {
             {t("users")}
         </Text>
         <ScrollView>
-            {userList.map((user, index) => (
+        {userList.length > 0 ? (
+            userList.map((user, index) => (
                 <Block
                     key={index}
                     title={user.name}
@@ -132,7 +220,10 @@ export default function DashboardScreen() {
                         pathname: "/profile",
                         params: { uid: JSON.stringify(user.id) }})}
                 />
-            ))}
+            ))
+        ) : (
+            <Text style={{ fontSize: 18, textAlign: "center" }}>{t("no_users")}</Text>
+        )}
         </ScrollView>
         </View>
         );
@@ -165,6 +256,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
       },
+      emailText: {
+        fontSize: 14,
+        fontWeight: "300",
+        color: "grey",
+      },
       completed: {
         backgroundColor: "#DCFCE7",
         borderWidth: 2,
@@ -172,6 +268,11 @@ const styles = StyleSheet.create({
       },
       disabled: {
         backgroundColor: "#E5E7EB",
+      },
+      danger: {
+        backgroundColor: "#fee2e2",
+        borderColor: "#ef4444",
+        borderWidth: 1,
       },
 }
 );

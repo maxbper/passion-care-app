@@ -116,12 +116,18 @@ const en = {
     fitbit_not_connected: " Fitbit not connected",
     wrong_password: "Wrong password. Please try again.",
     user_registered: "User registered successfully.",
+    success: "Success",
     register_patient: "Register Patient",
     register_mod: "Register Mod",
     register_admin: "Register Admin",
     users: "Patients",
     mods: "Mods",
     admins: "Admins",
+    manage: "Manage",
+    delete: "Delete",
+    delete_sure: "Are you sure you want to delete this account?",
+    no_users: "This moderator has no patients.",
+    admin_panel: "Admin Panel",
    };
 
 

@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, getAuth, } from 'firebase/auth';
 import { db, auth } from '../firebaseConfig';
 
@@ -438,6 +438,7 @@ export const fetchAdminsAndMods = async () => {
         return {
           id: adminId,
           name: adminData.name,
+          email: adminData.email,
         };
       } else {
         console.log("No admin data found!");
@@ -448,7 +449,6 @@ export const fetchAdminsAndMods = async () => {
       return null;
     }
   });
-
   const modPromises = modList?.map(async (modId) => {
     try {
       const docRef = doc(db, "users", modId);
@@ -459,9 +459,9 @@ export const fetchAdminsAndMods = async () => {
         return {
           id: modId,
           name: modData.name,
+          email: modData.email,
         };
       } else {
-        console.log("No mod data found!");
         return null;
       }
     } catch (error) {
@@ -475,3 +475,34 @@ export const fetchAdminsAndMods = async () => {
 
   return [admins, mods];
 };
+
+export const deleteAdminOrMod = async (received_uid) => {
+    let admins = await fetchAdminList();
+    let mods = await fetchModList();
+
+    if(admins.includes(received_uid)) {
+        admins = admins.filter(item => item !== received_uid);
+    }
+    if(mods.includes(received_uid)) {
+        mods = mods.filter(item => item !== received_uid);
+    }
+
+    try {
+
+      await setDoc(doc(db, "users", "roles"), {
+          admins: admins,
+          mods: mods,
+      }, { merge: false });
+
+  } catch (error) {
+    console.error("Error deleting user from roles:", error);
+  }
+
+  try {
+    const userRef = doc(db, "users", received_uid);
+    await deleteDoc(userRef);
+
+  } catch (error) {
+    console.error("Error deleting user doc:", error);
+  }
+}

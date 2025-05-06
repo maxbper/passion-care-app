@@ -13,6 +13,7 @@ import AdminModal from "../components/adminModal";
 import { MaterialIcons } from "@expo/vector-icons";
 import { refreshTokens } from "../components/wearable";
 import { Feather } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -26,6 +27,7 @@ export default function HomeScreen() {
     const [rhr, setRhr] = useState(-1);
     const [sleep, setSleep] = useState(-1);
     const [fetchData, setFetchData] = useState(false);
+    const insets = useSafeAreaInsets();
 
     const messages = [
         t("encouragement_messages.0"),
@@ -140,7 +142,6 @@ export default function HomeScreen() {
 
         const token = await getToken();
         if (!token) {
-            console.log("No token found");
             return;
         }
 
@@ -229,9 +230,14 @@ export default function HomeScreen() {
             )}
             </>
             ) : (
-            <View style={styles.container}>
-                <AdminModal />
-            </View>
+                <>
+                <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 150, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
+                    <Text style={[styles.levelText, {color: cancerColor}]}>PASSiON CARE</Text>
+                    <Text style={[{fontSize: 18, color: cancerColor}]}>{t("admin_panel")}</Text>
+                </View>
+                <View style={styles.container}>
+                    <AdminModal />
+                </View></>
             )}
         </>
     );
