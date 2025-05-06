@@ -137,7 +137,10 @@ const en = {
         plan2_normal: "Plan 2",
         plan3_adapted: "Adapted Plan 3",
         plan3_normal: "Plan 3",
-    }
+        suspend: "User Suspended",
+    },
+    workouts: "Workout History",
+    forms: "Form History",
    };
 
 

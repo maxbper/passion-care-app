@@ -196,16 +196,15 @@ const WeeklyHealthAssessment = ({ }) => {
         setIsAssessmentVisible(false);
         if (currentAssessmentType === 'health') {
 
-            if(!healthAnswers[4]) {
-                healthAnswers[5] = false;
-            }
-
             if (resultKey === 'suspend') {
                 await uploadWeeklyForm(healthAnswers, functionalAnswers, resultKey, true);
                 router.replace("/dontExercise");
                 return;
             }
             else {
+                if(!healthAnswers[4]) {
+                    healthAnswers[5] = false;
+                }
                 startFunctionalAssessmentInitial();
             }
         }

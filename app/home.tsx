@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { checkAuth, logout, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchXp, setIsSuspended } from "../services/dbService";
+import { fetchIsSuspended, fetchXp, setIsSuspended } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
@@ -56,6 +56,15 @@ export default function HomeScreen() {
             setIsMod(mod === "true");
         };
         isAdminOrMod();
+
+        const isUserSuspended = async () => {
+            const isSuspended = await fetchIsSuspended();
+            if (isSuspended) {
+                router.replace("/dontExercise");
+                return;
+            }
+        }
+        isUserSuspended();
 
         const checkDailyWarning = async () => {
             const showWarning = await showDailyWarning();

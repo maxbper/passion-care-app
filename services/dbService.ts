@@ -156,12 +156,21 @@ export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspend
     const newFormRef = doc(weeklyFormRef);
     const date = new Date();
 
-    await setDoc(newFormRef, {
+    if(fquestions.length == 0) {
+      await setDoc(newFormRef, {
         heatlh_answers: hquestions,
-        functional_answers: fquestions,
         decision: decision,
         date: date,
     });
+    }
+    else {
+      await setDoc(newFormRef, {
+          heatlh_answers: hquestions,
+          functional_answers: fquestions,
+          decision: decision,
+          date: date,
+      });
+    }
 
     await setDoc(doc(db, 'users', userId), {
         suspended: suspended,

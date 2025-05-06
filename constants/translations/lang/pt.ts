@@ -131,13 +131,16 @@ const pt = {
     no_users: "Não existem utilizadores para mostrar.",
     admin_panel: "Painel de Administração",
     workout_plans: {
-        plan1_adapted: "Plano Adaptado 1",
+        plan1_adapted: "Plano 1 Adaptado",
         plan1_normal: "Plano 1",
-        plan2_adapted: "Plano Adaptado 2",
+        plan2_adapted: "Plano 2 Adaptado",
         plan2_normal: "Plano 2",
-        plan3_adapted: "Plano Adaptado 3",
+        plan3_adapted: "Plano 3 Adaptado",
         plan3_normal: "Plano 3",
-    } 
+        suspend: "Utilizador Suspendido",
+    },
+    workouts: "Histórico de Treinos",
+    forms: "Histórico de Formulários",
    };
 
 export default pt;

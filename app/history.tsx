@@ -56,21 +56,26 @@ export default function HistoryScreen() {
     title,
     onPress,
     completed,
+    inactive,
   }: {
     title: string;
     onPress: () => void;
     disabled?: boolean;
     completed?: boolean;
+    inactive?: boolean;
   }) => {
     let containerStyle = [styles.dateBox];
     if (completed) {
       containerStyle.push(styles.dateBox, styles.selectedBox);
     }
+    else if (inactive) {
+        containerStyle.push(styles.dateBox, styles.inactiveBox);
+    }
 
     return (
       <Pressable
         onPress={onPress}
-        disabled={completed}
+        disabled={completed || inactive}
         style={containerStyle}
       >
         <Text style={styles.blockText}>{title}</Text>
@@ -102,7 +107,6 @@ export default function HistoryScreen() {
             </View>
         </View>
             ))}
-            <Text style={{marginTop: 30}}>Decision: {userData[currentIndex].decision}</Text>
         </View>
         );
     }
@@ -124,7 +128,6 @@ export default function HistoryScreen() {
             </View>
         </View>
             ))}
-            <Text style={{marginTop: 30}}>Decision: {userData[currentIndex].decision}</Text>
         </View>
         );
     }
@@ -135,7 +138,7 @@ export default function HistoryScreen() {
     <>
     <View style={[styles.container, { marginTop: insets.top + 100 }]}>
     <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                {isFormsHistory ? t(`workout_plans.${userData[currentIndex].decision}`) : t("workouts")}
+                {isFormsHistory ? t("forms") : t("workouts")}
             </Text>
       {userData ? (
         <>
@@ -167,12 +170,14 @@ export default function HistoryScreen() {
         )}
         </View>
         <AnswersBlock/>
+        <Text style={{marginBottom: 20, fontWeight: "bold", fontSize: 20, color: cancerColor}}>{t(`workout_plans.${userData[currentIndex].decision}`)}</Text>
         <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
             <View style={{ width: "50%" }}>
             <Block
               title={t("weekly_functional_assessment.type")}
               onPress={() => {setFunctionalOrHealth(false)}}
               completed={!functionalOrHealth}
+              inactive={!userData[currentIndex].functional_answers}
             />
             </View>
             <View style={{ width: "50%" }}>
@@ -180,6 +185,7 @@ export default function HistoryScreen() {
               title={t("weekly_health_assessment.type")}
               onPress={() => {setFunctionalOrHealth(true)}}
               completed={functionalOrHealth}
+              inactive={!userData[currentIndex].heatlh_answers}
             />
             </View>
         </View>
@@ -276,5 +282,8 @@ block: {
     backgroundColor: "#DCFCE7",
     borderWidth: 2,
     borderColor: "#4ADE80",
+  },
+  inactiveBox: {
+    backgroundColor: "#E5E7EB",
   },
 });
