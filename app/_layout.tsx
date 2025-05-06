@@ -12,15 +12,16 @@ function LayoutContent() {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
+  const isHomePage = pathname === "/home";
   const { isVisible, hideModal } = useProfileModal();
 
   return (
     <>
     <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column", backgroundColor: "#F9FAFB" }}>
       <Header />
+      {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && !isHomePage && <BottomNav />}
       {Platform.OS === "web" && !isLoginPage && <Sidebar />}
       <Slot />
-        {/* {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && <BottomNav />} */}
     </View>
     {Platform.OS !== "web" && <ProfileModal visible={isVisible} onClose={hideModal} />}
     </>

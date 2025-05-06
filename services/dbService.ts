@@ -64,11 +64,14 @@ export const fetchXp = async () => {
       }
 };
 
-export const fetchUserData = async () => {
+export const fetchUserData = async (uid=null) => {
     while (auth.currentUser == null) {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    const userId = auth.currentUser?.uid;
+    let userId = auth.currentUser?.uid;
+    if (uid) {
+        userId = uid;
+    }
     if (!userId) return;
       try {
         const docRef = doc(db, "users", userId);
@@ -373,8 +376,11 @@ export const addUserToList = async (uid) => {
     }
 };
 
-export const fetchUserList = async () => {
-  const userId = auth.currentUser?.uid;
+export const fetchUserList = async (uid=null) => {
+  let userId = auth.currentUser?.uid;
+  if (uid) {
+    userId = uid;
+  }
   let userList = [];
 
   if (!userId) return;

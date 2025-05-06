@@ -16,7 +16,7 @@ export default function DashboardScreen() {
     const insets = useSafeAreaInsets();
     const { admin, mod} = useLocalSearchParams();
     const isAdmin = admin ? JSON.parse(admin as string) : false;
-    const isMod = mod ? JSON.parse(mod as string) : false;
+    const modUid = mod ? JSON.parse(mod as string) : false;
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -33,9 +33,7 @@ export default function DashboardScreen() {
                 router.replace("/home");
             }
         };
-        if(!isAdmin && !isMod) {
-            isAdminOrMod();
-        }
+        isAdminOrMod();
 
         const fetchData = async () => {
             if(isAdmin) {
@@ -43,8 +41,11 @@ export default function DashboardScreen() {
                 setAdminList(admins);
                 setModList(mods);
             }
-
-            if(isMod) {
+            else if(modUid !== false) {
+                const users = await fetchUserList(modUid);
+                setUserList(users);
+            }
+            else {
                 const users = await fetchUserList();
                 setUserList(users);
             }
@@ -93,7 +94,9 @@ export default function DashboardScreen() {
                     <Block
                         key={index}
                         title={mod.name}
-                        onPress={() => {}}
+                        onPress={() => router.push({
+                            pathname: "/dashboard",
+                            params: { mod: JSON.stringify(mod.id) }})}
                     />
                 ))}
             </ScrollView>
@@ -105,7 +108,9 @@ export default function DashboardScreen() {
                     <Block
                         key={index}
                         title={admin.name}
-                        onPress={() => {}}
+                        onPress={() => router.push({
+                                    pathname: "/profile",
+                                    params: { uid: JSON.stringify(admin.id) }})}
                     />
                 ))}
             </ScrollView>
@@ -123,7 +128,9 @@ export default function DashboardScreen() {
                 <Block
                     key={index}
                     title={user.name}
-                    onPress={() => {}}
+                    onPress={() => router.push({
+                        pathname: "/profile",
+                        params: { uid: JSON.stringify(user.id) }})}
                 />
             ))}
         </ScrollView>

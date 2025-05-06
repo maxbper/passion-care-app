@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
-import { Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { fetchUserData } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
@@ -12,6 +12,8 @@ export default function ProfileScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
   const cancerColor = useUserColor();
+  const { uid } = useLocalSearchParams();
+  const userId = uid ? JSON.parse(uid as string) : false;
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -20,8 +22,14 @@ export default function ProfileScreen() {
     checkAuthentication();
 
     const getUserData = async () => {
-      const data = await fetchUserData();
-      setUserData(data);
+      if (userId) {
+        const data = await fetchUserData(userId);
+        setUserData(data);
+      }
+      else {
+        const data = await fetchUserData();
+        setUserData(data);
+      }
     }
 
     getUserData();
@@ -29,9 +37,7 @@ export default function ProfileScreen() {
 
   return (
     <>
-    <Stack.Screen />
     <View style={styles.container}>
-    <Stack.Screen options={{ headerTitle: t("profilescreen_title") }} />
       {userData ? (
         <View style={styles.card}>
           <Text style={styles.label}>{t("name")}: </Text><Text style={styles.value}>{userData.name}</Text>
@@ -43,10 +49,6 @@ export default function ProfileScreen() {
         <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
         </>
       )}
-      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        <MaterialIcons name="logout" size={24} color={cancerColor}/>
-        <Text style={styles.logoutText}>{t("logout")}</Text>
-        </TouchableOpacity>
     </View>
     </>
   );

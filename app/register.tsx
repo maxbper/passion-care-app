@@ -568,7 +568,7 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20,
+        marginHorizontal: 20,
         marginBottom: 60,
         borderRadius: 10,
         padding: 16,
@@ -584,6 +584,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         marginBottom: 8,
+        marginTop: 20,
+        textAlign: "center",
     },
     input: {
         borderWidth: 1,

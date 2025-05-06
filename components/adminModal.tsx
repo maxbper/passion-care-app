@@ -96,7 +96,7 @@ const Block = ({
         <Block title={t("register")} onPress={() => setRegisterClicked(true)} />
         <Block title="Dashboard" onPress={() => router.push({
             pathname: "/dashboard",
-            params: { admin: isAdmin.toString(), mod: isMod.toString() },
+            params: { admin: isAdmin.toString() },
         })} />
         {Platform.OS === "web" && (
         <>
