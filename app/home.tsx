@@ -244,7 +244,7 @@ export default function HomeScreen() {
                     <Text style={[styles.levelText, {color: cancerColor}]}>PASSiON CARE</Text>
                     <Text style={[{fontSize: 18, color: cancerColor}]}>{t("admin_panel")}</Text>
                 </View>
-                <View style={styles.container}>
+                <View style={[styles.container, {marginTop: 80}]}>
                     <AdminModal />
                 </View></>
             )}

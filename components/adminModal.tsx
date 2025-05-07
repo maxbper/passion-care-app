@@ -9,7 +9,6 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AdminModal() {
   const { t } = useTranslation();
-  const [registerClicked, setRegisterClicked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMod, setIsMod] = useState(false);
 
@@ -63,10 +62,9 @@ const Block = ({
     );
   };
 
-  if (registerClicked) {
-    return (
-        <>
-      <Block
+  return (
+    <>
+        <Block
         title={t("register_patient")}
         onPress={() => router.push("/register")}
       />
@@ -86,14 +84,6 @@ const Block = ({
         })}
         disabled={!isAdmin}
       />
-      </>
-    );
-  }
-
-
-  return (
-    <>
-        <Block title={t("register")} onPress={() => setRegisterClicked(true)} />
         <Block title="Dashboard" onPress={() => router.push({
             pathname: "/dashboard",
             params: { admin: isAdmin.toString() },

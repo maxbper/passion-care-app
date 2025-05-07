@@ -362,6 +362,20 @@ export const registerAdmin = async (form) => {
     const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
     const userId = userCredential.user.uid;
 
+    const docRef = doc(db, "users", userId);
+
+      await setDoc(docRef, {
+          name: form.name,
+          email: form.email,
+          users: [],
+      });
+
+    } catch (error) {
+      console.error("Error registering admin:", error);
+  }
+
+  try {
+    const userId = auth.currentUser.uid;
     await setDoc(doc(db, "users", "roles"), {
         admins: arrayUnion(userId),
     }, { merge: true });
