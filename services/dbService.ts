@@ -278,6 +278,22 @@ export const fetchWorkoutPlan = async () => {
       }
 };
 
+export const fetchWarmupPlan = async (plan) => {
+  try {
+    const docRef = doc(db, "exercises", "workouts");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data()[plan];
+    } else {
+      console.log("No workout plan found!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching workout plan:", error);
+  }
+}
+
 export const fetchExercise = async (exerciseId, plan) => {
     while (auth.currentUser == null) {
         await new Promise(resolve => setTimeout(resolve, 1000));

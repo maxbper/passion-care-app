@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-nati
 import { CheckCircle2, Lock } from "lucide-react-native";
 import { router } from "expo-router";
 import { checkAuth } from "../services/authService";
-import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise } from "../services/dbService";
+import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 
@@ -12,13 +12,14 @@ export default function TasksModal() {
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [lastDateChecked, setLastDateChecked] = useState(false);
   const [workoutPlan, setWorkoutPlan] = useState<any[]>([]);
+  const [warmupPlan, setWarmupPlan] = useState<any[]>([]);
   const { t } = useTranslation();
 
   const handleWarmup = () => {
     // redirect to exercise screen with warmup exercises
     router.push({
         pathname: "/exercise",
-        params: { workoutPlan: JSON.stringify(workoutPlan), warmup: "true" },
+        params: { workoutPlan: JSON.stringify(warmupPlan), warmup: "true" },
     });
   };
 
@@ -27,6 +28,11 @@ export default function TasksModal() {
         pathname: "/exercise",
         params: { workoutPlan: JSON.stringify(workoutPlan), workout: "true" },
     });
+  };
+
+  const getPlanNumber = (planString: string): string | null => {
+    const match = planString.match(/\d+/);
+    return match ? match[0] : null;
   };
 
   useEffect(() => {
@@ -78,10 +84,39 @@ export default function TasksModal() {
             }
         }
 
+        const getWarmupPlan = async () => {
+          const [_, plan] = await fetchWorkoutPlan();
+          const warmupPlan = "warmup_" + getPlanNumber(plan);
+          const wp = await fetchWarmupPlan(warmupPlan);
+
+          const fetchedWarmupExercises = await Promise.all(
+            wp.map(async (element) => {
+                if (element.substring(0,4) === "rest") {
+                    const rest_time = element.substring(5);
+                    const rest = {
+                        exercise: "rest",
+                        duration: parseInt(rest_time)
+                    };
+                    return rest;
+                }
+                const [name, attr] = await fetchExercise(element, warmupPlan);
+                const exercise = {
+                    exercise: name,
+                    duration: attr.duration? attr.duration : 0,
+                    reps: attr.reps? attr.reps : 0,
+                    sets: attr.sets? attr.sets : 0,
+                    interval: attr.interval? attr.interval : 0,
+                };
+                return exercise;
+            })
+        );
+          setWarmupPlan(fetchedWarmupExercises);
+      };
+
         const getWorkoutPlan = async () => {
             const [wp, plan] = await fetchWorkoutPlan();
 
-            const fetchedExercises = await Promise.all(
+            const fetchedWorkoutExercises = await Promise.all(
                 wp.map(async (element) => {
                     if (element.substring(0,4) === "rest") {
                         const rest_time = element.substring(5);
@@ -97,16 +132,18 @@ export default function TasksModal() {
                         duration: attr.duration? attr.duration : 0,
                         reps: attr.reps? attr.reps : 0,
                         sets: attr.sets? attr.sets : 0,
+                        interval: attr.interval? attr.interval : 0,
                     };
                     return exercise;
                 })
             );
-            setWorkoutPlan(fetchedExercises);
+            setWorkoutPlan(fetchedWorkoutExercises);
         };
         if(!workoutPlan.length) {
+            getWarmupPlan();
             getWorkoutPlan();
         }
-    }, [lastDateChecked, workoutPlan]);
+    }, [lastDateChecked, workoutPlan, warmupPlan]);
 
   const Block = ({
     title,
