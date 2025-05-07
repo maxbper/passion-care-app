@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -56,16 +56,36 @@ export default function ProfileScreen() {
     );
   };
 
-  const RadioButton = ({ label, selected, onPress }) => {
-    return (
-      <Pressable style={styles.radioContainer} onPress={onPress}>
-        <View style={styles.outerCircle}>
-          {selected && <View style={styles.innerCircle} />}
-        </View>
-        <Text style={{fontSize: 14}}>{label}</Text>
-      </Pressable>
-    );
-  };
+  const ButtonBlock = ({
+      onPress,
+      add,
+      close
+    }: {
+      onPress: () => void;
+      add?: boolean;
+      close?: boolean;
+    }) => {
+      let containerStyle = [styles.dateBox];
+      if (add) {
+        containerStyle.push(styles.dateBox, styles.addBox);
+      }
+      else if (close) {
+        containerStyle.push(styles.dateBox, styles.closeBox);
+      }
+  
+      return (
+        <Pressable
+          onPress={onPress}
+          style={containerStyle}
+        >
+          {add ? (
+            <AntDesign name="plus" size={24} color="#4ade80" />
+          ) : close ? (
+            <AntDesign name="close" size={24} color="#ef4444" />
+          ) : null}
+        </Pressable>
+      );
+    };
 
   const Block = ({
     title,
@@ -146,55 +166,50 @@ export default function ProfileScreen() {
           <Text style={styles.value}>{t(`cancer.${userData.cancer_type}`)}</Text>
         </View>
         </View>
-        <Block title={t("new_clinical_register")} onPress={() => {}} />
-          <Block title={t("forms_history")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), forms: "true" }})} />
-          <Block title={t("workout_history")} onPress={() => { } } />
-      <RadioButton
-          label={t("clinical_details")}
-          selected={showClinicalDetails}
-          onPress={() => setShowClinicalDetails(!showClinicalDetails)}
-        />
+        <Block title={t("clinical_details")} onPress={() => {setShowClinicalDetails(!showClinicalDetails)}} />
+        <Block title={t("clinical_registers")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), clinical: "true" }})} />
+        <Block title={t("forms")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), forms: "true" }})} />
+        <Block title={t("workouts")} onPress={() => { } } />
         </>
           ) : (
             <>
-          <View style={styles.card}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={[styles.card, {alignItems: "flex-start"}]}>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("previous_cipn_diagnosis")}: </Text>
           <Text style={styles.value}>{t(`${userData.previous_cipn_diagnosis}`)}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("neurotoxic_agents")}: </Text>
           <Text style={styles.value}>{userData.neurotoxic_agent}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("chemo_goal")}: </Text>
           <Text style={styles.value}>{userData.chemo_goal}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("chemo_protocol")}: </Text>
           <Text style={styles.value}>{userData.chemo_protocol}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("exercise_history")}: </Text>
           <Text style={styles.value}>{userData.exercise_history}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("exercise_preferences")}: </Text>
           <Text style={styles.value}>{userData.exercise_preferences}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("medical_history")}: </Text>
           <Text style={styles.value}>{userData.medical_history}</Text>
         </View>
-        <View style={{ flexDirection: "column", alignItems: "center" }}>
+        <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Text style={styles.label}>{t("usual_medications")}: </Text>
           <Text style={styles.value}>{userData.usual_medication}</Text>
         </View>
         </View>
-      <RadioButton
-          label={t("clinical_details")}
-          selected={showClinicalDetails}
+        <ButtonBlock
           onPress={() => setShowClinicalDetails(!showClinicalDetails)}
+          close={true}
         />
         </>
           )}
@@ -316,4 +331,24 @@ const styles = StyleSheet.create({
       disabled: {
         backgroundColor: "#E5E7EB",
       },
+      dateBox: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 30,
+        height: 60,
+        width: 60,
+        marginHorizontal: 5,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    addBox: {
+      backgroundColor: "#DCFCE7",
+      borderColor: "#4ADE80",
+      borderWidth: 2,
+    },
+    closeBox: {
+      backgroundColor: "#fee2e2",
+      borderColor: "#ef4444",
+      borderWidth: 2,
+    },
   });

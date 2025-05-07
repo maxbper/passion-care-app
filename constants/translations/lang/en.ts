@@ -141,6 +141,9 @@ const en = {
     },
     workouts: "Workout History",
     forms: "Form History",
+    clinical_details: "Clinical Details",
+    clinical_registers: "Clinical Registers",
+    new_clinical_register: "New Clinical Register",
    };
 
 

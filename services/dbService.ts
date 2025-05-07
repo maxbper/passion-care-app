@@ -533,3 +533,37 @@ export const fetchWeeklyForms = async (uid) => {
         return null;
       }
 }
+
+export const fetchClinicalRegister = async (uid) => {
+  try {
+    const clinicalRegisterRef = collection(db, 'users', uid, 'clinical_register');
+    const q = query(clinicalRegisterRef, orderBy('date', 'desc'));
+    const snapshot = await getDocs(q);
+
+    const reg = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return reg;
+  } catch (error) {
+    console.error('Error fetching clinical register:', error);
+    return null;
+  }
+}
+
+export const uploadClinicalRegister = async (uid, text) => {
+  try {
+    const clinicalRegisterRef = collection(db, 'users', uid, 'clinical_register');
+    const newFormRef = doc(clinicalRegisterRef);
+    const date = new Date();
+
+    await setDoc(newFormRef, {
+        date: date,
+        text: text,
+    });
+
+  } catch (error) {
+    console.error('Error sending clinical register:', error);
+  }
+}

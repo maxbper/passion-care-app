@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable, FlatList } from "react-native";
-import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable, FlatList, ScrollView, Dimensions, TextInput } from "react-native";
+import { AntDesign, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { fetchUserData, fetchWeeklyForms, setIsSuspended } from "../services/dbService";
+import { fetchClinicalRegister, fetchUserData, fetchWeeklyForms, setIsSuspended, uploadClinicalRegister } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,13 +13,16 @@ export default function HistoryScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
   const cancerColor = useUserColor();
-  const { uid, forms, workouts } = useLocalSearchParams();
+  const { uid, forms, workouts, clinical } = useLocalSearchParams();
   const userId = uid ? JSON.parse(uid as string) : false;
   const isFormsHistory = forms ? JSON.parse(forms as string) : false;
   const isWorkoutHistory = workouts ? JSON.parse(workouts as string) : false;
+  const isClinicalHistory = clinical ? JSON.parse(clinical as string) : false;
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
   const [functionalOrHealth, setFunctionalOrHealth] = useState(true);
+  const [showClinicalModal, setShowClinicalModal] = useState(false);
+  const [newClinicalText, setNewClinicalText] = useState("");
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -38,11 +41,16 @@ export default function HistoryScreen() {
           const data = null; //await fetchWorkouts(userId);
           setUserData(data);
         }
+        else if(isClinicalHistory) {
+          const data = await fetchClinicalRegister(userId);
+          setUserData(data);
+          setCurrentIndex(data.length - 1);
+        }
       }
     }
 
     getUserData();
-  }, []);
+  }, [showClinicalModal]);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
@@ -51,6 +59,13 @@ export default function HistoryScreen() {
       month: "short",
     });
   };
+
+  const handleAddClinicalRegister = async () => {
+    await uploadClinicalRegister(userId, newClinicalText);
+
+    setShowClinicalModal(false);
+    setNewClinicalText("");
+  }
   
   const Block = ({
     title,
@@ -84,6 +99,7 @@ export default function HistoryScreen() {
   };
 
   const AnswersBlock = ({}: {}) => {
+    if(isFormsHistory) {
 
     if(!functionalOrHealth) {
         return (
@@ -131,14 +147,36 @@ export default function HistoryScreen() {
         </View>
         );
     }
+    }
+    else if(isWorkoutHistory) {
+        return;
+    }
+    else if(isClinicalHistory) {
+        return (
+        <ScrollView style={{ width: "100%", height: Dimensions.get("window").height - (insets.top + 250), marginBottom: 20}} contentContainerStyle={{ alignItems: "center"}}>
+        {userData.map((item) => (
+            <View style={[styles.card]}>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                {formatDate(item.date)}
+            </Text>
+            <View style={{ flexDirection: "row", marginBottom: 8, width: "100%" }}>
+                <Text style={[styles.label, { textAlign: "left"}]}>
+                {item.text}
+                </Text>
+            </View>
+        </View>
+        ))}
+        </ScrollView>
+        );
+    }
   };
 
-
+ if(isFormsHistory) {
   return (
     <>
     <View style={[styles.container, { marginTop: insets.top + 100 }]}>
     <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                {isFormsHistory ? t("forms") : t("workouts")}
+                {t("forms")}
             </Text>
       {userData ? (
         <>
@@ -201,10 +239,156 @@ export default function HistoryScreen() {
   );
 }
 
+if(isWorkoutHistory) {
+    return (
+        <>
+        <View style={[styles.container, { marginTop: insets.top + 100 }]}>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                    {t("workouts")}
+                </Text>
+          {userData ? (
+            <>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
+            {!userData[currentIndex + 1] && userData[currentIndex - 2] && (
+                <TouchableOpacity onPress={() => setCurrentIndex(i => i - 2)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex - 2].date)}</Text>
+                </TouchableOpacity>
+            )}
+    
+            {userData[currentIndex - 1] && (
+                <TouchableOpacity onPress={() => setCurrentIndex(i => i - 1)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex - 1].date)}</Text>
+                </TouchableOpacity>
+            )}
+            
+            <Text style={{ fontWeight: "bold", marginHorizontal: 10 }}>{formatDate(userData[currentIndex].date)}</Text>
+    
+            {userData[currentIndex + 1] && (
+                <TouchableOpacity onPress={() => setCurrentIndex(i => i + 1)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex + 1].date)}</Text>
+                </TouchableOpacity>
+            )}
+    
+            {!userData[currentIndex - 1] && userData[currentIndex + 2] && (
+                <TouchableOpacity onPress={() => setCurrentIndex(i => i + 2)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex + 2].date)}</Text>
+                </TouchableOpacity>
+            )}
+            </View>
+            <AnswersBlock/>
+            </>
+              ) : (
+            <>
+            <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+            </>
+          )}
+          
+        </View>
+        </>
+      );
+}
+
+ if(isClinicalHistory) {
+    return (
+        <>
+        <View style={[styles.container, { marginTop: insets.top + 100 }]}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 20 }}>
+                    {t("clinical_registers")}
+                </Text>
+          {userData ? (
+            <>
+            <AnswersBlock/>
+            <Pressable
+            onPress={() => {setShowClinicalModal(true)}}
+            style={{backgroundColor: "#DCFCE7",
+                borderColor: "#4ADE80",
+                borderWidth: 2,borderRadius: 30,
+                height: 60,
+                width: 60,
+                marginHorizontal: 5,
+                alignItems: "center",
+                justifyContent: "center",}}
+            >
+                <AntDesign name="plus" size={24} color="#4ade80" />
+            </Pressable>
+            </>
+              ) : (
+            <>
+            <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+            </>
+          )}
+        </View>
+        {showClinicalModal && (
+            <Pressable style={styles.modalContainer} onPress={() => {setShowClinicalModal(false); setNewClinicalText("")}}>
+                <View style={styles.modalContent}>
+                    <View style={styles.input}>
+                    <TextInput
+                            style={{}}
+                            placeholder={t("new_clinical_register")}
+                            value={newClinicalText}
+                            onChangeText={(text) => {setNewClinicalText(text)}}
+                            />
+                        </View>
+                </View>
+                <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor, borderRadius: 30 }]} onPress={handleAddClinicalRegister}>
+                            <AntDesign name="plus" size={24} color="white" />
+                        </TouchableOpacity>
+                    </View>
+            </Pressable>
+          )}
+        </>
+      );
+}
+}
+
 const styles = StyleSheet.create({
 container: {
     marginTop: 40,
     alignItems: "center",
+},
+modalContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+    zIndex: 949,
+},
+modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+    paddingVertical: 20,
+    zIndex: 950,
+    marginBottom: 20,
+},
+button: {
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    margin: 5,
+    height: 50,
+    width: 50,
+},
+buttonContainer: {
+    borderRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+},
+buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
 },
 loader: {
     flex: 1,
@@ -220,6 +404,18 @@ label: {
     color: "#555",
     marginTop: 12,
   },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    width: "80%",
+    height: 100,
+    justifyContent: "flex-start",
+    zIndex: 951,
+},
 card: {
     width: "90%",
     backgroundColor: "#FFF",
@@ -228,6 +424,14 @@ card: {
     elevation: 5,
     alignItems: "flex-start",
     marginBottom: 20,
+},
+card2: {
+    backgroundColor: "#FFF",
+    width: "100%",
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+    alignItems: "flex-start",
 },
 list: {
     paddingHorizontal: 10,

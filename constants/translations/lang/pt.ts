@@ -141,6 +141,9 @@ const pt = {
     },
     workouts: "Histórico de Treinos",
     forms: "Histórico de Formulários",
+    clinical_details: "Detalhes Clínicos",
+    clinical_registers: "Registos Clínicos",
+    new_clinical_register: "Novo Registo Clínico",
    };
 
 export default pt;
