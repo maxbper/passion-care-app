@@ -185,7 +185,7 @@ export default function DashboardScreen() {
 
     if (isAdmin) {
         return (
-            <View style={[styles.container, {marginTop: insets.top + 60}]}>
+            <View style={[styles.container, {marginTop: insets.top + 100}]}>
             <View style={{ position: "relative", marginBottom: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
                 {t("mods")}
@@ -240,7 +240,7 @@ export default function DashboardScreen() {
     }
 
     return (
-        <View style={[styles.container, {marginTop: insets.top + 60}]}>
+        <View style={[styles.container, {marginTop: insets.top + 100}]}>
         <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
             {t("users")}
         </Text>

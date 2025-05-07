@@ -358,6 +358,7 @@ if(isWorkoutHistory) {
 const styles = StyleSheet.create({
 container: {
     marginTop: 40,
+    marginBottom: 50,
     alignItems: "center",
 },
 modalContainer: {

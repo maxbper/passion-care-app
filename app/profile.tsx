@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { fetchUserData, setIsSuspended } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
 import { CheckCircle2, Lock, Unlock } from "lucide-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const [userData, setUserData] = useState(null);
@@ -17,6 +18,7 @@ export default function ProfileScreen() {
   const userId = uid ? JSON.parse(uid as string) : false;
   const [showClinicalDetails, setShowClinicalDetails] = useState(false);
   const [isSuspended, setSuspended] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -123,7 +125,7 @@ export default function ProfileScreen() {
 
   return (
     <>
-    <View style={styles.container}>
+    <View style={[styles.container, {marginTop: insets.top + 80}]}>
       {userData ? (
         <>
         <View style={{ flexDirection: "row" }}>

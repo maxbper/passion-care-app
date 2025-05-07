@@ -1,5 +1,5 @@
 import { Slot, usePathname } from "expo-router";
-import { Platform, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import BottomNav from "../components/bottomNav";
 import Sidebar from "../components/sidebar";
 import React from "react";
@@ -13,6 +13,7 @@ function LayoutContent() {
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
   const isHomePage = pathname === "/home";
+  const page = isLoginPage || isDontExercisePage || isHomePage;
   const { isVisible, hideModal } = useProfileModal();
 
   return (
@@ -21,7 +22,13 @@ function LayoutContent() {
       <Header />
       {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && !isHomePage && <BottomNav />}
       {Platform.OS === "web" && !isLoginPage && <Sidebar />}
+      {!page ? (
+      <ScrollView>
       <Slot />
+      </ScrollView>
+      ) : (
+        <Slot />
+      )}
     </View>
     {Platform.OS !== "web" && <ProfileModal visible={isVisible} onClose={hideModal} />}
     </>
