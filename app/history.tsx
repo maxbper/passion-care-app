@@ -34,8 +34,13 @@ export default function HistoryScreen() {
       if (userId) {
         if(isFormsHistory) {
           const data = await fetchWeeklyForms(userId);
-          setUserData(data);
-          setCurrentIndex(data.length - 1);
+          if (data.length === 0) {
+            setUserData(null);
+          }
+        else {
+            setUserData(data);
+            setCurrentIndex(data.length - 1);
+          }
         }
         else if(isWorkoutHistory) {
           const data = null; //await fetchWorkouts(userId);
@@ -230,7 +235,11 @@ export default function HistoryScreen() {
         </>
           ) : (
         <>
-        <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+        <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
+            <Text style={{ fontSize: 14, textAlign: "center" }}>
+                {t("no_forms")}
+            </Text>
+        </View>
         </>
       )}
       

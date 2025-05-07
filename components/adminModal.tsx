@@ -67,6 +67,7 @@ const Block = ({
         <Block
         title={t("register_patient")}
         onPress={() => router.push("/register")}
+        disabled={isAdmin}
       />
       <Block
         title={t("register_mod")}

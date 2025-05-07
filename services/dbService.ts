@@ -530,6 +530,75 @@ export const deleteAdminOrMod = async (received_uid) => {
   }
 };
 
+export const deleteUser = async (user_uid, mod_uid) => {
+  let usersList = [];
+  try {
+    const docRef = doc(db, "users", mod_uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      usersList = docSnap.data().users;
+    } else {
+      console.log("No user list found!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+
+  if(usersList.includes(user_uid)) {
+    usersList = usersList.filter(item => item !== user_uid);
+  }
+
+  try {
+    await setDoc(doc(db, "users", mod_uid), {
+        users: usersList,
+    }, { merge: true });
+
+  } catch (error) {
+    console.error("Error deleting user from list:", error);
+  }
+
+  try {
+    const userRef = collection(db, "users", user_uid, "weeklyform");
+    const snapshot = await getDocs(userRef);
+
+    snapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+  } catch (error) {
+    console.error("Error deleting user weeklyfroms:", error);
+  }
+  try {
+    const userRef = collection(db, "users", user_uid, "workouts");
+    const snapshot = await getDocs(userRef);
+
+    snapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+  } catch (error) {
+    console.error("Error deleting user workouts:", error);
+  }
+  try {
+    const userRef = collection(db, "users", user_uid, "clinical_register");
+    const snapshot = await getDocs(userRef);
+
+    snapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+    });
+  } catch (error) {
+    console.error("Error deleting user clinical register:", error);
+  }
+
+  try {
+    const userRef = doc(db, "users", user_uid);
+    await deleteDoc(userRef);
+
+  } catch (error) {
+    console.error("Error deleting user doc:", error);
+  }
+};
+
 export const fetchWeeklyForms = async (uid) => {
       try {
         const weeklyFormRef = collection(db, 'users', uid, 'weeklyform');

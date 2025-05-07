@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { checkAuth, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { deleteAdminOrMod, fetchAdminsAndMods, fetchUserList, setIsSuspended } from "../services/dbService";
+import { deleteAdminOrMod, deleteUser, fetchAdminsAndMods, fetchUserList, setIsSuspended } from "../services/dbService";
 import { Trash, Lock } from "lucide-react-native";
 import { auth } from "../firebaseConfig";
 
@@ -21,6 +21,7 @@ export default function DashboardScreen() {
     const modUid = mod ? JSON.parse(mod as string) : false;
     const [isDeletingMods, setIsDeletingMods] = React.useState(false);
     const [isDeletingAdmins, setIsDeletingAdmins] = React.useState(false);
+    const [isDeletingUsers, setIsDeletingUsers] = React.useState(false);
     const myUid = auth.currentUser?.uid;
 
     useEffect(() => {
@@ -57,7 +58,7 @@ export default function DashboardScreen() {
         }
         fetchData();
 
-    }, [isDeletingAdmins, isDeletingMods]);
+    }, [isDeletingAdmins, isDeletingMods, isDeletingUsers]);
 
     const Block = ({
         title,
@@ -119,7 +120,16 @@ export default function DashboardScreen() {
         }
     }
 
-    const handleDelete = (uid) => {
+    const handleManageUsers = () => {
+        if (isDeletingUsers) {
+            setIsDeletingUsers(false);
+        }
+        else {
+            setIsDeletingUsers(true);
+        }
+    }
+
+    const handleDeleteAdminOrMod = (uid) => {
         if (uid === auth.currentUser?.uid) {
             setIsDeletingAdmins(false);
             setIsDeletingMods(false);
@@ -141,6 +151,30 @@ export default function DashboardScreen() {
                         await deleteAdminOrMod(uid);
                         setIsDeletingAdmins(false);
                         setIsDeletingMods(false);
+                    },
+                    style: "destructive",
+                },
+            ],
+            { cancelable: false }
+        );
+    }
+
+    const handleDeleteUser = (uid) => {
+        Alert.alert(
+            t("delete"),
+            t("delete_sure"),
+            [
+                {
+                    text: t("cancel"),
+                    onPress: () => {
+                    },
+                    style: "cancel",
+                },
+                {
+                    text: t("delete"),
+                    onPress: async () => {
+                        await deleteUser(uid, myUid);
+                        setIsDeletingUsers(false);
                     },
                     style: "destructive",
                 },
@@ -173,7 +207,7 @@ export default function DashboardScreen() {
                             pathname: "/dashboard",
                             params: { mod: JSON.stringify(mod.id) }})}
                         danger={isDeletingMods}
-                        onDangerPress={() => handleDelete(mod.id)}
+                        onDangerPress={() => handleDeleteAdminOrMod(mod.id)}
                     />
                 ))}
             </ScrollView>
@@ -197,7 +231,7 @@ export default function DashboardScreen() {
                         onPress={() => {}}
                         danger={isDeletingAdmins && admin.id !== myUid}
                         disabled={isDeletingAdmins && admin.id === myUid}
-                        onDangerPress={() => handleDelete(admin.id)}
+                        onDangerPress={() => handleDeleteAdminOrMod(admin.id)}
                     />
                 ))}
             </ScrollView>
@@ -210,6 +244,12 @@ export default function DashboardScreen() {
         <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
             {t("users")}
         </Text>
+        <Pressable
+                onPress={handleManageUsers}
+                style={{ position: "absolute", right: 0, top: 0, padding: 10, paddingRight: 20, zIndex: 996 }}
+            >
+                <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
+        </Pressable>
         <ScrollView>
         {userList.length > 0 ? (
             userList.map((user, index) => (
@@ -219,6 +259,8 @@ export default function DashboardScreen() {
                     onPress={() => router.push({
                         pathname: "/profile",
                         params: { uid: JSON.stringify(user.id) }})}
+                        danger={isDeletingUsers}
+                        onDangerPress={() => handleDeleteUser(user.id)}
                 />
             ))
         ) : (

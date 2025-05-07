@@ -18,8 +18,6 @@ export default function SidebarNav() {
 
     const navItemsAdmin: { name: string; label: string; route: any; library: any }[] = [
         { name: "home", label: t("homescreen_title"), route: "/home", library: Entypo },
-        { name: "adduser", label: t("registerscreen_title"), route: "/register", library: AntDesign },
-        { name: "users", label: "Dashboard", route: "/dashboard", library: Feather },
     ];
 
     let navItems = isAdmin || isMod ? navItemsAdmin : navItemsUser;

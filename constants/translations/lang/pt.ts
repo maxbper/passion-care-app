@@ -138,12 +138,14 @@ const pt = {
         plan3_adapted: "Plano 3 Adaptado",
         plan3_normal: "Plano 3",
         suspend: "Utilizador Suspendido",
+        "": "Nenhum",
     },
     workouts: "Histórico de Treinos",
     forms: "Histórico de Formulários",
     clinical_details: "Detalhes Clínicos",
     clinical_registers: "Registos Clínicos",
     new_clinical_register: "Novo Registo Clínico",
+    no_forms: "Não existem formulários para mostrar.",
    };
 
 export default pt;

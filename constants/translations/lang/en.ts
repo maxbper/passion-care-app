@@ -138,12 +138,14 @@ const en = {
         plan3_adapted: "Adapted Plan 3",
         plan3_normal: "Plan 3",
         suspend: "User Suspended",
+        "": "None",
     },
     workouts: "Workout History",
     forms: "Form History",
     clinical_details: "Clinical Details",
     clinical_registers: "Clinical Registers",
     new_clinical_register: "New Clinical Register",
+    no_forms: "No forms to show.",
    };
 
 
