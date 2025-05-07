@@ -98,7 +98,7 @@ export default function HomeScreen() {
             const userXP = await fetchXp();
             const calculatedLevel = Math.floor(userXP / 1000) + 1;
             setLevel(calculatedLevel);
-            setProgress((userXP % 1000) / 1000);
+            setProgress((userXP % 1000) / 1000 || 0);
         };
 
         if (!isAdmin && !isMod) {
@@ -210,8 +210,8 @@ export default function HomeScreen() {
             <View style={styles.container}>
                     <>
                     <View style={styles.card}>
-                        <Text style={styles.levelText}>{t("level")} {level} 🏅</Text>
-                        <ProgressBar progress={progress} color={cancerColor} style={styles.progressBar} />
+                        <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
+                        <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{message}</Text>
                     </View>
