@@ -10,10 +10,11 @@ import LoopingImage from '../components/imageLoop';
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
 export default function ExerciseScreen() {
-  const { workoutPlan, warmup, workout } = useLocalSearchParams();
+  const { workoutPlan, warmup, workout, sex } = useLocalSearchParams();
   const parsedWorkoutPlan = workoutPlan ? JSON.parse(workoutPlan as string) : workoutPlan;
   const isWarmup = warmup ? JSON.parse(warmup as string) : "false";
   const isWorkout = workout ? JSON.parse(workout as string) : "false";
+  const gender = sex ? JSON.parse(sex as string) : "male";
   const [currentIndex, setCurrentIndex] = useState(-3); // For 3-2-1 countdown
   const [timeLeft, setTimeLeft] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -155,12 +156,12 @@ export default function ExerciseScreen() {
         </View>
       ) : (
         <>
-          {/* <Image
-            source={require("../assets/images/adaptive-icon.png")}
+          <Image
+            source={require(`../assets/images/image1.png`)}
             style={styles.exerciseGif}
-            resizeMode="contain" /> */}
+            resizeMode="contain" />
 
-          <LoopingImage />
+          {/* <LoopingImage /> */}
 
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
           {parsedWorkoutPlan[currentIndex]?.duration ? (

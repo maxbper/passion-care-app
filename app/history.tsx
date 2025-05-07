@@ -57,6 +57,10 @@ export default function HistoryScreen() {
     getUserData();
   }, [showClinicalModal]);
 
+  useEffect(() => {
+    setFunctionalOrHealth(true);
+  }, [currentIndex]);
+
   const formatDate = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
     return date.toLocaleDateString("pt-BR", {

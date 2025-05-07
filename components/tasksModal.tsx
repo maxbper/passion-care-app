@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-nati
 import { CheckCircle2, Lock } from "lucide-react-native";
 import { router } from "expo-router";
 import { checkAuth } from "../services/authService";
-import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan } from "../services/dbService";
+import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan, fetchGender } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 
@@ -13,20 +13,21 @@ export default function TasksModal() {
   const [lastDateChecked, setLastDateChecked] = useState(false);
   const [workoutPlan, setWorkoutPlan] = useState<any[]>([]);
   const [warmupPlan, setWarmupPlan] = useState<any[]>([]);
+  const [gender, setGender] = useState<string | null>(null);
   const { t } = useTranslation();
 
   const handleWarmup = () => {
     // redirect to exercise screen with warmup exercises
     router.push({
         pathname: "/exercise",
-        params: { workoutPlan: JSON.stringify(warmupPlan), warmup: "true" },
+        params: { workoutPlan: JSON.stringify(warmupPlan), warmup: "true", sex: JSON.stringify(gender) },
     });
   };
 
   const handleWorkout = () => {
     router.push({
         pathname: "/exercise",
-        params: { workoutPlan: JSON.stringify(workoutPlan), workout: "true" },
+        params: { workoutPlan: JSON.stringify(workoutPlan), workout: "true", sex: JSON.stringify(gender) },
     });
   };
 
@@ -100,17 +101,38 @@ export default function TasksModal() {
                     return rest;
                 }
                 const [name, attr] = await fetchExercise(element, warmupPlan);
+                if (attr.sets && attr.sets > 1) {
+                    const sets = attr.sets;
+                    const exercises = [];
+                    for (let i = 0; i < sets; i++) {
+                        const exercise = {
+                            exercise: name,
+                            duration: attr.duration? attr.duration : 0,
+                            reps: attr.reps? attr.reps : 0,
+                            sets: attr.sets? attr.sets - i : 0,
+                        };
+                        exercises.push(exercise);
+                        if(attr.sets - i > 1) {
+                        const rest = {
+                          exercise: "rest",
+                          duration: parseInt(attr.interval),
+                        };
+                        exercises.push(rest);
+                      }
+                    }
+                    return exercises;
+                } else {
                 const exercise = {
                     exercise: name,
                     duration: attr.duration? attr.duration : 0,
                     reps: attr.reps? attr.reps : 0,
                     sets: attr.sets? attr.sets : 0,
-                    interval: attr.interval? attr.interval : 0,
                 };
                 return exercise;
+              }
             })
         );
-          setWarmupPlan(fetchedWarmupExercises);
+          setWarmupPlan(fetchedWarmupExercises.flat());
       };
 
         const getWorkoutPlan = async () => {
@@ -127,22 +149,47 @@ export default function TasksModal() {
                         return rest;
                     }
                     const [name, attr] = await fetchExercise(element, plan);
-                    const exercise = {
-                        exercise: name,
-                        duration: attr.duration? attr.duration : 0,
-                        reps: attr.reps? attr.reps : 0,
-                        sets: attr.sets? attr.sets : 0,
-                        interval: attr.interval? attr.interval : 0,
-                    };
-                    return exercise;
+                    if (attr.sets && attr.sets > 1) {
+                      const sets = attr.sets;
+                      const exercises = [];
+                      for (let i = 0; i < sets; i++) {
+                          const exercise = {
+                              exercise: name,
+                              duration: attr.duration? attr.duration : 0,
+                              reps: attr.reps? attr.reps : 0,
+                              sets: attr.sets? attr.sets - i : 0,
+                          };
+                          exercises.push(exercise);
+                          const rest = {
+                            exercise: "rest",
+                            duration: parseInt(attr.interval),
+                          };
+                          exercises.push(rest);
+                      }
+                      return exercises;
+                  } else {
+                  const exercise = {
+                      exercise: name,
+                      duration: attr.duration? attr.duration : 0,
+                      reps: attr.reps? attr.reps : 0,
+                      sets: attr.sets? attr.sets : 0,
+                  };
+                  return exercise;
+                }
                 })
             );
-            setWorkoutPlan(fetchedWorkoutExercises);
+            setWorkoutPlan(fetchedWorkoutExercises.flat());
         };
         if(!workoutPlan.length) {
             getWarmupPlan();
             getWorkoutPlan();
         }
+
+        const getGender = async () => {
+          const gender = await fetchGender();
+          setGender(gender);
+        }
+        getGender();
     }, [lastDateChecked, workoutPlan, warmupPlan]);
 
   const Block = ({

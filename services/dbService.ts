@@ -23,6 +23,26 @@ export const fetchIsSuspended = async (userId=null) => {
       }
 };
 
+export const fetchGender = async () => {
+  while (auth.currentUser == null) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().gender;
+      } else {
+        console.log("No user gender found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user gender:", error);
+    }
+};     
+
 export const fetchCancerType = async () => {
   while (auth.currentUser == null) {
     await new Promise(resolve => setTimeout(resolve, 1000));
