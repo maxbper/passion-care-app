@@ -7,7 +7,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
 import { refreshTokens } from '../components/wearable';
-import { uploadWorkout } from '../services/dbService';
+import { addXp, uploadWorkout } from '../services/dbService';
 import { en } from '../constants/translations/lang';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
@@ -125,11 +125,16 @@ export default function ExerciseScreen() {
   const handleGoBack = async () => {
     if(isWarmup) {
       await ReactNativeAsyncStorage.setItem("warmupCompletedTime", Date.now().toString());
+      await addXp(10);
     }
-    if(isWorkout) {
+    else if(isWorkout) {
       const heartRateData = await fetchFitbitData();
       const timeElapsed = endDate - startDate;
       await uploadWorkout(timeElapsed, heartRateData);
+      await addXp(20);
+    }
+    else {
+      await addXp(5);
     }
     router.replace("/home");
   };

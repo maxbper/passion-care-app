@@ -36,7 +36,7 @@ export default function HomeScreen() {
         t("encouragement_messages.3"),
         t("encouragement_messages.4"),
     ];
-    const [message, setMessage] = useState(messages[Math.floor(Math.random() * messages.length)]);
+    const [message, setMessage] = useState(Math.floor(Math.random() * 5));
 
     const suspend = async () => {
         await setIsSuspended(true);
@@ -103,9 +103,9 @@ export default function HomeScreen() {
 
         if (!isAdmin && !isMod) {
             getXP();
-            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            const random = Math.floor(Math.random() * 5);
             setTimeout(() => {
-                setMessage(randomMsg);
+                setMessage(random);
               }, 300000);
             
             setFetchData(true);
@@ -213,7 +213,7 @@ export default function HomeScreen() {
                         <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
                         <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
-                        <Text style={styles.encouragement}>{message}</Text>
+                        <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
                     </View>
                     <View style={styles.card}>
                         <Text style={styles.levelText}> {t("fitbit_data")} 📈</Text>

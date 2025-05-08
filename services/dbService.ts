@@ -84,6 +84,36 @@ export const fetchXp = async () => {
       }
 };
 
+export const addXp = async (amount) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const userId = auth.currentUser?.uid;
+  if (!userId) return;
+
+  let previous_xp = 0;
+
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      previous_xp = docSnap.data().xp;
+    } else {
+      console.log("No user data found!");
+    }
+  } catch (error) {
+    console.error("Error fetching user xp:", error);
+  }
+
+  try {
+    await setDoc(doc(db, 'users', userId), {
+        xp: previous_xp + amount,
+    }, { merge: true });
+    } catch (error) {
+        console.error('Error setting xp:', error);
+    }
+}
+
 export const fetchUserData = async (uid=null) => {
     while (auth.currentUser == null) {
         await new Promise(resolve => setTimeout(resolve, 1000));
