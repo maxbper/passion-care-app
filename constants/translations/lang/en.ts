@@ -157,6 +157,15 @@ const en = {
         Fri: "Fri.",
         Sat: "Sat.",
     },
+    time_hr: "Time in each heart rate zone:",
+    total_time: "Workout time:",
+    feedback: {
+        title: "User Feedback:",
+        happy: "Good",
+        neutral: "Normal",
+        sad: "Bad",
+    },
+
    };
 
 

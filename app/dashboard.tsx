@@ -197,7 +197,7 @@ export default function DashboardScreen() {
                 <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
             </Pressable>
             </View>
-            <ScrollView>
+            <View>
                 {modList.map((mod, index) => (
                     <Block
                         key={index}
@@ -210,7 +210,7 @@ export default function DashboardScreen() {
                         onDangerPress={() => handleDeleteAdminOrMod(mod.id)}
                     />
                 ))}
-            </ScrollView>
+            </View>
             <View style={{ position: "relative", marginBottom: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}>
                 {t("admins")}
@@ -222,7 +222,7 @@ export default function DashboardScreen() {
                 <Text style={{ fontSize: 12 }}>{isDeletingAdmins ? t("cancel") : t("manage")}</Text>
             </Pressable>
             </View>
-            <ScrollView>
+            <View>
                 {adminList.map((admin, index) => (
                     <Block
                         key={index}
@@ -234,7 +234,7 @@ export default function DashboardScreen() {
                         onDangerPress={() => handleDeleteAdminOrMod(admin.id)}
                     />
                 ))}
-            </ScrollView>
+            </View>
             </View>
         );
     }
@@ -250,7 +250,7 @@ export default function DashboardScreen() {
             >
                 <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
         </Pressable>
-        <ScrollView>
+        <View>
         {userList.length > 0 ? (
             userList.map((user, index) => (
                 <Block
@@ -266,7 +266,7 @@ export default function DashboardScreen() {
         ) : (
             <Text style={{ fontSize: 18, textAlign: "center" }}>{t("no_users")}</Text>
         )}
-        </ScrollView>
+        </View>
         </View>
         );
 }

@@ -1,5 +1,3 @@
-import { Sun } from "lucide-react-native";
-
 const pt = {
     welcome: "Bem-vindo",
     select_language: "Selecione o Idioma",
@@ -158,6 +156,14 @@ const pt = {
         Thu: "Qui.",
         Fri: "Sex.",
         Sat: "Sáb.",
+    },
+    time_hr: "Tempo em cada zona cardíaca:",
+    total_time: "Tempo de treino:",
+    feedback: {
+        title: "Feedback do Utilizador:",
+        happy: "Bom",
+        neutral: "Normal",
+        sad: "Mau",
     },
    };
 

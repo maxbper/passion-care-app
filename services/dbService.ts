@@ -700,6 +700,24 @@ export const fetchWeeklyForms = async (uid) => {
       }
 }
 
+export const fetchWorkouts = async (uid) => {
+  try {
+    const weeklyFormRef = collection(db, 'users', uid, 'workouts');
+    const q = query(weeklyFormRef, orderBy('date', 'asc'));
+    const snapshot = await getDocs(q);
+
+    const workouts = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return workouts;
+  } catch (error) {
+    console.error('Error fetching workouts:', error);
+    return null;
+  }
+}
+
 export const fetchClinicalRegister = async (uid) => {
   try {
     const clinicalRegisterRef = collection(db, 'users', uid, 'clinical_register');

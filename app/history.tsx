@@ -5,7 +5,7 @@ import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { fetchClinicalRegister, fetchUserData, fetchWeeklyForms, setIsSuspended, uploadClinicalRegister } from "../services/dbService";
+import { fetchClinicalRegister, fetchUserData, fetchWeeklyForms, fetchWorkouts, setIsSuspended, uploadClinicalRegister } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -23,6 +23,7 @@ export default function HistoryScreen() {
   const [functionalOrHealth, setFunctionalOrHealth] = useState(true);
   const [showClinicalModal, setShowClinicalModal] = useState(false);
   const [newClinicalText, setNewClinicalText] = useState("");
+  const colors = ["#3BC300", "#D5D500", "#D58100", "#D50300"];
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -43,8 +44,11 @@ export default function HistoryScreen() {
           }
         }
         else if(isWorkoutHistory) {
-          const data = null; //await fetchWorkouts(userId);
-          setUserData(data);
+          const data = await fetchWorkouts(userId);
+          if (data.length !== 0) {
+            setUserData(data);
+            setCurrentIndex(data.length - 1);
+          }
         }
         else if(isClinicalHistory) {
           const data = await fetchClinicalRegister(userId);
@@ -59,6 +63,7 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     setFunctionalOrHealth(true);
+
   }, [currentIndex]);
 
   const formatDate = (timestamp) => {
@@ -68,6 +73,17 @@ export default function HistoryScreen() {
       month: "short",
     });
   };
+
+  const parseMillisecondsToMinutes = (ms) => {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+      if (seconds > 0) {
+        return `${minutes+1}m`;
+      }
+      else {
+        return `${minutes}m`;
+      }
+    }
 
   const handleAddClinicalRegister = async () => {
     await uploadClinicalRegister(userId, newClinicalText);
@@ -158,13 +174,47 @@ export default function HistoryScreen() {
     }
     }
     else if(isWorkoutHistory) {
-        return;
+        return (
+            <View style={[styles.card, { alignItems: "center"}]}>
+            
+            <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor}}>
+            {t(`workout_plans.${userData[currentIndex].workout_plan}`)}
+            </Text>
+            <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
+            {t("total_time")} {parseMillisecondsToMinutes(userData[currentIndex].time)}
+            </Text>
+            <Text style={[styles.label, { textAlign: "center", fontSize: 16}]}>
+            {t("time_hr")}
+            </Text>
+            <View style={{ flexDirection: "row", marginBottom: 20, width: "100%", borderWidth: 1, borderColor: "grey", borderRadius: 10, paddingBottom: 15, padding: 5, alignContent: "center", justifyContent: "center"}}>
+                {userData[currentIndex].heart_rate.map((item, index) => (
+                    <View style={{ flex: 1, flexDirection: "column", alignItems: 'center' }} key={index}>
+                    <Text style={[styles.label, { textAlign: "center", fontSize: 12, color: item.minutes > 0 ? colors[index] : "grey"}]}>
+                        {item.max} bpm
+                    </Text>
+                    <Text style={[styles.label, { textAlign: "center", color: item.minutes > 0 ? colors[index] : "grey", fontSize: 16}]}>
+                        {item.minutes}m
+                    </Text>
+                    <Text style={[styles.label, { textAlign: "center", fontSize: 12, color: item.minutes > 0 ? colors[index] : "grey"}]}>
+                        {item.min} bpm
+                    </Text>
+                    </View>
+                ))}
+        </View>
+        <Text style={{ fontSize: 14,}}>
+        {t("feedback.title")}
+            </Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor}}>
+            {t(`feedback.${userData[currentIndex].feedback}`)}
+            </Text>
+        </View>
+        );
     }
     else if(isClinicalHistory) {
         return (
-        <ScrollView style={{ width: "100%", height: Dimensions.get("window").height - (insets.top + 250), marginBottom: 20}} contentContainerStyle={{ alignItems: "center"}}>
-        {userData.map((item) => (
-            <View style={[styles.card]}>
+        <View style={{ width: "100%", height: Dimensions.get("window").height - (insets.top + 250), marginBottom: 20, alignItems: "center"}}>
+        {userData.map((item, index) => (
+            <View style={[styles.card]} key={index}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
                 {formatDate(item.date)}
             </Text>
@@ -175,7 +225,7 @@ export default function HistoryScreen() {
             </View>
         </View>
         ))}
-        </ScrollView>
+        </View>
         );
     }
   };
