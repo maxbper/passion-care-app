@@ -56,7 +56,7 @@ export default function WeekModal() {
             <View style={baseStyle}>
               <Text style={styles.dateText}>{day.format('D')}</Text>
             </View>
-            <Text style={styles.dayText}>{day.format('ddd')+"."}</Text>
+            <Text style={styles.dayText}>{t(`weekday.${day.format('ddd')}`)}</Text>
           </View>
         );
       })}

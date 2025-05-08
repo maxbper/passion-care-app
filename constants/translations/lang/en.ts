@@ -148,6 +148,15 @@ const en = {
     no_forms: "No forms to show.",
     feel: "How did you feel during the workout?",
     weekly: "Weekly Progress",
+    weekday: {
+        Sun: "Sun.",
+        Mon: "Mon.",
+        Tue: "Tue.",
+        Wed: "Wed.",
+        Thu: "Thu.",
+        Fri: "Fri.",
+        Sat: "Sat.",
+    },
    };
 
 

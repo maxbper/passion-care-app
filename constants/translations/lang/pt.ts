@@ -1,3 +1,5 @@
+import { Sun } from "lucide-react-native";
+
 const pt = {
     welcome: "Bem-vindo",
     select_language: "Selecione o Idioma",
@@ -148,6 +150,15 @@ const pt = {
     no_forms: "Não existem formulários para mostrar.",
     feel: "Como se sentiu durante o treino?",
     weekly: "Progresso Semanal",
+    weekday: {
+        Sun: "Dom.",
+        Mon: "Seg.",
+        Tue: "Ter.",
+        Wed: "Qua.",
+        Thu: "Qui.",
+        Fri: "Sex.",
+        Sat: "Sáb.",
+    },
    };
 
 export default pt;
