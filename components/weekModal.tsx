@@ -54,9 +54,9 @@ export default function WeekModal() {
         return (
           <View key={idx} style={styles.dayContainer}>
             <View style={baseStyle}>
-              <Text style={styles.dateText}>{day.format('D')}</Text>
+              <Text style={[styles.dateText, {fontWeight: isToday ? 'bold' : 'normal'}]}>{day.format('D')}</Text>
             </View>
-            <Text style={styles.dayText}>{t(`weekday.${day.format('ddd')}`)}</Text>
+            <Text style={[styles.dayText, {fontWeight: isToday ? 'bold' : 'normal'}]}>{t(`weekday.${day.format('ddd')}`)}</Text>
           </View>
         );
       })}
@@ -100,12 +100,16 @@ const styles = StyleSheet.create({
       },
       incomplete: {
         backgroundColor: 'white',
-        borderColor: '#lightgrey',
+        borderColor: '#b0b0b0',
       },
       today: {
         backgroundColor: '#e0e0e0',
         borderColor: 'black',
         borderStyle: 'dashed',
+      },
+      todayCompleted: {
+        backgroundColor: '#DCFCE7',
+        borderColor: 'black',
       },
       future: {
          backgroundColor: 'white',
@@ -118,6 +122,6 @@ const styles = StyleSheet.create({
       },
       dateText: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: 'normal',
       },
 });

@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         marginBottom: 20,
         borderColor: "grey",
-        borderWidth: 1,
+        borderWidth: 0,
     },
     card2: {
         paddingVertical: 20,
