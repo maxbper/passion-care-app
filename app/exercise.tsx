@@ -6,6 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
+import { refreshTokens } from '../components/wearable';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -24,12 +25,19 @@ export default function ExerciseScreen() {
   const [transitioning, setTransitioning] = useState(false);
   const [noTimer, setNoTimer] = useState(false);
   const { t } = useTranslation();
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   useEffect(() => {
       const checkAuthentication = async () => {
         await checkAuth();
     };
     checkAuthentication();
+
+    if(startTime === "") {
+      const time = getTime();
+      setStartTime(time);
+    }
   }, []);
 
   useEffect(() => {
@@ -122,6 +130,7 @@ export default function ExerciseScreen() {
     if(isWorkout) {
       // push to db
     }
+    await fetchFitbitData();
     router.replace("/home");
   };
 
@@ -129,7 +138,72 @@ export default function ExerciseScreen() {
     setHasStarted(true);
   };
 
+  const getToken = async () => {
+    const tokens = await ReactNativeAsyncStorage.getItem("tokens");
+    if (!tokens) return null;
+
+    const accessToken = JSON.parse(tokens).accessToken;
+    const expiresIn = JSON.parse(tokens).expiresIn;
+    const issuedAt = JSON.parse(tokens).issuedAt;
+
+    const now = Math.floor(Date.now() / 1000);
+    const expiresAt = issuedAt + expiresIn;
+
+    if (now < expiresAt - 60) return accessToken;
+
+    const new_accessToken = await refreshTokens(tokens);
+    if (!new_accessToken) return null;
+    return new_accessToken;
+};
+
+  const getTodayDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const getTime = () => {
+    const today = new Date();
+    const hh = String(today.getHours()).padStart(2, '0');
+    const mm = String(today.getMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
+  };
+
+  const fetchFitbitData = async () => {
+    console.log("Fetching Fitbit data...");
+    const token = await getToken();
+    if (!token) {
+        return;
+    }
+    console.log("Token:", token);
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const date = getTodayDate();
+
+    try {
+      const url = `https://api.fitbit.com//1/user/-/activities/heart/date/${date}/1d/1min/time/${startTime}/${endTime}.json`;
+      const response = await fetch(url, { headers });
+      const data = await response.json();
+      console.log('Fitbit data:', data);
+
+    } catch (error) {
+      console.error('Error fetching Fitbit data:', error);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
   if (currentIndex >= parsedWorkoutPlan.length) {
+    const time = getTime();
+    setEndTime(time);
     return (
       <View style={styles.container}>
         <Text style={styles.doneText}>Well Done!</Text>
@@ -165,7 +239,7 @@ export default function ExerciseScreen() {
 
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
           {parsedWorkoutPlan[currentIndex]?.duration ? (
-            <Text style={styles.timer}>{timeLeft}s</Text>
+            <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
           ) : (
             <Text style={styles.timer}>{timeLeft} reps</Text>
           )}
