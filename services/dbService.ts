@@ -243,22 +243,38 @@ export const fetchLastWorkoutDate = async () => {
     }
 };
 
-export const uploadWorkout = async (time) => {
-    try {
-        const userId = auth.currentUser?.uid;
+export const uploadWorkout = async (t, hr) => {
+  const userId = auth.currentUser?.uid;
+  let plan = "";
 
+    try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        plan = docSnap.data().workout_plan;
+      } else {
+        console.log("No user workout plan found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user workout plan:", error);
+    }
+
+    try {
         const workoutRef = collection(db, 'users', userId, 'workouts');
         const newWorkoutRef = doc(workoutRef);
         const date = new Date();
 
         await setDoc(newWorkoutRef, {
-            // exercises will be added here and received in the function
-            time: time,
+            time: t,
+            workout_plan: plan,
+            heart_rate: hr,
             date: date,
         });
 
     } catch (error) {
-        console.error('Error sending weekly form:', error);
+        console.error('Error sending workout:', error);
     }
 };
 

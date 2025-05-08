@@ -7,6 +7,8 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
 import { refreshTokens } from '../components/wearable';
+import { uploadWorkout } from '../services/dbService';
+import { en } from '../constants/translations/lang';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -27,17 +29,14 @@ export default function ExerciseScreen() {
   const { t } = useTranslation();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [startDate, setStartDate] = useState<number | null>(null);;
+  const [endDate, setEndDate] = useState<number | null>(null);;
 
   useEffect(() => {
       const checkAuthentication = async () => {
         await checkAuth();
     };
     checkAuthentication();
-
-    if(startTime === "") {
-      const time = getTime();
-      setStartTime(time);
-    }
   }, []);
 
   useEffect(() => {
@@ -128,14 +127,20 @@ export default function ExerciseScreen() {
       await ReactNativeAsyncStorage.setItem("warmupCompletedTime", Date.now().toString());
     }
     if(isWorkout) {
-      // push to db
+      const heartRateData = await fetchFitbitData();
+      const timeElapsed = endDate - startDate;
+      await uploadWorkout(timeElapsed, heartRateData);
     }
-    await fetchFitbitData();
     router.replace("/home");
   };
 
   const handleStart = () => {
     setHasStarted(true);
+    if(startTime === "") {
+      const time = getTime();
+      setStartTime(time);
+      setStartDate(Date.now());
+    }
   };
 
   const getToken = async () => {
@@ -172,12 +177,10 @@ export default function ExerciseScreen() {
   };
 
   const fetchFitbitData = async () => {
-    console.log("Fetching Fitbit data...");
     const token = await getToken();
     if (!token) {
         return;
     }
-    console.log("Token:", token);
 
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -185,10 +188,11 @@ export default function ExerciseScreen() {
     const date = getTodayDate();
 
     try {
-      const url = `https://api.fitbit.com//1/user/-/activities/heart/date/${date}/1d/1min/time/${startTime}/${endTime}.json`;
+      const url = `https://api.fitbit.com//1/user/-/activities/heart/date/${date}/1d/1min/time/${startTime}/${endTime}.json`; // /1min/time/${startTime}/${endTime}
       const response = await fetch(url, { headers });
       const data = await response.json();
-      console.log('Fitbit data:', data);
+
+      return data["activities-heart"][0].heartRateZones;
 
     } catch (error) {
       console.error('Error fetching Fitbit data:', error);
@@ -202,8 +206,11 @@ export default function ExerciseScreen() {
   };
 
   if (currentIndex >= parsedWorkoutPlan.length) {
-    const time = getTime();
-    setEndTime(time);
+    if(endTime === "") {
+      const time = getTime();
+      setEndTime(time);
+      setEndDate(Date.now());
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.doneText}>Well Done!</Text>
