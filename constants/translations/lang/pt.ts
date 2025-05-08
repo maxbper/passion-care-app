@@ -146,6 +146,8 @@ const pt = {
     clinical_registers: "Registos Clínicos",
     new_clinical_register: "Novo Registo Clínico",
     no_forms: "Não existem formulários para mostrar.",
+    feel: "Como se sentiu durante o treino?",
+    weekly: "Progresso Semanal",
    };
 
 export default pt;

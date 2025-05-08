@@ -146,6 +146,8 @@ const en = {
     clinical_registers: "Clinical Registers",
     new_clinical_register: "New Clinical Register",
     no_forms: "No forms to show.",
+    feel: "How did you feel during the workout?",
+    weekly: "Weekly Progress",
    };
 
 

@@ -273,7 +273,7 @@ export const fetchLastWorkoutDate = async () => {
     }
 };
 
-export const uploadWorkout = async (t, hr) => {
+export const uploadWorkout = async (t, hr, f) => {
   const userId = auth.currentUser?.uid;
   let plan = "";
 
@@ -301,6 +301,7 @@ export const uploadWorkout = async (t, hr) => {
             workout_plan: plan,
             heart_rate: hr,
             date: date,
+            feedback: f,
         });
 
     } catch (error) {
@@ -730,5 +731,28 @@ export const uploadClinicalRegister = async (uid, text) => {
 
   } catch (error) {
     console.error('Error sending clinical register:', error);
+  }
+}
+
+export const fetchLast7Workouts = async () => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const uid = auth.currentUser.uid;
+
+  try {
+    const workoutRef = collection(db, 'users', uid, 'workouts');
+    const q = query(workoutRef, orderBy('date', 'desc'), limit(7));
+    const snapshot = await getDocs(q);
+
+    const workouts = snapshot.docs.map(doc => ({
+      id: doc.id,
+      date: doc.data().date.toDate(),
+    }));
+
+    return workouts;
+  } catch (error) {
+    console.error('Error fetching last 7 workouts:', error);
+    return null;
   }
 }

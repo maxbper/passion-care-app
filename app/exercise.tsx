@@ -15,8 +15,8 @@ const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 export default function ExerciseScreen() {
   const { workoutPlan, warmup, workout, sex } = useLocalSearchParams();
   const parsedWorkoutPlan = workoutPlan ? JSON.parse(workoutPlan as string) : workoutPlan;
-  const isWarmup = warmup ? JSON.parse(warmup as string) : "false";
-  const isWorkout = workout ? JSON.parse(workout as string) : "false";
+  const isWarmup = warmup ? JSON.parse(warmup as string) : false;
+  const isWorkout = workout ? JSON.parse(workout as string) : false;
   const gender = sex ? JSON.parse(sex as string) : "male";
   const [currentIndex, setCurrentIndex] = useState(-3); // For 3-2-1 countdown
   const [timeLeft, setTimeLeft] = useState(0);
@@ -29,8 +29,9 @@ export default function ExerciseScreen() {
   const { t } = useTranslation();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [startDate, setStartDate] = useState<number | null>(null);;
-  const [endDate, setEndDate] = useState<number | null>(null);;
+  const [startDate, setStartDate] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState<number | null>(null);
+  const [feedbackMood, setFeedbackMood] = useState<string | null>(null);
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -130,7 +131,7 @@ export default function ExerciseScreen() {
     else if(isWorkout) {
       const heartRateData = await fetchFitbitData();
       const timeElapsed = endDate - startDate;
-      await uploadWorkout(timeElapsed, heartRateData);
+      await uploadWorkout(timeElapsed, heartRateData, feedbackMood);
       await addXp(20);
     }
     else {
@@ -219,7 +220,25 @@ export default function ExerciseScreen() {
     return (
       <View style={styles.container}>
         <Text style={styles.doneText}>Well Done!</Text>
-        <Button title="Back" onPress={handleGoBack} />
+
+        {isWorkout ? (
+          <>
+        <Text style={{ fontSize: 18, marginVertical: 10 }}>{t("feel")}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginBottom: 30 }}>
+        <TouchableOpacity onPress={() => setFeedbackMood('happy')} style={feedbackMood==='happy' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60} : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😊</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setFeedbackMood('neutral')} style={feedbackMood==='neutral' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😐</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setFeedbackMood('sad')} style={feedbackMood==='sad' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😢</Text>
+        </TouchableOpacity>
+      </View>
+          </>
+        ):null}
+
+        <Button title={t("submit")} onPress={handleGoBack} />
       </View>
     );
   }

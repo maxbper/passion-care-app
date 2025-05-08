@@ -14,6 +14,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { refreshTokens } from "../components/wearable";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import WeekModal from "../components/weekModal";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -28,6 +29,7 @@ export default function HomeScreen() {
     const [sleep, setSleep] = useState(-1);
     const [fetchData, setFetchData] = useState(false);
     const insets = useSafeAreaInsets();
+    const [changeMessage, setChangeMessage] = useState(true);
 
     const messages = [
         t("encouragement_messages.0"),
@@ -103,16 +105,20 @@ export default function HomeScreen() {
 
         if (!isAdmin && !isMod) {
             getXP();
-            const random = Math.floor(Math.random() * 5);
-            setTimeout(() => {
+            if(changeMessage) {
+                setChangeMessage(false);
+                const random = Math.floor(Math.random() * 5);
                 setMessage(random);
-              }, 300000);
+                setTimeout(() => {
+                    setChangeMessage(true);
+                }, 300000);
+            }
             
             setFetchData(true);
             fetchFitbitData();
         }
         
-    }, [isAdmin, isMod, message, fetchData]);
+    }, [isAdmin, isMod, message, fetchData, changeMessage]);
 
     const getToken = async () => {
         const tokens = await ReactNativeAsyncStorage.getItem("tokens");
@@ -207,15 +213,18 @@ export default function HomeScreen() {
             ) : (
             <>
             {warningShown && <WeeklyHealthAssessment />}
-            <View style={styles.container}>
+            <View style={[styles.container, {marginTop: insets.top + 50}]}>
                     <>
+                    <View style={styles.card2}>
+                    <WeekModal />
+                    </View>
                     <View style={styles.card}>
                         <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
                         <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
                     </View>
-                    <View style={styles.card}>
+                    {/* <View style={styles.card}>
                         <Text style={styles.levelText}> {t("fitbit_data")} 📈</Text>
                         <View style={styles.statsText}>
                         {(steps === -1 || rhr === -1 || sleep === -1) ? (
@@ -231,8 +240,9 @@ export default function HomeScreen() {
                             </>
                             )}
                         </View>
-                    </View>
+                    </View> */}
                     <TasksModal />
+
                     </>
             </View>
             </>
@@ -270,7 +280,23 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 4,
-        marginBottom: 50,
+        marginBottom: 20,
+        borderColor: "grey",
+        borderWidth: 1,
+    },
+    card2: {
+        paddingVertical: 20,
+        backgroundColor: "#FFF",
+        borderRadius: 10,
+        alignItems: "center",
+        alignSelf: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        marginBottom: 20,
+        borderColor: "grey",
+        borderWidth: 1,
     },
     levelText: {
         fontSize: 24,
