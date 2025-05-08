@@ -112,13 +112,13 @@ export default function TasksModal() {
                             sets: attr.sets? attr.sets - i : 0,
                         };
                         exercises.push(exercise);
-                        if(attr.sets - i > 1) {
-                        const rest = {
-                          exercise: "rest",
-                          duration: parseInt(attr.interval),
-                        };
-                        exercises.push(rest);
-                      }
+                        if(exercise.sets > 1) {
+                          const rest = {
+                            exercise: "rest",
+                            duration: parseInt(attr.interval),
+                          };
+                          exercises.push(rest);
+                        }
                     }
                     return exercises;
                 } else {
@@ -160,11 +160,13 @@ export default function TasksModal() {
                               sets: attr.sets? attr.sets - i : 0,
                           };
                           exercises.push(exercise);
-                          const rest = {
-                            exercise: "rest",
-                            duration: parseInt(attr.interval),
-                          };
-                          exercises.push(rest);
+                          if(exercise.sets > 1) {
+                            const rest = {
+                              exercise: "rest",
+                              duration: parseInt(attr.interval),
+                            };
+                            exercises.push(rest);
+                          }
                       }
                       return exercises;
                   } else {

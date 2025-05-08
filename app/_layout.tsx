@@ -13,7 +13,8 @@ function LayoutContent() {
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
   const isHomePage = pathname === "/home";
-  const page = isLoginPage || isDontExercisePage || isHomePage;
+  const isExercisePage = pathname === "/exercise";
+  const page = isLoginPage || isDontExercisePage || isHomePage || isExercisePage;
   const { isVisible, hideModal } = useProfileModal();
 
   return (

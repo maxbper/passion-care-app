@@ -53,7 +53,6 @@ export default function LoginScreen() {
 
   return (
     <>
-  <Stack.Screen options={{ headerTitle: "" }} />
 
   {Platform.OS !== "web" ? (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
