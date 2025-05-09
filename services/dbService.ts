@@ -311,7 +311,7 @@ export const fetchLastWorkoutDate = async () => {
     }
 };
 
-export const uploadWorkout = async (t, hr, f) => {
+export const uploadWorkout = async (t, hr, f, e) => {
   const userId = auth.currentUser?.uid;
   let plan = "";
 
@@ -340,6 +340,7 @@ export const uploadWorkout = async (t, hr, f) => {
             heart_rate: hr,
             date: date,
             feedback: f,
+            exercises: e,
         });
 
     } catch (error) {

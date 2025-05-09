@@ -166,6 +166,7 @@ const pt = {
         sad: "Mau",
     },
     well_done: "Muito bem!",
+    ex: "Exercícios do Treino",
    };
 
 export default pt;

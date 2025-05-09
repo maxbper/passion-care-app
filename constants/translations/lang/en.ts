@@ -166,6 +166,7 @@ const en = {
         sad: "Bad",
     },
     well_done: "Well done!",
+    ex: "Exercises of the Workout",
 
    };
 

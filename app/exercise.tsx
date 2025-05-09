@@ -130,7 +130,17 @@ export default function ExerciseScreen() {
     else if(isWorkout) {
       const heartRateData = await fetchFitbitData();
       const timeElapsed = endDate - startDate;
-      await uploadWorkout(timeElapsed, heartRateData, feedbackMood);
+
+      let exercises = [];
+      parsedWorkoutPlan.forEach((item) => {
+        if(item.exercise !== "rest" && !exercises.includes(item.exercise)) {
+          exercises.push(item.exercise);
+        }
+      }
+      );
+      console.log("Exercises: ", exercises);
+
+      await uploadWorkout(timeElapsed, heartRateData, feedbackMood, exercises);
       await addXp(20);
     }
     else {

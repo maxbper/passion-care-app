@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable, FlatList, ScrollView, Dimensions, TextInput } from "react-native";
-import { AntDesign, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -24,6 +24,7 @@ export default function HistoryScreen() {
   const [showClinicalModal, setShowClinicalModal] = useState(false);
   const [newClinicalText, setNewClinicalText] = useState("");
   const colors = ["#3BC300", "#D5D500", "#D58100", "#D50300"];
+  const [showWorkoutModal, setShowWorkoutModal] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -176,10 +177,14 @@ export default function HistoryScreen() {
     else if(isWorkoutHistory) {
         return (
             <View style={[styles.card, { alignItems: "center"}]}>
-            
-            <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor}}>
-            {t(`workout_plans.${userData[currentIndex].workout_plan}`)}
-            </Text>
+            <View style={{ flexDirection: "row"}}>
+                <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor, paddingRight: 5}}>
+                {t(`workout_plans.${userData[currentIndex].workout_plan}`)}
+                </Text>
+                <TouchableOpacity onPress={() => {userData[currentIndex].exercises ? setShowWorkoutModal(true) : null}} style={{ alignSelf: "center" }}>
+                <Feather name="info" size={24} color="grey" style={{ alignSelf:"center" }} />
+                </TouchableOpacity>
+            </View>
             <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
             {t("total_time")} {parseMillisecondsToMinutes(userData[currentIndex].time)}
             </Text>
@@ -347,6 +352,22 @@ if(isWorkoutHistory) {
           )}
           
         </View>
+        {showWorkoutModal && (
+            <Pressable style={[styles.modalContainer, {height: Dimensions.get("window").height}]} onPress={() => {setShowWorkoutModal(false)}}>
+                <View style={styles.modalContent2}>
+                <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
+                                {t("ex")}
+                            </Text>
+                    <View style={styles.exercises}>
+                        {userData[currentIndex].exercises.map((item, index) => (
+                            <Text style={[styles.label, { textAlign: "left"}]} key={index}>
+                                {t(`exercises.${item}`)}
+                            </Text>
+                     )   )}
+                    </View>
+                </View>
+            </Pressable>
+          )}
         </>
       );
 }
@@ -432,6 +453,15 @@ modalContent: {
     zIndex: 950,
     marginBottom: 20,
 },
+modalContent2: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    width: '90%',
+    alignItems: 'center',
+    paddingVertical: 20,
+    zIndex: 950,
+    marginBottom: 20,
+},
 button: {
     borderRadius: 10,
     paddingHorizontal: 12,
@@ -477,6 +507,17 @@ label: {
     fontSize: 14,
     width: "80%",
     height: 100,
+    justifyContent: "flex-start",
+    zIndex: 951,
+},
+exercises: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 0,
+    fontSize: 14,
+    width: "90%",
     justifyContent: "flex-start",
     zIndex: 951,
 },
