@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
       },
       today: {
         backgroundColor: '#e0e0e0',
-        borderColor: 'black',
+        borderColor: 'grey',
         borderStyle: 'dashed',
       },
       todayCompleted: {
         backgroundColor: '#DCFCE7',
-        borderColor: 'black',
+        borderColor: 'grey',
       },
       future: {
          backgroundColor: 'white',

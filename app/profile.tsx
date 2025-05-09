@@ -5,7 +5,7 @@ import React from "react";
 import { checkAuth, logout } from "../services/authService";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { fetchUserData, setIsSuspended } from "../services/dbService";
+import { fetchUserData, setIsSuspended, setNeedsForm } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
 import { CheckCircle2, Lock, Unlock } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -43,11 +43,16 @@ export default function ProfileScreen() {
     getUserData();
   }, [isSuspended]);
 
+  const handleLockToggle = async (locked) => {
+    await setIsSuspended(!locked, userId);
+    await setNeedsForm(locked, userId);
+    setSuspended(!locked);
+  };
+
   const LockToggle = ({locked }) => {
     return (
       <Pressable style={styles.lockContainer} onPress={() => {
-        setIsSuspended(!locked, userId);
-        setSuspended(!locked);
+        handleLockToggle(locked);
         }}>
         {locked ? (
           <Lock size={24} color="#ef4444" />

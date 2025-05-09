@@ -43,6 +43,44 @@ export const fetchGender = async () => {
     }
 };     
 
+export const fetchNeedsForm = async () => {
+  while (auth.currentUser == null) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().needs_form;
+      } else {
+        console.log("No user needs_form found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user needs_form:", error);
+    }
+};  
+
+export const setNeedsForm = async (value, uid=null) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  let userId = auth.currentUser?.uid;
+  if (uid) {
+      userId = uid;
+  }
+  if (!userId) return;
+  try {
+      await setDoc(doc(db, 'users', userId), {
+          needs_form: value,
+      }, { merge: true });
+  } catch (error) {
+      console.error('Error setting needs_form:', error);
+  }
+}
+
 export const fetchCancerType = async () => {
   while (auth.currentUser == null) {
     await new Promise(resolve => setTimeout(resolve, 1000));

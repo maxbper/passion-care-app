@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Slider from '@react-native-community/slider';
-import { fetchLastWeeklyFormDate, uploadWeeklyForm } from '../services/dbService';
+import { fetchLastWeeklyFormDate, fetchNeedsForm, setNeedsForm, uploadWeeklyForm } from '../services/dbService';
 
 const WeeklyHealthAssessment = ({ }) => {
     const { t } = useTranslation();
@@ -50,6 +50,17 @@ const WeeklyHealthAssessment = ({ }) => {
 
     const checkLastAssessmentDate = async () => {
         // startHealthAssessmentInitial(); // for testing purposes
+        try {
+            const needs_form = await fetchNeedsForm();
+            if (needs_form) {
+                startHealthAssessmentInitial();
+                return;
+            }
+        }
+        catch (error) {
+            console.error('Error fetching needs form:', error);
+        }
+
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
             if (!lastAssessmentDate) {
@@ -212,6 +223,7 @@ const WeeklyHealthAssessment = ({ }) => {
             
             const decision = await makeDecision();
             await uploadWeeklyForm(healthAnswers, functionalAnswers, decision, false);
+            await setNeedsForm(false);
 
             setCurrentQuestion(null);
             setHealthAnswers([]);
