@@ -165,6 +165,7 @@ const pt = {
         neutral: "Normal",
         sad: "Mau",
     },
+    well_done: "Muito bem!",
    };
 
 export default pt;

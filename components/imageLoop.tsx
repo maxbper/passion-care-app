@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
-export default function LoopingImage() {
-  const images = [
-    require("../assets/images/image1.png"),
-    require("../assets/images/image2.png"),
-  ];
-  
-  const [currentIndex, setCurrentIndex] = useState(0);
+export default function LoopingImage({gender, exercise_name}) {
+  const [image, setImage] = useState(null);
+
+  const exerciseImages = {
+    male: {
+      march_place: require('../assets/images/exercises/male/march_place.png'),
+    },
+    female: {
+      march_place: require('../assets/images/exercises/female/march_place.png'),
+    },
+  };
+
+  const otherGender = () => {
+    if (gender == "male")  {
+      return "female";
+    }
+    else if (gender == "female") {
+      return "male";
+    }
+    return null;
+  }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % images.length);
-    }, 750); // Change every 1000 ms (1 second)
-
-    return () => clearInterval(interval); // Cleanup on unmount
+    if (exerciseImages[gender]) {
+      if (exerciseImages[gender][exercise_name]){
+        setImage(exerciseImages[gender][exercise_name]);
+      }
+      else if (exerciseImages[otherGender()][exercise_name]) {
+        setImage(exerciseImages[otherGender()][exercise_name]);
+      }
+      else {
+        setImage(require("../assets/images/adaptive-icon.png"));
+      }
+    }
   }, []);
 
   return (
       <Image
-        source={images[currentIndex]}
+        source={image}
         style={styles.exerciseGif}
         resizeMode="contain"
       />

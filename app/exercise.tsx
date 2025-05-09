@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
 import { refreshTokens } from '../components/wearable';
 import { addXp, uploadWorkout } from '../services/dbService';
-import { en } from '../constants/translations/lang';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -219,7 +218,7 @@ export default function ExerciseScreen() {
     }
     return (
       <View style={styles.container}>
-        <Text style={styles.doneText}>Well Done!</Text>
+        <Text style={styles.doneText}>{t("well_done")}</Text>
 
         {isWorkout ? (
           <>
@@ -261,13 +260,7 @@ export default function ExerciseScreen() {
         </View>
       ) : (
         <>
-          <Image
-            source={require(`../assets/images/image1.png`)}
-            style={styles.exerciseGif}
-            resizeMode="contain" />
-
-          {/* <LoopingImage /> */}
-
+          <LoopingImage gender={gender} exercise_name={parsedWorkoutPlan[currentIndex]?.exercise} />
           <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
           {parsedWorkoutPlan[currentIndex]?.duration ? (
             <Text style={styles.timer}>{formatTime(timeLeft)}</Text>

@@ -165,6 +165,7 @@ const en = {
         neutral: "Normal",
         sad: "Bad",
     },
+    well_done: "Well done!",
 
    };
 
