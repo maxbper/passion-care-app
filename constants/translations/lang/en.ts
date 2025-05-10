@@ -228,6 +228,8 @@ const en = {
     no_clinical_registers: "No clinical registers to show.",
     no_appointments: "No appointments to show.",
     back: "Back",
+    extra_exercises: "Extra Exercises",
+    no_extra_exercises: "No extra exercises were done this day.",
    };
 
 

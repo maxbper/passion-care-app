@@ -26,6 +26,11 @@ export default function HistoryScreen() {
   const [newClinicalText, setNewClinicalText] = useState("");
   const colors = ["#3BC300", "#D5D500", "#D58100", "#D50300"];
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
+  const [isExtraModalVisible, setIsExtraModalVisible] = useState(false);
+  const [extraExercises, setExtraExercises] = useState([]);
+  const [extraExercisesDates, setExtraExercisesDates] = useState([]);
+  const [currentExtraIndex, setCurrentExtraIndex] = useState(0);
+  const [extraExercisesNames, setExtraExercisesNames] = useState([]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -68,6 +73,20 @@ export default function HistoryScreen() {
 
   }, [currentIndex]);
 
+  useEffect(() => {
+    const getExtraExercises = async () => {
+      const data = await fetchUserData(userId);
+      const dates = Object.keys(data.extra_exercises);
+      const names = Object.keys(data.extra_exercises["2025-05-08"]);
+      setExtraExercises(data.extra_exercises);
+      setExtraExercisesDates(dates);
+      setExtraExercisesNames(names);
+      console.log(names);
+      setCurrentExtraIndex(dates.length - 1);
+    }
+    getExtraExercises();
+  }, [isExtraModalVisible]);
+
   const formatDate = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
     if(i18n.language === "en") {
@@ -83,6 +102,22 @@ export default function HistoryScreen() {
       });
     }
   };
+
+  const formatDate2 = (string) => {
+    const date = new Date(string);
+    if(i18n.language === "en") {
+      return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+      });
+    }
+    else {
+      return date.toLocaleDateString("pt-BR", {
+        day: "numeric",
+        month: "short",
+      });
+    }
+  }
 
   const parseMillisecondsToMinutes = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -132,6 +167,47 @@ export default function HistoryScreen() {
       </Pressable>
     );
   };
+
+  const Block2 = ({
+        title,
+        subtitle,
+        onPress,
+        onDangerPress,
+        disabled,
+        completed,
+        completedCheck,
+        danger,
+      }: {
+        title: string;
+        subtitle?: string;
+        onPress: () => void;
+        onDangerPress?: () => void;
+        disabled?: boolean;
+        completed?: boolean;
+        danger?: boolean;
+        completedCheck?: boolean;
+      }) => {
+        let containerStyle = [styles.block];
+        if (completed) containerStyle.push(styles.completed);
+        else if (disabled) containerStyle.push(styles.disabled);
+        else if (danger) containerStyle.push(styles.danger);
+  
+        return (
+          <Pressable
+            onPress={danger ? onDangerPress : onPress}
+            disabled={disabled}
+            style={containerStyle}
+          >
+            <Text style={styles.blockText}>{title}</Text>
+            {completedCheck ? (
+              <FontAwesome name="check" size={24} color="black" />
+            ) : (
+              <Text style={styles.emailText}>{subtitle}</Text>
+            )}
+              
+          </Pressable>
+        );
+      };
 
   const AnswersBlock = ({}: {}) => {
     if(isFormsHistory) {
@@ -360,6 +436,10 @@ if(isWorkoutHistory) {
             )}
             </View>
             <AnswersBlock/>
+            <Block
+              title={t("extra_exercises")}
+              onPress={() => {setIsExtraModalVisible(true)}}
+            />
             </>
               ) : (
             <>
@@ -385,6 +465,63 @@ if(isWorkoutHistory) {
                             </Text>
                      )   )}
                     </View>
+                </View>
+            </Pressable>
+          )}
+          {isExtraModalVisible && (
+            <Pressable style={[styles.modalContainer, {height: Dimensions.get("window").height}]} onPress={() => {setIsExtraModalVisible(false)}}>
+                <View style={styles.modalContent2}>
+                <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
+                                {t("extra_exercises")}
+                            </Text>
+          {extraExercisesDates ? (
+            <>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
+            {!extraExercisesDates[currentExtraIndex + 1] && extraExercisesDates[currentExtraIndex - 2] && (
+                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 2)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 2])}</Text>
+                </TouchableOpacity>
+            )}
+    
+            {extraExercisesDates[currentExtraIndex - 1] && (
+                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 1)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 1])}</Text>
+                </TouchableOpacity>
+            )}
+            
+            <Text style={{ fontWeight: "bold", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex])}</Text>
+    
+            {extraExercisesDates[currentExtraIndex + 1] && (
+                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 1)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 1])}</Text>
+                </TouchableOpacity>
+            )}
+    
+            {!extraExercisesDates[currentExtraIndex - 1] && extraExercisesDates[currentExtraIndex + 2] && (
+                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 2)}>
+                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 2])}</Text>
+                </TouchableOpacity>
+            )}
+            </View>
+            {Object.keys(extraExercises[extraExercisesDates[currentExtraIndex]]).map((item, index) => (
+              <Block2
+              key={index}
+              title={t(item)}
+              subtitle={t(extraExercises[extraExercisesDates[currentExtraIndex]][item])}
+              onPress={() => {}}
+              disabled={true}
+            />
+                ))}
+            </>
+              ) : (
+            <>
+            <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
+            <Text style={{ fontSize: 14, textAlign: "center" }}>
+                {t("no_extra_exercises")}
+            </Text>
+        </View>
+            </>
+          )}
                 </View>
             </Pressable>
           )}
@@ -613,5 +750,18 @@ block: {
   },
   inactiveBox: {
     backgroundColor: "#E5E7EB",
+  },
+  emailText: {
+    fontSize: 14,
+    fontWeight: "300",
+    color: "grey",
+  },
+  disabled: {
+    backgroundColor: "#E5E7EB",
+  },
+  danger: {
+    backgroundColor: "#fee2e2",
+    borderColor: "#ef4444",
+    borderWidth: 1,
   },
 });

@@ -228,6 +228,8 @@ const pt = {
     no_appointments: "Não existem consultas pendentes.",
     no_clinical_registers: "Ainda não existem registos clínicos.",
     back: "Voltar",
+    extra_exercises: "Exercícios Extra",
+    no_extra_exercises: "Não existem exercícios extra realizados neste dia.",
    };
 
 export default pt;

@@ -285,7 +285,7 @@ export default function TasksModal() {
               onPress={handleWorkout}
               disabled={!warmupCompleted}
               completed={workoutCompleted} />
-          <Block title={t("Extra")} onPress={() => {setPageNumber(1); } } />
+          <Block title={t("extra_exercises")} onPress={() => {setPageNumber(1); } } />
       </>
   );
   }
