@@ -167,6 +167,11 @@ const pt = {
     },
     well_done: "Muito bem!",
     ex: "Exercícios do Treino",
+    appointment_title: "Consultas",
+    pending: "Pendente...",
+    weekly_availability: "Disponibilidade",
+    join: "Aderir",
+    approved: "Aprovada",
    };
 
 export default pt;

@@ -136,7 +136,7 @@ export default function WearableComponent() {
 
 const styles = StyleSheet.create({
     button: {
-        marginVertical: 40,
+        marginVertical: 0,
         backgroundColor: "#fff",
         borderRadius: 50,
         width: 100,

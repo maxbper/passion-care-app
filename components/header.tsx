@@ -15,6 +15,7 @@ export default function Header() {
     const isLoginPage = pathname === "/login";
     const isDontExercisePage = pathname === "/dontExercise";
     const isExercisePage = pathname === "/exercise";
+    const isHomePage = pathname === "/home";
     const awarenessRibbonColor = isLoginPage || isDontExercisePage;
     const dontShowModal = isLoginPage || isDontExercisePage || isExercisePage || Platform.OS === "web";
     const { showModal } = useProfileModal();
@@ -26,6 +27,9 @@ export default function Header() {
       const isMod = await ReactNativeAsyncStorage.getItem("isMod");
 
       if (isAdmin === "true" || isMod === "true") {
+        router.push("/home");
+      }
+      else if (!isHomePage) {
         router.push("/home");
       }
     };

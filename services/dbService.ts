@@ -813,3 +813,156 @@ export const fetchLast7Workouts = async () => {
     return null;
   }
 }
+
+export const setAppointmentAvailability = async (list) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  let userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      await setDoc(doc(db, 'users', userId), {
+          availability: list,
+      }, { merge: true });
+  } catch (error) {
+      console.error('Error setting availability:', error);
+  }
+}
+
+export const fetchAppointmentAvailability = async () => {
+  while (auth.currentUser == null) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().availability;
+      } else {
+        console.log("No user availability found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user availability:", error);
+    }
+};
+
+export const fetchMyAppointmentsMod = async () => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      const docRef = collection(db, "appointments");
+      const q = query(docRef, orderBy('date', 'asc'));
+      const snapshot = await getDocs(q);
+      const appointments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const myAppointments = appointments.filter(appointment => appointment.mod === userId);
+      return myAppointments;
+      
+    } catch (error) {
+      console.error("Error fetching user appointments:", error);
+    }
+};
+
+export const fetchMyAppointmentsUser = async () => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      const docRef = collection(db, "appointments");
+      const q = query(docRef, orderBy('date', 'asc'));
+      const snapshot = await getDocs(q);
+      const appointments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const myAppointments = appointments.filter(appointment => appointment.user === userId);
+      return myAppointments;
+      
+    } catch (error) {
+      console.error("Error fetching user appointments:", error);
+    }
+};
+
+export const setApproved = async (id) => {
+  try{
+    const docRef = doc(db, "appointments", id);
+    await setDoc(docRef, {
+      state: "approved",
+    }, { merge: true });
+    
+  } catch (error) {
+    console.error("Error setting appointment approved:", error);
+  }
+}
+
+export const deleteAppointment = async (id) => {
+  try{
+    const docRef = doc(db, "appointments", id);
+    await deleteDoc(docRef);
+    
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+  }
+}
+
+export const setLink = async (id, l) => {
+  try{
+    const docRef = doc(db, "appointments", id);
+    await setDoc(docRef, {
+      link: l,
+    }, { merge: true });
+    
+  } catch (error) {
+    console.error("Error setting appointment link:", error);
+  }
+}
+
+export const fetchMyMod = async () => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+
+  const modList = await fetchModList();
+
+  const modPromises = modList?.map(async (modId) => {
+    try {
+      const docRef = doc(db, "users", modId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const modData = docSnap.data();
+        return {
+          id: modId,
+          users: modData.users,
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching mod data:", error);
+      return null;
+    }
+  });
+
+  const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
+
+  const myMod = mods.find(mod => mod.users.includes(userId));
+  if (myMod) {
+    return myMod.id;
+  } else {
+    return null;
+  }
+  
+}

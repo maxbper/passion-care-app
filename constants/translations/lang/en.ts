@@ -167,7 +167,11 @@ const en = {
     },
     well_done: "Well done!",
     ex: "Exercises of the Workout",
-
+    appointment_title: "Appointments",
+    pending: "Pending...",
+    weekly_availability: "Availability",
+    join: "Join",
+    approved: "Approved",
    };
 
 

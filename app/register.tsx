@@ -1,4 +1,4 @@
-import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -531,7 +531,7 @@ export default function RegisterScreen() {
     </View>
   </ScrollView>
   {isModalVisible && (
-                <View style={styles.modalContainer}>
+                <View style={[styles.modalContainer, { height: Dimensions.get("window").height }]}>
                     <View style={styles.modalContent}>
                         <Text style={styles.title}>{t("password")}</Text>
                         {loading ? (

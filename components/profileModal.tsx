@@ -1,4 +1,4 @@
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { t } from 'i18next';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
@@ -8,6 +8,7 @@ import i18n from "../constants/translations";
 import WearableComponent from '../components/wearable';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import AppointmentModal from './appointmentModal';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -77,6 +78,7 @@ export default function ProfileModal({ visible, onClose }) {
           <Entypo name="home" size={36} color={cancerColor}/>
         </TouchableOpacity>
         ) : (<WearableComponent />)}
+        <AppointmentModal/>
           <TouchableOpacity style={styles.button} onPress={handleLogout}>
             <MaterialIcons name="logout" size={36} color={cancerColor}/>
           </TouchableOpacity>
@@ -115,10 +117,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.3,
     borderRadius: 0,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    marginVertical: 50,
   },
   button: {
-    marginVertical: 40,
+    marginVertical: 0,
     backgroundColor: "#fff",
     borderRadius: 50,
     width: 100,
