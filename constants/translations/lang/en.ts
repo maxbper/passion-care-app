@@ -220,6 +220,9 @@ const en = {
     },
     today: "Today",
     select: "Select",
+    add_appointment: "Add Appointment",
+    occupied: "Occupied",
+    no_slots: "No slots available for this day.",
    };
 
 

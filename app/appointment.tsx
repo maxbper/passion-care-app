@@ -7,7 +7,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { deleteAppointment, fetchAppointmentAvailability, fetchAppointmentSlots, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchSlotOccupied, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
+import { deleteAppointment, fetchAppointmentAvailability, fetchAppointmentSlots, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchSlotOccupied, fetchSlots, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
 import DateSelector from "../components/dateSelector";
 
 export default function AppointmentScreen() {
@@ -55,6 +55,7 @@ export default function AppointmentScreen() {
         Sun: [],
       });
     const [hasSetSlots, setHasSetSlots] = useState(false);
+    const [daySlots, setDaySlots] = useState([]);
 
 
     useEffect(() => {
@@ -320,17 +321,37 @@ export default function AppointmentScreen() {
         return date.toLocaleTimeString("pt-BR", {
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit",
             hour12: false,
         });
     }
 
-    const isSlotOccupied = async (time) => {
-        const date = selectedDate;
-        const dateTime = new Date(`${date}T${time}`);
-        const isOccupied = await fetchSlotOccupied(dateTime, myModId);
-    }
+    useEffect(() => {
+        const getSlots = async () => {
+            const dateTime = new Date(selectedDate);
+            const slots_fetched = await fetchSlots(dateTime, myModId);
+            setDaySlots(slots_fetched);
+        }
+        if (showAddAppointmentModal) {
+            getSlots();
+        }
+    
+    }, [selectedDate]);
 
+    const compareDates = (s) => {
+        const date = new Date();
+        const [hours, minutes] = s.split(":");
+        date.setUTCHours(parseInt(hours), parseInt(minutes), 0);
+
+        for (const appointment of daySlots) {
+            const appointmentDate = new Date(appointment.date.seconds * 1000);
+            if (date.getHours() === appointmentDate.getHours() && date.getMinutes() === appointmentDate.getMinutes()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
 
 
     if (isMod) {
@@ -525,7 +546,7 @@ export default function AppointmentScreen() {
               >
                 <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
                 <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-                   agora é que são elas
+                   {t("add_appointment")}
                 </Text>
                 <TouchableOpacity style={[styles.date]} onPress={()=>{setShowCalendarModal(true)}}>
                     <Text style={styles.dateText}>{selectedDate}</Text>
@@ -538,12 +559,12 @@ export default function AppointmentScreen() {
                 {slots[getDay()] ? slots[getDay()].map((slot, index) => (
                     <Block
                       key={index}
-                      title={slot}
-                      subtitle={""}
+                      title={getLocalTime(slot)}
+                      subtitle={compareDates(slot) ? t("occupied") : ""}
                       onPress={() => {}} 
                       onDangerPress={() => {}}
                       completed={false}
-                      disabled={false}
+                      disabled={compareDates(slot)}
                     />
                 )) : (
                     <Text style={{ fontSize: 16, marginBottom: 10 }}>

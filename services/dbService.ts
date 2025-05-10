@@ -997,7 +997,7 @@ export const fetchMyMod = async () => {
   
 }
 
-export const fetchSlotOccupied = async (date, uid) => {
+export const fetchSlots = async (date, uid) => {
   try {
       const docRef = collection(db, "appointments");
       const q = query(docRef, orderBy('date', 'asc'));
@@ -1009,23 +1009,22 @@ export const fetchSlotOccupied = async (date, uid) => {
         ...doc.data(),
       }));
       const myAppointments = [];
-      const incomingDate = new Date(date);
-      const incomingDateInSeconds = Math.floor(incomingDate.getTime() / 1000);
-
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth();
+      const year = dateObj.getFullYear();
       appointments.forEach(appointment => {
         if (appointment.mod === uid) {
-        const appointmentDateObj = appointment.date.toDate();
-        const appointmentDateInSeconds = Math.floor(appointmentDateObj.getTime() / 1000);
-
-        if (appointmentDateInSeconds === incomingDateInSeconds) {
-          myAppointments.push(appointment);
+        const appointmentDate = appointment.date.toDate();
+        const appointmentDay = appointmentDate.getDate();
+        const appointmentMonth = appointmentDate.getMonth();
+        const appointmentYear = appointmentDate.getFullYear();
+        if (appointmentDay === day && appointmentMonth === month && appointmentYear === year) {
+            myAppointments.push(appointment);
+          }
         }
-      }
       });
-      if (myAppointments.length > 0) {
-        return true;
-      }
-      return false;
+      return myAppointments;
       
     } catch (error) {
       console.error("Error fetching user appointments:", error);

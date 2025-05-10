@@ -220,6 +220,9 @@ const pt = {
     },
     today: "Hoje",
     select: "Selecionar",
+    add_appointment: "Adicionar Consulta",
+    occupied: "Ocupado",
+    no_slots: "Não existem horários disponíveis para este dia.",
    };
 
 export default pt;
