@@ -222,6 +222,7 @@ const en = {
     select: "Select",
     add_appointment: "Add Appointment",
     occupied: "Occupied",
+    available: "Available",
     no_slots: "No slots available for this day.",
    };
 

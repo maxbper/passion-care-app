@@ -222,6 +222,7 @@ const pt = {
     select: "Selecionar",
     add_appointment: "Adicionar Consulta",
     occupied: "Ocupado",
+    available: "Disponível",
     no_slots: "Não existem horários disponíveis para este dia.",
    };
 

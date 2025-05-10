@@ -7,7 +7,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { deleteAppointment, fetchAppointmentAvailability, fetchAppointmentSlots, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchSlotOccupied, fetchSlots, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
+import { addAppointment, deleteAppointment, fetchAppointmentAvailability, fetchAppointmentSlots, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchSlotOccupied, fetchSlots, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
 import DateSelector from "../components/dateSelector";
 
 export default function AppointmentScreen() {
@@ -56,6 +56,7 @@ export default function AppointmentScreen() {
       });
     const [hasSetSlots, setHasSetSlots] = useState(false);
     const [daySlots, setDaySlots] = useState([]);
+    const [selectedSlot, setSelectedSlot] = useState(null);
 
 
     useEffect(() => {
@@ -326,7 +327,7 @@ export default function AppointmentScreen() {
     }
 
     useEffect(() => {
-        const getSlots = async () => {
+        const getSlots = async () => { 
             const dateTime = new Date(selectedDate);
             const slots_fetched = await fetchSlots(dateTime, myModId);
             setDaySlots(slots_fetched);
@@ -334,8 +335,24 @@ export default function AppointmentScreen() {
         if (showAddAppointmentModal) {
             getSlots();
         }
+        setSelectedSlot(null);
     
-    }, [selectedDate]);
+    }, [selectedDate, showAddAppointmentModal]);
+
+    useEffect(() => {
+
+        const newAppointment = async () => {
+            const date = new Date(selectedDate);
+            const [hours, minutes] = slots[getDay()][selectedSlot].split(":");
+            date.setUTCHours(parseInt(hours), parseInt(minutes), 0);
+            await addAppointment(date, myModId);
+            setSelectedSlot(null);
+        }
+        if (selectedSlot !== null) {
+            newAppointment();
+        }
+    
+    }, [showAddAppointmentModal]);
 
     const compareDates = (s) => {
         const date = new Date();
@@ -560,10 +577,11 @@ export default function AppointmentScreen() {
                     <Block
                       key={index}
                       title={getLocalTime(slot)}
-                      subtitle={compareDates(slot) ? t("occupied") : ""}
-                      onPress={() => {}} 
+                      subtitle={compareDates(slot) ? t("occupied") : t("available")}
+                      onPress={() => {selectedSlot === index ? setSelectedSlot(null) : setSelectedSlot(index)}}
+                      completedCheck={selectedSlot === index}
                       onDangerPress={() => {}}
-                      completed={false}
+                      completed={selectedSlot === index}
                       disabled={compareDates(slot)}
                     />
                 )) : (
@@ -571,31 +589,6 @@ export default function AppointmentScreen() {
                         {t("no_slots")}
                     </Text>
                 )}
-                {/* <Block
-                  title={"10/10/25 09:00"}
-                  subtitle={"Ocupado"}
-                  onPress={() => {}}
-                  onDangerPress={() => {}}
-                  completed={false}
-                  disabled={true}
-                />
-                <Block
-                  title={"10/10/25 09:30"}
-                  subtitle={""}
-                  onPress={() => {}}
-                  onDangerPress={() => {}}
-                  completed={false}
-                  disabled={false}
-                />
-                <Block
-                  title={"10/10/25 10:00"}
-                  subtitle={""}
-                  onPress={() => {}}
-                  onDangerPress={() => {}}
-                  completed={true}
-                  completedCheck={true}
-                  disabled={false}
-                /> */}
                 </Pressable>
               </Pressable>
             )}

@@ -945,6 +945,29 @@ export const deleteAppointment = async (id) => {
   }
 }
 
+export const addAppointment = async (dateR, modId) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const  userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try{
+    const appointmentRef = collection(db, 'appointments');
+    const newAppointmentRef = doc(appointmentRef);
+    await setDoc(newAppointmentRef, {
+        date: dateR,
+        user: userId,
+        mod: modId,
+        state: "pending",
+        link: "",
+    });
+
+  }
+  catch (error) {
+    console.error('Error sending appointment:', error);
+  }
+}
+
 export const setLink = async (id, l) => {
   try{
     const docRef = doc(db, "appointments", id);
