@@ -30,7 +30,6 @@ export default function HistoryScreen() {
   const [extraExercises, setExtraExercises] = useState([]);
   const [extraExercisesDates, setExtraExercisesDates] = useState([]);
   const [currentExtraIndex, setCurrentExtraIndex] = useState(0);
-  const [extraExercisesNames, setExtraExercisesNames] = useState([]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -77,11 +76,8 @@ export default function HistoryScreen() {
     const getExtraExercises = async () => {
       const data = await fetchUserData(userId);
       const dates = Object.keys(data.extra_exercises);
-      const names = Object.keys(data.extra_exercises["2025-05-08"]);
       setExtraExercises(data.extra_exercises);
       setExtraExercisesDates(dates);
-      setExtraExercisesNames(names);
-      console.log(names);
       setCurrentExtraIndex(dates.length - 1);
     }
     getExtraExercises();
