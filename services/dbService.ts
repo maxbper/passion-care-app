@@ -844,6 +844,21 @@ export const setAppointmentSlots = async (s) => {
   }
 }
 
+export const fetchAppointmentSlots = async (uid) => {
+  try {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().slots;
+      } else {
+        console.log("No user slots found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user slots:", error);
+    }
+};
+
 export const fetchAppointmentAvailability = async () => {
   while (auth.currentUser == null) {
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -981,3 +996,38 @@ export const fetchMyMod = async () => {
   }
   
 }
+
+export const fetchSlotOccupied = async (date, uid) => {
+  try {
+      const docRef = collection(db, "appointments");
+      const q = query(docRef, orderBy('date', 'asc'));
+      const snapshot = await getDocs(q);
+      const appointments = snapshot.docs.map(doc => ({
+        id: doc.id,
+        mod: doc.data().mod,
+        date: doc.data().date,
+        ...doc.data(),
+      }));
+      const myAppointments = [];
+      const incomingDate = new Date(date);
+      const incomingDateInSeconds = Math.floor(incomingDate.getTime() / 1000);
+
+      appointments.forEach(appointment => {
+        if (appointment.mod === uid) {
+        const appointmentDateObj = appointment.date.toDate();
+        const appointmentDateInSeconds = Math.floor(appointmentDateObj.getTime() / 1000);
+
+        if (appointmentDateInSeconds === incomingDateInSeconds) {
+          myAppointments.push(appointment);
+        }
+      }
+      });
+      if (myAppointments.length > 0) {
+        return true;
+      }
+      return false;
+      
+    } catch (error) {
+      console.error("Error fetching user appointments:", error);
+    }
+};

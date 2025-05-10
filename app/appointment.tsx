@@ -7,7 +7,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { deleteAppointment, fetchAppointmentAvailability, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
+import { deleteAppointment, fetchAppointmentAvailability, fetchAppointmentSlots, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchSlotOccupied, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
 import DateSelector from "../components/dateSelector";
 
 export default function AppointmentScreen() {
@@ -45,6 +45,17 @@ export default function AppointmentScreen() {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [myModId, setMyModId] = useState(null);
     const [hasSetDisabled, setHasSetDisabled] = useState(false);
+    const [slots, setSlots] = React.useState({
+        Mon: [],
+        Tue: [],
+        Wed: [],
+        Thu: [],
+        Fri: [],
+        Sat: [],
+        Sun: [],
+      });
+    const [hasSetSlots, setHasSetSlots] = useState(false);
+
 
     useEffect(() => {
       const checkAuthentication = async () => {
@@ -55,6 +66,11 @@ export default function AppointmentScreen() {
       const isAdminOrMod = async () => {
         const mod = await ReactNativeAsyncStorage.getItem("isMod");
         setIsMod(mod === "true");
+        if(mod === "true") {
+            fetchDataMod();
+        } else {
+            fetchDataUser();
+        }
       };
       isAdminOrMod();
 
@@ -90,8 +106,15 @@ export default function AppointmentScreen() {
       };
 
       const fetchDataUser = async () => {
-        const modUid = await fetchMyMod();
-        setMyModId(modUid);
+        if (!hasSetSlots) {
+            const modUid = await fetchMyMod();
+            setMyModId(modUid);
+            const slots = await fetchAppointmentSlots(modUid);
+            if (slots) {
+                setSlots(slots);
+            }
+            setHasSetSlots(true);
+        }
         const myAppointments = await fetchMyAppointmentsUser();
         if (myAppointments) {
           const now = new Date();
@@ -109,11 +132,6 @@ export default function AppointmentScreen() {
 
         }
 
-        if(isMod) {
-            fetchDataMod();
-        } else {
-            fetchDataUser();
-        }
     }, [selectedAppointment, showSelectedAppointmentModal, myAppointments, showApproveAppointmentModal, showAddAppointmentModal]);
 
       const toggleDayDisabled = (day: string) => {
@@ -158,9 +176,9 @@ export default function AppointmentScreen() {
 
       const getSlots = (a) => {
         const new_availability = {};
-        for (const day in a) {
+        for (const day in disabledDays) {
             const slots = [];
-            if (a[day][0] !== "" || a[day][1] !== "" || a[day][2] !== "" || a[day][3] !== "") {
+            if ((a[day][0] !== "" || a[day][1] !== "" || a[day][2] !== "" || a[day][3] !== "")) {
                 const start = new Date();
                 const end = new Date();
                 a[day].forEach((time, index) => {
@@ -176,6 +194,9 @@ export default function AppointmentScreen() {
                     start.setMinutes(start.getMinutes() + appointmentDuration);
                 }
                 new_availability[day] = slots;
+            }
+            else {
+                new_availability[day] = [];
             }
         }
         return new_availability;
@@ -285,19 +306,31 @@ export default function AppointmentScreen() {
         return appointments;
     };
 
-    const checkAvailabilityDay = async (date: string) => {
-        const day = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
-        const time = new Date(date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-
-        // check if the day is the start time and end time are ""
-        const startTime = availability[day][0] + ":" + availability[day][1];
-        const endTime = availability[day][2] + ":" + availability[day][3];
-        if (startTime === ":" && endTime === ":") {
-            return false;
-        }
-        return true;
-
+    const getDay = () => {
+        const date = selectedDate;
+        const day = new Date(date).getDay();
+        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        return weekdays[day];
     }
+
+    const getLocalTime = (time) => {
+        const date = new Date();
+        const [hours, minutes, seconds] = time.split(":");
+        date.setUTCHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
+        return date.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+        });
+    }
+
+    const isSlotOccupied = async (time) => {
+        const date = selectedDate;
+        const dateTime = new Date(`${date}T${time}`);
+        const isOccupied = await fetchSlotOccupied(dateTime, myModId);
+    }
+
 
 
     if (isMod) {
@@ -502,6 +535,21 @@ export default function AppointmentScreen() {
                     visible={showCalendarModal}
                     onClose={(date) => {setSelectedDate(date);setShowCalendarModal(false)}}
                 />
+                {slots[getDay()] ? slots[getDay()].map((slot, index) => (
+                    <Block
+                      key={index}
+                      title={slot}
+                      subtitle={""}
+                      onPress={() => {}} 
+                      onDangerPress={() => {}}
+                      completed={false}
+                      disabled={false}
+                    />
+                )) : (
+                    <Text style={{ fontSize: 16, marginBottom: 10 }}>
+                        {t("no_slots")}
+                    </Text>
+                )}
                 {/* <Block
                   title={"10/10/25 09:00"}
                   subtitle={"Ocupado"}
@@ -674,6 +722,7 @@ export default function AppointmentScreen() {
         alignItems: 'center',
         alignSelf: "center",
         margin: 5,
+        marginBottom: 20,
         borderWidth: 1,
         borderColor: 'grey',
     },
