@@ -48,6 +48,7 @@ export default function TasksModal() {
       duration: 180,
     }],
   };
+  const [index, setIndex] = useState(0);
 
   const handleWarmup = () => {
     router.push({
@@ -75,6 +76,10 @@ export default function TasksModal() {
     const match = planString.match(/\d+/);
     return match ? match[0] : null;
   };
+
+  const handleIndexChange = () => {
+    setIndex((prevIndex) => (prevIndex + 1) % extraExercises.length);
+  }
 
   useEffect(() => {
         const checkAuthentication = async () => {
@@ -254,7 +259,8 @@ export default function TasksModal() {
       containerStyle.push(styles.disabled);
     }
     if (half) {
-      containerStyle.push({ width: "41%" });
+      //containerStyle.push({ width: "41%" });
+      containerStyle.push({ width: "90%" });
     }
     else {
       containerStyle.push({ width: "90%" });
@@ -292,14 +298,8 @@ export default function TasksModal() {
   if (pageNumber === 1) {
     return (
       <>
-      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
-      <Block title={t(extraExercises[0])} onPress={() => {handleExtra(extraExercises[0])} } half={true} />
-      <Block title={t(extraExercises[1])} onPress={() => {handleExtra(extraExercises[1])} } half={true}/>
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
-      <Block title={t(extraExercises[2])} onPress={() => {handleExtra(extraExercises[2])} } half={true}/>
-      <Block title={t(extraExercises[3])} onPress={() => {handleExtra(extraExercises[3])} } half={true}/>
-      </View>
+      <Block title={t(`exercises.${extraExercises[index]}`)} onPress={() => {handleExtra(extraExercises[index])} }/>
+      <Block title={t("next")} onPress={handleIndexChange} half={true}/>
       <Block title={t("back")} onPress={() => { setPageNumber(0);} } />
       </>
     );

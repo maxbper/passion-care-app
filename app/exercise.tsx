@@ -278,11 +278,11 @@ export default function ExerciseScreen() {
           {parsedWorkoutPlan[currentIndex]?.duration ? (
             <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
           ) : (
-            <Text style={styles.timer}>{timeLeft} reps</Text>
+            <Text style={styles.timer}>{timeLeft} {timeLeft != 1 ? t("reps") : t("rep")}</Text>
           )}
 
           <Text style={styles.details}>
-            {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} reps` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} sets` : ''}
+            {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} ${t("reps")}` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? (parsedWorkoutPlan[currentIndex]?.sets != 1 ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("sets")}` : ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("set")}`) : ''}
           </Text>
 
           <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
