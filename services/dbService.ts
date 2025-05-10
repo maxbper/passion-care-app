@@ -829,6 +829,21 @@ export const setAppointmentAvailability = async (list) => {
   }
 }
 
+export const setAppointmentSlots = async (s) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  let userId = auth.currentUser?.uid;
+  if (!userId) return;
+  try {
+      await setDoc(doc(db, 'users', userId), {
+          slots: s,
+      }, { merge: true });
+  } catch (error) {
+      console.error('Error setting availability slots:', error);
+  }
+}
+
 export const fetchAppointmentAvailability = async () => {
   while (auth.currentUser == null) {
       await new Promise(resolve => setTimeout(resolve, 1000));

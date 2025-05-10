@@ -7,11 +7,12 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { deleteAppointment, fetchAppointmentAvailability, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchUserData, setAppointmentAvailability, setApproved, setLink } from "../services/dbService";
+import { deleteAppointment, fetchAppointmentAvailability, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchUserData, setAppointmentAvailability, setAppointmentSlots, setApproved, setLink } from "../services/dbService";
 import DateSelector from "../components/dateSelector";
 
 export default function AppointmentScreen() {
     const { t } = useTranslation();
+    const appointmentDuration = 30;
     const insets = useSafeAreaInsets();
     const [isMod, setIsMod] = useState(false);
     const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
@@ -43,6 +44,7 @@ export default function AppointmentScreen() {
     const [showCalendarModal, setShowCalendarModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [myModId, setMyModId] = useState(null);
+    const [hasSetDisabled, setHasSetDisabled] = useState(false);
 
     useEffect(() => {
       const checkAuthentication = async () => {
@@ -59,12 +61,15 @@ export default function AppointmentScreen() {
       const fetchDataMod = async () => {
         const data = await fetchAppointmentAvailability();
         if (data) {
-          setAvailability(data);
-        for (const day in data) {
-            if (data[day].every((time) => time === "")) {
-            setDisabledDays((prev) => ({ ...prev, [day]: true }));
+          if (!hasSetDisabled) {
+            setAvailability(data);
+            for (const day in data) {
+                if (data[day].every((time) => time === "")) {
+                setDisabledDays((prev) => ({ ...prev, [day]: true }));
+                }
             }
-        }
+            setHasSetDisabled(true);
+            }
         }
 
         const myAppointments = await fetchMyAppointmentsMod();
@@ -109,7 +114,7 @@ export default function AppointmentScreen() {
         } else {
             fetchDataUser();
         }
-    }, [selectedAppointment, showAvailabilityModal, showSelectedAppointmentModal, myAppointments, showApproveAppointmentModal, showAddAppointmentModal]);
+    }, [selectedAppointment, showSelectedAppointmentModal, myAppointments, showApproveAppointmentModal, showAddAppointmentModal]);
 
       const toggleDayDisabled = (day: string) => {
         setDisabledDays((prev) => ({ ...prev, [day]: !prev[day] }));
@@ -122,10 +127,59 @@ export default function AppointmentScreen() {
             updatedAvailability[day] = ["", "", "", ""];
           }
         }
-        setAvailability(updatedAvailability);
+        Object.entries(updatedAvailability).forEach(([day, times]) => {
+            if (parseInt(times[0], 10) > 24 || parseInt(times[0], 10) < 0) {
+                updatedAvailability[day] = ["", "", "", ""];
+                toggleDayDisabled(day);
+                return;
+            }
+            if (parseInt(times[1], 10) > 59 || parseInt(times[1], 10) < 0) {
+                updatedAvailability[day] = ["", "", "", ""];
+                toggleDayDisabled(day);
+                return;
+            }
+            if (parseInt(times[2], 10) > 24 || parseInt(times[2], 10) < 0) {
+                updatedAvailability[day] = ["", "", "", ""];
+                toggleDayDisabled(day);
+                return;
+            }
+            if (parseInt(times[3], 10) > 59 || parseInt(times[3], 10) < 0) {
+                updatedAvailability[day] = ["", "", "", ""];
+                toggleDayDisabled(day);
+                return;
+            }
+        });
         setShowAvailabilityModal(false);
+        setAvailability(updatedAvailability);
         await setAppointmentAvailability(updatedAvailability);
+        const slots = getSlots(updatedAvailability);
+        await setAppointmentSlots(slots);
       };
+
+      const getSlots = (a) => {
+        const new_availability = {};
+        for (const day in a) {
+            const slots = [];
+            if (a[day][0] !== "" || a[day][1] !== "" || a[day][2] !== "" || a[day][3] !== "") {
+                const start = new Date();
+                const end = new Date();
+                a[day].forEach((time, index) => {
+                    if (time === "") {
+                        a[day][index] = "00";
+                    }
+                });
+                start.setHours(parseInt(a[day][0], 10), parseInt(a[day][1], 10), 0);
+                end.setHours(parseInt(a[day][2], 10), parseInt(a[day][3], 10), 0);
+                while (start < end) {
+                    const h = new Date(start).toISOString().split('T')[1];
+                    slots.push(h.split('.')[0]);
+                    start.setMinutes(start.getMinutes() + appointmentDuration);
+                }
+                new_availability[day] = slots;
+            }
+        }
+        return new_availability;
+      }
 
       const formatDate = (timestamp) => {
         const date = new Date(timestamp.seconds * 1000);
@@ -188,11 +242,16 @@ export default function AppointmentScreen() {
     };
 
     const createAvailabilityChangeHandler = (day, index) => (text) => {
-        setAvailability(prev => {
-            const newAvailability = { ...prev };
-            const dayAvailability = [...newAvailability[day]];
-            dayAvailability[index] = text;
-            newAvailability[day] = dayAvailability;
+        setAvailability(prevAvailability => {
+            const newAvailability = {
+                ...prevAvailability,
+            };
+            const newDaySchedule = [
+                ...(prevAvailability[day] || []), 
+            ];
+    
+            newDaySchedule[index] = text;
+            newAvailability[day] = newDaySchedule;
             return newAvailability;
         });
     };
@@ -226,7 +285,18 @@ export default function AppointmentScreen() {
         return appointments;
     };
 
-    const checkAvailability = async (day: string) => {
+    const checkAvailabilityDay = async (date: string) => {
+        const day = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+        const time = new Date(date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+        // check if the day is the start time and end time are ""
+        const startTime = availability[day][0] + ":" + availability[day][1];
+        const endTime = availability[day][2] + ":" + availability[day][3];
+        if (startTime === ":" && endTime === ":") {
+            return false;
+        }
+        return true;
+
     }
 
 
