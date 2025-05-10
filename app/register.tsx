@@ -222,7 +222,7 @@ export default function RegisterScreen() {
 
         if (adminRegister) {
             return (
-              <View style={styles.container2}>
+              <View style={[styles.container2, { marginTop: insets.top + 150 }]}>
               <View style={styles.card}>
                 <Text style={styles.cardTitle}>{t("register_admin")}</Text>
                 <View style={[styles.singleInput, { width: "100%" }]}>
@@ -280,7 +280,7 @@ export default function RegisterScreen() {
 
         if (modRegister) {
             return (
-              <View style={styles.container2}>
+              <View style={[styles.container2, { marginTop: insets.top + 150 }]}>
               <View style={styles.card}>
                 <Text style={styles.cardTitle}>{t("register_mod")}</Text>
                 <View style={[styles.singleInput, { width: "100%" }]}>

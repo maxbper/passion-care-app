@@ -224,6 +224,9 @@ const pt = {
     occupied: "Ocupado",
     available: "Disponível",
     no_slots: "Não existem horários disponíveis para este dia.",
+    no_workouts: "Ainda não existem treinos disponíveis.",
+    no_appointments: "Não existem consultas pendentes.",
+    no_clinical_registers: "Ainda não existem registos clínicos.",
    };
 
 export default pt;

@@ -224,6 +224,9 @@ const en = {
     occupied: "Occupied",
     available: "Available",
     no_slots: "No slots available for this day.",
+    no_workouts: "No workouts done yet.",
+    no_clinical_registers: "No clinical registers to show.",
+    no_appointments: "No appointments to show.",
    };
 
 

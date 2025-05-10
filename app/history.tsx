@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { fetchClinicalRegister, fetchUserData, fetchWeeklyForms, fetchWorkouts, setIsSuspended, uploadClinicalRegister } from "../services/dbService";
 import { useUserColor } from "../context/cancerColor";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import i18n from "../constants/translations";
 
 export default function HistoryScreen() {
   const [userData, setUserData] = useState(null);
@@ -69,10 +70,18 @@ export default function HistoryScreen() {
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString("pt-BR", {
-      day: "numeric",
-      month: "short",
-    });
+    if(i18n.language === "en") {
+      return date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+      });
+    }
+    else {
+      return date.toLocaleDateString("pt-BR", {
+        day: "numeric",
+        month: "short",
+      });
+    }
   };
 
   const parseMillisecondsToMinutes = (ms) => {
@@ -230,6 +239,13 @@ export default function HistoryScreen() {
             </View>
         </View>
         ))}
+        {userData.length === 0 && (
+          <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
+          <Text style={{ fontSize: 14, textAlign: "center" }}>
+              {t("no_workouts")}
+          </Text>
+      </View>
+      )}
         </View>
         );
     }
@@ -347,7 +363,11 @@ if(isWorkoutHistory) {
             </>
               ) : (
             <>
-            <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+            <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
+            <Text style={{ fontSize: 14, textAlign: "center" }}>
+                {t("no_workouts")}
+            </Text>
+        </View>
             </>
           )}
           
@@ -398,7 +418,6 @@ if(isWorkoutHistory) {
             </>
               ) : (
             <>
-            <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
             </>
           )}
         </View>

@@ -395,6 +395,13 @@ export default function AppointmentScreen() {
               danger={appointment?.state === "pending"}
             />
           ))}
+          {myAppointments.length === 0 && (
+                <View style={{ alignItems: "center", justifyContent: "center", marginTop: 20}}>
+                    <Text style={{ fontSize: 14, textAlign: "center" }}>
+                        {t("no_appointments")}
+                    </Text>
+                </View>
+                )}
         </View>
 
         {showAvailabilityModal && (
@@ -535,6 +542,13 @@ export default function AppointmentScreen() {
                   disabled={!(imminent(appointment.date) && appointment?.state === "approved")}
                 />
               ))}
+              {myAppointments.length === 0 && (
+                <View style={{ alignItems: "center", justifyContent: "center", marginTop: 20}}>
+                    <Text style={{ fontSize: 14, textAlign: "center" }}>
+                        {t("no_appointments")}
+                    </Text>
+                </View>
+                )}
             </View>
             {showSelectedAppointmentModal && (
               <Pressable
