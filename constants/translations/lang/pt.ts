@@ -227,6 +227,7 @@ const pt = {
     no_workouts: "Ainda não existem treinos disponíveis.",
     no_appointments: "Não existem consultas pendentes.",
     no_clinical_registers: "Ainda não existem registos clínicos.",
+    back: "Voltar",
    };
 
 export default pt;

@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion, deleteDoc, runTransaction, FieldValue, increment } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, getAuth, } from 'firebase/auth';
 import { db, auth } from '../firebaseConfig';
 
@@ -519,6 +519,55 @@ export const addUserToList = async (uid) => {
     } catch (error) {
         console.error("Error adding user to list:", error);
     }
+};
+
+export const incrementExerciseAmount = async (exerciseName) => {
+  while (auth.currentUser == null) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  const userId = auth.currentUser.uid;
+  const today = new Date().toISOString().slice(0, 10);
+  const userRef = doc(db,'users', userId);
+  try {
+    await runTransaction(db, async (transaction) => {
+      const docSnapshot = await transaction.get(userRef);
+
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+        const extraExercises = userData.extra_exercises || {};
+
+        if (extraExercises[today] && extraExercises[today][exerciseName]) {
+          const amountPath = `extra_exercises.${today}.${exerciseName}`;
+          transaction.update(userRef, {
+            [amountPath]: increment(1),
+          });
+        } else {
+          const newData = {
+            extra_exercises: {
+              ...extraExercises,
+              [today]: {
+                ...extraExercises[today],
+                [exerciseName]: 1,
+              },
+            },
+          };
+          transaction.set(userRef, newData, { merge: true });
+        }
+      } else {
+        const initialData = {
+          extra_exercises: {
+            [today]: {
+              [exerciseName]: 1,
+            },
+          },
+        };
+        transaction.set(userRef, initialData);
+      }
+    });
+  } catch (error) {
+    console.error('Error incrementing exercise amount:', error);
+    throw error;
+  }
 };
 
 export const fetchUserList = async (uid=null) => {

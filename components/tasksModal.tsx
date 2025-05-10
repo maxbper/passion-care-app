@@ -15,9 +15,41 @@ export default function TasksModal() {
   const [warmupPlan, setWarmupPlan] = useState<any[]>([]);
   const [gender, setGender] = useState<string | null>(null);
   const { t } = useTranslation();
+  const [pageNumber, setPageNumber] = useState(0);
+  const extraExercises = ["pinch", "walk_various_surfaces", "textures", "spiky_ball"];
+  const extraPlan = {
+    pinch : [{
+      exercise: "pinch",
+      duration: 0,
+      reps: 10,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 20,
+    },
+    {
+      exercise: "pinch",
+      duration: 0,
+      reps: 10,
+      sets: 1,
+    },
+    ],
+    walk_various_surfaces: [{
+      exercise: "walk_various_surfaces",
+      duration: 600,
+    }],
+    textures: [{
+      exercise: "textures",
+      duration: 300,
+    }],
+    spiky_ball: [{
+      exercise: "spiky_ball",
+      duration: 180,
+    }],
+  };
 
   const handleWarmup = () => {
-    // redirect to exercise screen with warmup exercises
     router.push({
         pathname: "/exercise",
         params: { workoutPlan: JSON.stringify(warmupPlan), warmup: "true", sex: JSON.stringify(gender) },
@@ -28,6 +60,14 @@ export default function TasksModal() {
     router.push({
         pathname: "/exercise",
         params: { workoutPlan: JSON.stringify(workoutPlan), workout: "true", sex: JSON.stringify(gender) },
+    });
+  };
+
+  const handleExtra = (exercise: string) => {
+    const extra = extraPlan[exercise];
+    router.push({
+      pathname: "/exercise",
+      params: { workoutPlan: JSON.stringify(extra), sex: JSON.stringify(gender) },
     });
   };
 
@@ -199,17 +239,25 @@ export default function TasksModal() {
     onPress,
     disabled,
     completed,
+    half,
   }: {
     title: string;
     onPress: () => void;
     disabled?: boolean;
     completed?: boolean;
+    half?: boolean;
   }) => {
     let containerStyle = [styles.block];
     if (completed) {
       containerStyle.push(styles.completed);
     } else if (disabled) {
       containerStyle.push(styles.disabled);
+    }
+    if (half) {
+      containerStyle.push({ width: "41%" });
+    }
+    else {
+      containerStyle.push({ width: "90%" });
     }
 
     return (
@@ -228,7 +276,7 @@ export default function TasksModal() {
     );
   };
 
-
+  if (pageNumber === 0) {
   return (
     <>
           <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
@@ -237,9 +285,25 @@ export default function TasksModal() {
               onPress={handleWorkout}
               disabled={!warmupCompleted}
               completed={workoutCompleted} />
-          <Block title="Extra" onPress={() => { } } />
+          <Block title={t("Extra")} onPress={() => {setPageNumber(1); } } />
       </>
   );
+  }
+  if (pageNumber === 1) {
+    return (
+      <>
+      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+      <Block title={t(extraExercises[0])} onPress={() => {handleExtra(extraExercises[0])} } half={true} />
+      <Block title={t(extraExercises[1])} onPress={() => {handleExtra(extraExercises[1])} } half={true}/>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center"}}>
+      <Block title={t(extraExercises[2])} onPress={() => {handleExtra(extraExercises[2])} } half={true}/>
+      <Block title={t(extraExercises[3])} onPress={() => {handleExtra(extraExercises[3])} } half={true}/>
+      </View>
+      <Block title={t("back")} onPress={() => { setPageNumber(0);} } />
+      </>
+    );
+  }
 }
 
 
@@ -258,7 +322,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
-    width: "90%",
   },
   blockText: {
     fontSize: 18,

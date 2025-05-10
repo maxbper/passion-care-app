@@ -7,7 +7,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
 import { refreshTokens } from '../components/wearable';
-import { addXp, uploadWorkout } from '../services/dbService';
+import { addXp, incrementExerciseAmount, uploadWorkout } from '../services/dbService';
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -144,6 +144,7 @@ export default function ExerciseScreen() {
       await addXp(20);
     }
     else {
+      await incrementExerciseAmount(parsedWorkoutPlan[0].exercise)
       await addXp(5);
     }
     router.replace("/home");
@@ -247,7 +248,9 @@ export default function ExerciseScreen() {
           </>
         ):null}
 
-        <Button title={t("submit")} onPress={handleGoBack} />
+        <TouchableOpacity style={{ marginTop: 10, borderWidth: 2, borderColor: '#2E7D32', alignContent: 'center', justifyContent: 'center', borderRadius: 10, padding: 10 }} onPress={handleGoBack} >
+          <Text style={{textAlign: 'center', alignSelf: 'center'}} >{t("submit")} </Text>
+        </TouchableOpacity>
       </View>
     );
   }
