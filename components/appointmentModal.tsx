@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { Feather, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useUserColor } from '../context/cancerColor';
 import { useProfileModal } from '../context/ProfileModalContext';
-import { fetchMyAppointments } from '../services/dbService';
+import { fetchMyAppointments, fetchMyAppointmentsMod, fetchMyAppointmentsUser } from '../services/dbService';
 
 export default function AppointmentModal() {
     const cancerColor = useUserColor();
@@ -19,21 +19,39 @@ export default function AppointmentModal() {
       const isAdminOrMod = async () => {
         const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
         setIsAdmin(admin === "true");
+        const mod = await ReactNativeAsyncStorage.getItem("isMod");
+
+        if(mod === "true") {
+          const myAppointments = await fetchMyAppointmentsMod();
+          if (myAppointments) {
+            const now = new Date();
+            myAppointments.forEach((appointment) => {
+              const appointmentDate = new Date(appointment.date.seconds * 1000);
+              const diff = appointmentDate.getTime() - now.getTime();
+              if(diff < 10 * 60 * 1000) {
+                setIsDue(true);
+              }
+            });
+          }
+        }
+        else if(admin !== "true") {
+          const myAppointments = await fetchMyAppointmentsUser();
+          if (myAppointments) {
+            const now = new Date();
+            myAppointments.forEach((appointment) => {
+              const appointmentDate = new Date(appointment.date.seconds * 1000);
+              const diff = appointmentDate.getTime() - now.getTime();
+              if(diff < 10 * 60 * 1000) {
+                setIsDue(true);
+              }
+            });
+          }}
+        
       };
       isAdminOrMod();
 
       const fetchData = async () => {
-        const myAppointments = await fetchMyAppointments();
-        if (myAppointments) {
-          const now = new Date();
-          myAppointments.forEach((appointment) => {
-            const appointmentDate = new Date(appointment.date.seconds * 1000);
-            const diff = appointmentDate.getTime() - now.getTime();
-            if(diff < 10 * 60 * 1000) {
-              setIsDue(true);
-            }
-          });
-        }
+        
       };
         fetchData();
     }, [isDue]);
