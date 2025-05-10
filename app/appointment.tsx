@@ -6,9 +6,9 @@ import { checkAuth } from "../services/authService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
-import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { deleteAppointment, fetchAppointmentAvailability, fetchMyAppointments, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchUserData, setAppointmentAvailability, setApproved, setLink } from "../services/dbService";
-import DatePicker from "../components/datePicker";
+import { AntDesign, Entypo, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { deleteAppointment, fetchAppointmentAvailability, fetchMyAppointmentsMod, fetchMyAppointmentsUser, fetchMyMod, fetchUserData, setAppointmentAvailability, setApproved, setLink } from "../services/dbService";
+import DateSelector from "../components/dateSelector";
 
 export default function AppointmentScreen() {
     const { t } = useTranslation();
@@ -40,6 +40,9 @@ export default function AppointmentScreen() {
     const [showSelectedAppointmentModal, setShowSelectedAppointmentModal] = useState(false);
     const [showApproveAppointmentModal, setShowApprovedAppointmentModal] = useState(false);
     const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+    const [showCalendarModal, setShowCalendarModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [myModId, setMyModId] = useState(null);
 
     useEffect(() => {
       const checkAuthentication = async () => {
@@ -82,7 +85,8 @@ export default function AppointmentScreen() {
       };
 
       const fetchDataUser = async () => {
-        const modUid = await fetchMyMod(); // marcar consulta com o mod
+        const modUid = await fetchMyMod();
+        setMyModId(modUid);
         const myAppointments = await fetchMyAppointmentsUser();
         if (myAppointments) {
           const now = new Date();
@@ -221,6 +225,10 @@ export default function AppointmentScreen() {
         }
         return appointments;
     };
+
+    const checkAvailability = async (day: string) => {
+    }
+
 
     if (isMod) {
     return (
@@ -416,6 +424,14 @@ export default function AppointmentScreen() {
                 <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
                    agora é que são elas
                 </Text>
+                <TouchableOpacity style={[styles.date]} onPress={()=>{setShowCalendarModal(true)}}>
+                    <Text style={styles.dateText}>{selectedDate}</Text>
+                    <Entypo name="select-arrows" size={14} color="black" styles={{marginLeft: 6}} />
+                </TouchableOpacity>
+                <DateSelector
+                    visible={showCalendarModal}
+                    onClose={(date) => {setSelectedDate(date);setShowCalendarModal(false)}}
+                />
                 {/* <Block
                   title={"10/10/25 09:00"}
                   subtitle={"Ocupado"}
@@ -578,5 +594,22 @@ export default function AppointmentScreen() {
     disabledInput: {
         opacity: 0.4,
       },
-
+      date: {
+        flexDirection: "row",
+        borderRadius: 10,
+        paddingLeft: 12,
+        paddingRight: 6,
+        paddingVertical: 6,
+        justifyContent: "center",
+        alignItems: 'center',
+        alignSelf: "center",
+        margin: 5,
+        borderWidth: 1,
+        borderColor: 'grey',
+    },
+    dateText: {
+        color: 'black',
+        fontSize: 16,
+        textAlign: 'center',
+    },
   });

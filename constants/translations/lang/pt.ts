@@ -172,6 +172,54 @@ const pt = {
     weekly_availability: "Disponibilidade",
     join: "Aderir",
     approved: "Aprovada",
+    months: {
+        january: "Janeiro",
+        february: "Fevereiro",
+        march: "Março",
+        april: "Abril",
+        may: "Maio",
+        june: "Junho",
+        july: "Julho",
+        august: "Agosto",
+        september: "Setembro",
+        october: "Outubro",
+        november: "Novembro",
+        december: "Dezembro"
+    },
+    monthsShort: {
+        jan: "Jan",
+        feb: "Fev",
+        mar: "Mar",
+        apr: "Abr",
+        may: "Mai",
+        jun: "Jun",
+        jul: "Jul",
+        aug: "Ago",
+        sep: "Set",
+        oct: "Out",
+        nov: "Nov",
+        dec: "Dez"
+    },
+    days: {
+        sunday: "Domingo",
+        monday: "Segunda",
+        tuesday: "Terça",
+        wednesday: "Quarta",
+        thursday: "Quinta",
+        friday: "Sexta",
+        saturday: "Sábado"
+    },
+    daysShort: {
+        sun: "Dom",
+        mon: "Seg",
+        tue: "Ter",
+        wed: "Qua",
+        thu: "Qui",
+        fri: "Sex",
+        sat: "Sáb"
+    },
+    today: "Hoje",
+    select: "Selecionar",
    };
 
 export default pt;
