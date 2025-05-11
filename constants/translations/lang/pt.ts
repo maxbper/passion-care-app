@@ -293,7 +293,8 @@ const pt = {
       "chest_stretch_wall": "Alongamento de Peito na Parede",
       "diaphragmatic_breathing": "Respiração Diafragmática",
       "seated_diaphragmatic_breathing": "Respiração Diafragmática Sentado",
-      "muscle_relaxation": "Relaxamento Muscular"
+      "muscle_relaxation": "Relaxamento Muscular",
+      "rest": "Descanso",
     },
     next: "Próximo",
    };

@@ -293,7 +293,8 @@ const en = {
       "chest_stretch_wall": "Chest Stretch at Wall",
       "diaphragmatic_breathing": "Diaphragmatic Breathing",
       "seated_diaphragmatic_breathing": "Seated Diaphragmatic Breathing",
-      "muscle_relaxation": "Muscle Relaxation"
+      "muscle_relaxation": "Muscle Relaxation",
+      "rest": "Rest",
     },
     next: "Next",
    };

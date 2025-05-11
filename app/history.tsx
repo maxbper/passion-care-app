@@ -502,7 +502,7 @@ if(isWorkoutHistory) {
             {Object.keys(extraExercises[extraExercisesDates[currentExtraIndex]]).map((item, index) => (
               <Block2
               key={index}
-              title={t(item)}
+              title={t(`exercises.${item}`)}
               subtitle={t(extraExercises[extraExercisesDates[currentExtraIndex]][item])}
               onPress={() => {}}
               disabled={true}

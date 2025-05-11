@@ -273,12 +273,12 @@ export default function ExerciseScreen() {
         </View>
       ) : (
         <>
-          <LoopingImage gender={gender} exercise_name={parsedWorkoutPlan[currentIndex]?.exercise} />
-          <Text style={styles.exerciseTitle}>{parsedWorkoutPlan[currentIndex]?.exercise}</Text>
+          <LoopingImage key={currentIndex} gender={gender} exercise_name={parsedWorkoutPlan[currentIndex]?.exercise} />
+          <Text style={styles.exerciseTitle}>{t(`exercises.${parsedWorkoutPlan[currentIndex]?.exercise}`)}</Text>
           {parsedWorkoutPlan[currentIndex]?.duration ? (
             <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
           ) : (
-            <Text style={styles.timer}>{timeLeft} {timeLeft != 1 ? t("reps") : t("rep")}</Text>
+            <Text style={styles.timer}>{timeLeft}</Text>
           )}
 
           <Text style={styles.details}>
