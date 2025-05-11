@@ -24,10 +24,6 @@ export default function HomeScreen() {
     const [progress, setProgress] = useState(0);
     const cancerColor = useUserColor();
     const [warningShown, setWarningShown] = useState(false);
-    const [steps, setSteps] = useState(-1);
-    const [rhr, setRhr] = useState(-1);
-    const [sleep, setSleep] = useState(-1);
-    const [fetchData, setFetchData] = useState(false);
     const insets = useSafeAreaInsets();
     const [changeMessage, setChangeMessage] = useState(true);
 
@@ -56,6 +52,11 @@ export default function HomeScreen() {
             const mod = await ReactNativeAsyncStorage.getItem("isMod");
             setIsAdmin(admin === "true");
             setIsMod(mod === "true");
+            isUserSuspended();
+            if (admin !== "true" && mod !== "true" && !warningShown) {
+                checkDailyWarning();
+                setWarningShown(true);
+            }
         };
         isAdminOrMod();
 
@@ -66,7 +67,6 @@ export default function HomeScreen() {
                 return;
             }
         }
-        isUserSuspended();
 
         const checkDailyWarning = async () => {
             const showWarning = await showDailyWarning();
@@ -91,10 +91,9 @@ export default function HomeScreen() {
                 }
             }
         };
-        if (!isAdmin && !isMod && !warningShown) {
-            checkDailyWarning();
-            setWarningShown(true);
-        }
+    }, []);
+    
+    useEffect(() => {
 
         const getXP = async () => {
             const userXP = await fetchXp();
@@ -113,89 +112,17 @@ export default function HomeScreen() {
                     setChangeMessage(true);
                 }, 300000);
             }
-            
-            setFetchData(true);
-            //fetchFitbitData();
         }
         
-    }, [isAdmin, isMod, message, fetchData, changeMessage]);
+    }, [isAdmin, isMod, message, changeMessage]);
 
-    const getToken = async () => {
-        const tokens = await ReactNativeAsyncStorage.getItem("tokens");
-        if (!tokens) return null;
+    if (isAdmin && isMod) {
+        return (
+            <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 150, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
+            </View>
+        );
+    } 
 
-        const accessToken = JSON.parse(tokens).accessToken;
-        const expiresIn = JSON.parse(tokens).expiresIn;
-        const issuedAt = JSON.parse(tokens).issuedAt;
-
-        const now = Math.floor(Date.now() / 1000);
-        const expiresAt = issuedAt + expiresIn;
-
-        if (now < expiresAt - 60) return accessToken;
-
-        const new_accessToken = await refreshTokens(tokens);
-        if (!new_accessToken) return null;
-        return new_accessToken;
-    };
-
-    const getTodayDate = () => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-      };
-
-    const fetchFitbitData = async () => {
-        setTimeout(() => {
-            setFetchData(false);
-        }, 10000);
-
-        if (steps !== -1 && rhr !== -1 && sleep !== -1) {
-            return;
-        }
-
-        const token = await getToken();
-        if (!token) {
-            return;
-        }
-
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-
-        const today = getTodayDate();
-        const stepsUrl = `https://api.fitbit.com/1/user/-/activities/date/${today}.json`;
-      
-        const stepsRes = await fetch(stepsUrl, { headers });
-        const heartRateRes = await fetch('https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json', { headers });
-        const sleepRes = await fetch('https://api.fitbit.com/1/user/-/sleep/date/today.json', { headers });
-      
-        const stepsData = await stepsRes.json();
-        const heartRateData = await heartRateRes.json();
-        const sleepData = await sleepRes.json();
-
-        if (stepsData["summary"]["steps"] === undefined) {
-            setSteps(-2);
-        }
-        else {
-            setSteps(stepsData["summary"]["steps"]);
-        }
-        
-        if (heartRateData["activities-heart"][0]["value"]["restingHeartRate"] === undefined) {
-            setRhr(-2);
-        }
-        else {
-            setRhr(heartRateData["activities-heart"][0]["value"]["restingHeartRate"]);
-        }
-
-        if (sleepData["summary"]["totalMinutesAsleep"] === undefined) {
-            setSleep(-2);
-        }
-        else {
-            setSleep(sleepData["summary"]["totalMinutesAsleep"]);
-        }
-    };
 
     return (
         <>
@@ -224,23 +151,6 @@ export default function HomeScreen() {
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
                     </View>
-                    {/* <View style={styles.card}>
-                        <Text style={styles.levelText}> {t("fitbit_data")} 📈</Text>
-                        <View style={styles.statsText}>
-                        {(steps === -1 || rhr === -1 || sleep === -1) ? (
-                            <Text>
-                                <Feather name="watch" size={18} color={cancerColor} />
-                                 {t("fitbit_not_connected")}
-                            </Text>
-                            ) : (
-                            <>
-                                <Text>👣 {steps === -2 ? t("not_available") : steps}</Text>
-                                <Text>❤ {rhr === -2 ? t("not_available") : rhr}</Text>
-                                <Text>💤 {sleep === -2 ? t("not_available") : sleep}</Text>
-                            </>
-                            )}
-                        </View>
-                    </View> */}
                     <TasksModal />
 
                     </>
