@@ -269,6 +269,8 @@ export default function HistoryScreen() {
             <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
             {t("total_time")} {parseMillisecondsToMinutes(userData[currentIndex].time)}
             </Text>
+            {userData[currentIndex].heart_rate.length > 0 ? (
+              <>
             <Text style={[styles.label, { textAlign: "center", fontSize: 16}]}>
             {t("time_hr")}
             </Text>
@@ -287,6 +289,12 @@ export default function HistoryScreen() {
                     </View>
                 ))}
         </View>
+        </>
+        ) : (
+          <Text style={[styles.label, { textAlign: "center", fontSize: 16, marginBottom: 20}]}>
+          {t("no_fitbit")}
+          </Text>
+        )}
         <Text style={{ fontSize: 14,}}>
         {t("feedback.title")}
             </Text>

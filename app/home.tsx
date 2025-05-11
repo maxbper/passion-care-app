@@ -115,7 +115,7 @@ export default function HomeScreen() {
             }
             
             setFetchData(true);
-            fetchFitbitData();
+            //fetchFitbitData();
         }
         
     }, [isAdmin, isMod, message, fetchData, changeMessage]);

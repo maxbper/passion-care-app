@@ -297,6 +297,7 @@ const en = {
       "rest": "Rest",
     },
     next: "Next",
+    no_fitbit: "No Fitbit data available.",
    };
 
 

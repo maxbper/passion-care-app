@@ -297,6 +297,7 @@ const pt = {
       "rest": "Descanso",
     },
     next: "Próximo",
+    no_fitbit: "Não existem dados do Fitbit disponíveis.",
    };
 
 export default pt;
