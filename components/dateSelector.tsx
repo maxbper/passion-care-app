@@ -12,7 +12,7 @@ const DateSelector = ({ visible, onClose }) => {
   const maxDate = new Date();
   maxDate.setFullYear(maxDate.getFullYear() + 2); // Limit 2 years in the future
   const maxDateString = maxDate.toISOString().split('T')[0];
-  const cancerColor = useUserColor();
+  const cancerColor = "#845BB1";
   const { t } = useTranslation();
 
   return (

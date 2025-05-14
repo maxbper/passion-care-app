@@ -8,7 +8,7 @@ import { useUserColor } from "../context/cancerColor";
 
 export default function DontExerciseScreen() {
     const { t } = useTranslation();
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
 
     useEffect(() => {
             const checkAuthentication = async () => {
@@ -35,10 +35,17 @@ export default function DontExerciseScreen() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: cancerColor,
+                backgroundColor: "#845BB1",
             }}
         >
         <Text style={{color: "white", padding: 20, fontSize: 20, textAlign: "center"}}>{t("dont_exercise")}</Text>
+        <Button
+            title={t("back")}
+            onPress={() => {
+                router.replace("/home");
+            }
+            }
+        />
         </View>
         </>
         );

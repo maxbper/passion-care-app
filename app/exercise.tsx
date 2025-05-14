@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable, Alert } from 'react-native';
 import { router, Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { checkAuth } from '../services/authService';
-import { FontAwesome } from '@expo/vector-icons';
+import { Entypo, FontAwesome } from '@expo/vector-icons';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from 'react-i18next';
 import LoopingImage from '../components/imageLoop';
@@ -31,6 +31,7 @@ export default function ExerciseScreen() {
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
   const [feedbackMood, setFeedbackMood] = useState<string | null>(null);
+  const [skippedExercises, setSkippedExercises] = useState<string[]>([]);
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -97,6 +98,41 @@ export default function ExerciseScreen() {
     }
   }, [timeLeft, paused, hasStarted, transitioning]);
 
+  const previous = () => {
+    if(currentIndex <= 0) return;
+    const temp = [...skippedExercises];
+    if(temp.includes(parsedWorkoutPlan[currentIndex-1].exercise)) {
+      const index = temp.indexOf(parsedWorkoutPlan[currentIndex-1].exercise);
+      if (index > -1) {
+        temp.splice(index, 1);
+      }
+    }
+    setSkippedExercises(temp);
+    setTransitioning(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => prev - 1)
+    }, 500);
+    setTimeout(() => {
+      setTransitioning(false);
+    }, 2000);
+  }
+
+  const next = () => {
+    if(currentIndex >= parsedWorkoutPlan.length) return;
+    const temp = [...skippedExercises];
+    if(parsedWorkoutPlan[currentIndex].exercise !== "rest" && !temp.includes(parsedWorkoutPlan[currentIndex].exercise)) {
+      temp.push(parsedWorkoutPlan[currentIndex].exercise);
+    }
+    setSkippedExercises(temp);
+    setTransitioning(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => prev + 1)
+    }, 500);
+    setTimeout(() => {
+      setTransitioning(false);
+    }, 2000);
+  }
+
   const handlePause = async () => {
     if (!paused) {
       setPaused(true);
@@ -141,9 +177,20 @@ export default function ExerciseScreen() {
         }
       }
       );
+      skippedExercises.forEach((item) => {
+        if(exercises.includes(item)) {
+          const index = exercises.indexOf(item);
+          if (index > -1) {
+            exercises.splice(index, 1);
+          }
+        }
+      }
+      );
 
-      await uploadWorkout(timeElapsed, heartRateData, feedbackMood, exercises);
-      await addXp(20);
+      if(exercises.length !== 0) {
+        await uploadWorkout(timeElapsed, heartRateData, feedbackMood, exercises);
+        await addXp(20);
+      }
     }
     else {
       await incrementExerciseAmount(parsedWorkoutPlan[0].exercise)
@@ -268,7 +315,7 @@ export default function ExerciseScreen() {
 
   return (
     <>
-    <View style={[styles.container, { backgroundColor: transitioning ? '#00FF00' : '#F9FAFB' }]}>
+    <View style={[styles.container, { backgroundColor: transitioning ? "#845BB1" : '#F9FAFB' }]}>
       {currentIndex < 0 ? (
         <View style={styles.redBackground}>
         <Text style={styles.countdown}>{Math.abs(currentIndex)}</Text>
@@ -280,15 +327,25 @@ export default function ExerciseScreen() {
           {parsedWorkoutPlan[currentIndex]?.duration ? (
             <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
           ) : (
-            <Text style={styles.timer}>{timeLeft}</Text>
+            <Text style={styles.timer}>{timeLeft != 1 ? (`${timeLeft} reps`) : (`${timeLeft} rep`)}</Text>
           )}
 
           <Text style={styles.details}>
             {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} ${t("reps")}` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? (parsedWorkoutPlan[currentIndex]?.sets != 1 ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("sets")}` : ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("set")}`) : ''}
           </Text>
 
+          <Text style={[styles.details, { marginTop: 20 }]}>
+            {t(`description.${parsedWorkoutPlan[currentIndex]?.exercise}`)}
+          </Text>
+
+          <TouchableOpacity style={styles.previousButton} onPress={previous}>
+            <Entypo name={"controller-fast-backward"} size={16} color="#845BB1"/>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
-            <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#5A2A2A" />
+            <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#845BB1"/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.nextButton} onPress={next}>
+            <Entypo name={"controller-fast-forward"} size={16} color="#845BB1"/>
           </TouchableOpacity>
         </>
       )}
@@ -314,21 +371,21 @@ const styles = StyleSheet.create({
   },
   redBackground: {
     alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: "#845BB1",
     height: '100%',
     width: '100%',
     justifyContent: 'center',
   },
   greenBackground: {
     alignItems: 'center',
-    backgroundColor: '#00FF00',
+    backgroundColor: "#845BB1",
     height: '100%',
     width: '100%',
     justifyContent: 'center',
   },
   initialText: {
     fontSize: 16,
-    color: '#000',
+    color: '#fff',
     textAlign: 'center',
     paddingTop: 20,
     fontWeight: 'bold',
@@ -368,6 +425,30 @@ const styles = StyleSheet.create({
   pauseButton: {
     position: 'absolute',
     bottom: 40,
+    backgroundColor: '#F9FAFB',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+  },
+  nextButton: {
+    position: 'absolute',
+    bottom: 40,
+    right: 10,
+    backgroundColor: '#F9FAFB',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+  },
+  previousButton: {
+    position: 'absolute',
+    bottom: 40,
+    left: 10,
     backgroundColor: '#F9FAFB',
     paddingVertical: 12,
     paddingHorizontal: 12,

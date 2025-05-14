@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { checkAuth, logout } from "../services/authService";
 import i18n from "../constants/translations";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import AppointmentModal from "./appointmentModal";
 
 export default function AdminModal() {
   const { t } = useTranslation();
@@ -89,6 +90,7 @@ const Block = ({
             pathname: "/dashboard",
             params: { admin: isAdmin.toString() },
         })} />
+        <AppointmentModal />
         {Platform.OS === "web" && (
         <>
         <Block title={t("change_language") + " " + t("flag")} onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} />
@@ -116,6 +118,8 @@ const Block = ({
       shadowRadius: 4,
       elevation: 2,
       width: "90%",
+      borderWidth: 1,
+      borderColor: "#845BB1",
     },
     blockText: {
       fontSize: 18,

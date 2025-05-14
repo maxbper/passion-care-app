@@ -14,7 +14,7 @@ export default function RegisterScreen() {
     const { t } = useTranslation();
     const [isModalVisible, setModalVisible] = useState(false);
     const insets = useSafeAreaInsets();
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
     const [adminPassword, setAdminPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const { isAdminRegister, isModRegister } = useLocalSearchParams();

@@ -13,7 +13,7 @@ import i18n from "../constants/translations";
 export default function HistoryScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
-  const cancerColor = useUserColor();
+  const cancerColor = "#845BB1";
   const { uid, forms, workouts, clinical } = useLocalSearchParams();
   const userId = uid ? JSON.parse(uid as string) : false;
   const isFormsHistory = forms ? JSON.parse(forms as string) : false;
@@ -75,7 +75,7 @@ export default function HistoryScreen() {
   useEffect(() => {
     const getExtraExercises = async () => {
       const data = await fetchUserData(userId);
-      const dates = Object.keys(data.extra_exercises);
+      const dates = Object.keys(data.extra_exercises).sort();
       setExtraExercises(data.extra_exercises);
       setExtraExercisesDates(dates);
       setCurrentExtraIndex(dates.length - 1);
@@ -247,7 +247,7 @@ export default function HistoryScreen() {
             </Text>
             </View>
             <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "center", marginTop: 5 }}>
-                <FontAwesome name={item ? "check-circle" : "times-circle"} size={20} color={item ? "#22c55e" : "#ef4444"} />
+                <FontAwesome name={item ? "check-circle" : "times-circle"} size={20} color={item ? "#ef4444" : "#22c55e"} />
             </View>
         </View>
             ))}

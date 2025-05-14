@@ -7,7 +7,7 @@ import { checkAuth } from "../services/authService";
 import { useUserColor } from "../context/cancerColor";
 
 export default function Index() {
-  const cancerColor = useUserColor();
+  const cancerColor = "#845BB1";
 
   useEffect(() => {
     const checkAuthentication = async () => {

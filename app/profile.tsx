@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function ProfileScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
-  const cancerColor = useUserColor();
+  const cancerColor = "#845BB1";
   const { uid } = useLocalSearchParams();
   const userId = uid ? JSON.parse(uid as string) : false;
   const [showClinicalDetails, setShowClinicalDetails] = useState(false);

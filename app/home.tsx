@@ -1,11 +1,11 @@
-import { Alert, Button, Platform, Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, Button, Platform, Text, View, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from "react";
-import { checkAuth, logout, showDailyWarning } from "../services/authService";
+import { checkAuth, getUid, logout, showDailyWarning } from "../services/authService";
 import WeeklyHealthAssessment from "../components/weeklyForm";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchIsSuspended, fetchXp, setIsSuspended } from "../services/dbService";
+import { fetchIsSuspended, fetchName, fetchXp, setIsSuspended, setNeedsForm } from "../services/dbService";
 import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
@@ -22,10 +22,12 @@ export default function HomeScreen() {
     const [isMod, setIsMod] = useState(true);
     const [level, setLevel] = useState(1);
     const [progress, setProgress] = useState(0);
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
     const [warningShown, setWarningShown] = useState(false);
     const insets = useSafeAreaInsets();
     const [changeMessage, setChangeMessage] = useState(true);
+    const [myUid, setMyUid] = useState("");
+    const [name, setName] = useState("");
 
     const messages = [
         t("encouragement_messages.0"),
@@ -44,6 +46,14 @@ export default function HomeScreen() {
     useEffect(() => {
         const checkAuthentication = async () => {
             await checkAuth();
+            const uid = await getUid();
+            if(uid) {
+                setMyUid(uid);
+            }
+            const n = await fetchName();
+            if(n) {
+                setName(n);
+            }
         };
         checkAuthentication();
 
@@ -52,46 +62,79 @@ export default function HomeScreen() {
             const mod = await ReactNativeAsyncStorage.getItem("isMod");
             setIsAdmin(admin === "true");
             setIsMod(mod === "true");
-            isUserSuspended();
             if (admin !== "true" && mod !== "true" && !warningShown) {
                 checkDailyWarning();
-                setWarningShown(true);
             }
         };
         isAdminOrMod();
 
-        const isUserSuspended = async () => {
-            const isSuspended = await fetchIsSuspended();
-            if (isSuspended) {
-                router.replace("/dontExercise");
-                return;
-            }
-        }
-
         const checkDailyWarning = async () => {
             const showWarning = await showDailyWarning();
             if (showWarning) {
-                if (Platform.OS !== "web") {
-                    Alert.alert(
-                        t("warning"),
-                        t("daily_warning"),
-                        [
-                            {
-                                text: t("no"),
-                                onPress: () => suspend(),
-                                style: "cancel",
-                            },
-                            {
-                                text: t("yes"),
-                                onPress: () => {},
-                            },
-                        ],
-                        { cancelable: false }
-                    );
-                }
+                dailyWarning();
             }
+            setWarningShown(true);
         };
     }, []);
+
+    const dailyWarning = async () => {
+        if (Platform.OS !== "web") {
+            Alert.alert(
+                t("warning"),
+                t("daily_warning"),
+                [
+                    {
+                        text: t("no"),
+                        onPress: () => {
+                            Alert.alert(
+                                t("warning"),
+                                t("are_you_sure"),
+                                [
+                                    {
+                                        text: t("no"),
+                                        onPress: () => dailyWarning(),
+                                    },
+                                    {
+                                        text: t("yes"),
+                                        onPress: () => {suspend()},
+                                        style: "cancel",
+                                    },
+                                ],
+                                { cancelable: false }
+                            );
+                        },
+                        style: "cancel",
+                    },
+                    {
+                        text: t("yes"),
+                        onPress: () => {},
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+
+    const handleSymptomPress = async () => {
+        if (Platform.OS !== "web") {
+            Alert.alert(
+                t("warning"),
+                t("fill_new_assessment"),
+                [
+                    {
+                        text: t("no"),
+                        onPress: () => {},
+                        style: "cancel",
+                    },
+                    {
+                        text: t("yes"),
+                        onPress: async () => {await ReactNativeAsyncStorage.setItem("wantsForm", "true")},
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
+    }
     
     useEffect(() => {
 
@@ -142,16 +185,26 @@ export default function HomeScreen() {
             {warningShown && <WeeklyHealthAssessment />}
             <View style={[styles.container, {marginTop: insets.top + 50}]}>
                     <>
+                    <View style={{width: "90%", padding: 20}}>
+                    <Text style={styles.levelText}>{t("hello")}{name}</Text>
+                    </View>
                     <View style={styles.card2}>
                     <WeekModal />
                     </View>
-                    <View style={styles.card}>
+                    {/* <View style={styles.card}>
                         <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
                         <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
-                    </View>
+                    </View> */}
+                    <Pressable style={styles.card1} onPress={handleSymptomPress}>
+                        <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
+                        <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
+                    </Pressable>
+                    <View style={styles.card}>
+                        <Text style={styles.levelText}>{t("resources")}</Text>
                     <TasksModal />
+                    </View>
 
                     </>
             </View>
@@ -186,15 +239,33 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         alignSelf: "center",
+        justifyContent: "center",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 4,
         marginBottom: 20,
-        borderColor: "grey",
-        borderWidth: 0,
+        borderColor: "#845BB1",
+        borderWidth: 1,
+    },
+    card1: {
+        width: "90%",
+        backgroundColor: "#FFF",
+        paddingTop: 10,
+        borderRadius: 10,
+        alignItems: "center",
+        alignSelf: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        marginBottom: 20,
+        borderColor: "#845BB1",
+        borderWidth: 1,
     },
     card2: {
+        width: "90%",
         paddingVertical: 20,
         backgroundColor: "#FFF",
         borderRadius: 10,
@@ -205,7 +276,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 4,
         marginBottom: 20,
-        borderColor: "grey",
+        borderColor: "#845BB1",
         borderWidth: 1,
     },
     levelText: {
@@ -220,8 +291,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     xpText: {
-        fontSize: 14,
+        fontSize: 18,
         marginBottom: 20,
+        color: "#845BB1",
     },
     statsText: {
         flexDirection: "row", 

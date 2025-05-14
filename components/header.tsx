@@ -23,7 +23,7 @@ export default function Header() {
     const cancerColor = useUserColor();
 
     const handleHomeButtonPress = async () => {
-      if (isLoginPage || isDontExercisePage || isExercisePage) {
+      if (isLoginPage || isDontExercisePage) {
         return;
       }
       const isAdmin = await ReactNativeAsyncStorage.getItem("isAdmin");

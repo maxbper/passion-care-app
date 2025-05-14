@@ -11,10 +11,11 @@ const WeeklyHealthAssessment = ({ }) => {
     const { t } = useTranslation();
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [isAssessmentVisible, setIsAssessmentVisible] = useState(false);
-    const [scaleValue, setScaleValue] = useState(5);
+    const [scaleValue, setScaleValue] = useState(3);
     const [currentAssessmentType, setCurrentAssessmentType] = useState(''); 
     const [healthAnswers, setHealthAnswers] = useState<boolean[]>([]);
     const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
+    const [checking, setChecking] = useState(false);
 
     const HealthAssessmentQuestions = [
         { id: 0, type: 'yesno', text: t("weekly_health_assessment.questions.0"), nextIfYes: 'suspend', nextIfNo: 1 },
@@ -46,13 +47,30 @@ const WeeklyHealthAssessment = ({ }) => {
         React.useCallback(() => {
             checkLastAssessmentDate();
         }, [])
+
     );
+
+    useEffect(() => {
+        if(!checking) {
+            return;
+        }
+        const intervalId = setInterval(() => {
+            checkLastAssessmentDate();
+        }, 1000);
+    
+        return () => clearInterval(intervalId);
+    }
+    , [checking]);
 
     const checkLastAssessmentDate = async () => {
         // startHealthAssessmentInitial(); // for testing purposes
         try {
-            const needs_form = await fetchNeedsForm();
+            const needs_form_async = await ReactNativeAsyncStorage.getItem("wantsForm");
+            const needs_form_bd = await fetchNeedsForm();
+            const needs_form = needs_form_async === "true" || needs_form_bd === true;
             if (needs_form) {
+                await ReactNativeAsyncStorage.removeItem("wantsForm");
+                setChecking(false);
                 startHealthAssessmentInitial();
                 return;
             }
@@ -60,10 +78,10 @@ const WeeklyHealthAssessment = ({ }) => {
         catch (error) {
             console.error('Error fetching needs form:', error);
         }
-
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
             if (!lastAssessmentDate) {
+                setChecking(false);
                 startHealthAssessmentInitial();
                 return;
             }
@@ -72,12 +90,17 @@ const WeeklyHealthAssessment = ({ }) => {
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
             if (diffDays > 5) {
+                setChecking(false);
                 startHealthAssessmentInitial();
+                return;
             }
         } catch (error) {
             console.error('Error checking assessment date:', error);
+            setChecking(false);
             startHealthAssessmentInitial();
+            return;
           }
+        setChecking(true);
     };
 
     const startHealthAssessmentInitial = () => {
@@ -224,12 +247,12 @@ const WeeklyHealthAssessment = ({ }) => {
             const decision = await makeDecision();
             await uploadWeeklyForm(healthAnswers, functionalAnswers, decision, false);
             await setNeedsForm(false);
-
             setCurrentQuestion(null);
             setHealthAnswers([]);
             setFunctionalAnswers([]);
             setCurrentAssessmentType('');
-            setScaleValue(5);
+            setScaleValue(3);
+            setChecking(true);
         }
     };
 

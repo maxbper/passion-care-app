@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import { CheckCircle2, Lock } from "lucide-react-native";
 import { router } from "expo-router";
-import { checkAuth } from "../services/authService";
-import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan, fetchGender } from "../services/dbService";
+import { checkAuth, getUid } from "../services/authService";
+import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan, fetchGender, fetchIsSuspended } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { MaterialIcons } from "@expo/vector-icons";
+import AppointmentModal from "./appointmentModal";
 
 export default function TasksModal() {
   const [warmupCompleted, setWarmupCompleted] = useState(false);
@@ -49,6 +51,8 @@ export default function TasksModal() {
     }],
   };
   const [index, setIndex] = useState(0);
+  const [myUid, setMyUid] = useState("");
+  const [suspended, setSuspended] = useState(false);
 
   const handleWarmup = () => {
     router.push({
@@ -84,8 +88,23 @@ export default function TasksModal() {
   useEffect(() => {
         const checkAuthentication = async () => {
             await checkAuth();
+            const uid = getUid();
+            if (uid) {
+                setMyUid(uid);
+            }
         };
         checkAuthentication();
+
+        const isUserSuspended = async () => {
+                    const isSuspended = await fetchIsSuspended();
+                    if (isSuspended) {
+                        setSuspended(true);
+                    }
+                    else {
+                        setSuspended(false);
+                    }
+                }
+        isUserSuspended();
 
         const checkLastWorkoutDate = async () => {
             const lastWorkoutDate = await fetchLastWorkoutDate();
@@ -239,18 +258,48 @@ export default function TasksModal() {
         getGender();
     }, [lastDateChecked, workoutPlan, warmupPlan]);
 
+    const workoutLockedWarning = () => {
+        Alert.alert(
+            t("workout_locked_title"),
+            t("workout_locked_message"),
+            [
+                { text: t("cancel"), style: "cancel" },
+                { text: t("ok"), onPress: () => {} },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const suspendedWarning = () => {
+      Alert.alert(
+          t("workout_locked_title"),
+          t("dont_exercise"),
+          [
+              { text: t("cancel"), style: "cancel" },
+              { text: t("ok"), onPress: () => {} },
+          ],
+          { cancelable: false }
+      );
+  };
+
   const Block = ({
     title,
     onPress,
     disabled,
     completed,
     half,
+    icon,
+    onDisablePress,
+    allowDisablePress
   }: {
     title: string;
     onPress: () => void;
     disabled?: boolean;
     completed?: boolean;
     half?: boolean;
+    icon?: boolean;
+    onDisablePress?: () => void;
+    allowDisablePress?: boolean;
   }) => {
     let containerStyle = [styles.block];
     if (completed) {
@@ -260,7 +309,7 @@ export default function TasksModal() {
     }
     if (half) {
       //containerStyle.push({ width: "41%" });
-      containerStyle.push({ width: "90%" });
+      containerStyle.push({ width: "25%", margin: 10, marginTop:0, marginBottom: 3, marginLeft: 10, marginRight: 10 }); 
     }
     else {
       containerStyle.push({ width: "90%" });
@@ -268,13 +317,17 @@ export default function TasksModal() {
 
     return (
       <Pressable
-        onPress={onPress}
-        disabled={disabled || completed}
+        onPress={allowDisablePress ? onDisablePress : onPress}
+        disabled={allowDisablePress ? (completed) : (disabled || completed)}
         style={containerStyle}
       >
+        {icon ? (
+          <MaterialIcons name="logout" size={26} color={"grey"}/>
+        ) : (
         <Text style={styles.blockText}>{title}</Text>
+        )}
         {completed ? (
-          <CheckCircle2 size={28} color="#22c55e" />
+          <CheckCircle2 size={24} color="#22c55e" />
         ) : disabled ? (
           <Lock size={24} color="#6b7280" />
         ) : null}
@@ -282,7 +335,35 @@ export default function TasksModal() {
     );
   };
 
+
   if (pageNumber === 0) {
+    return (
+      <>
+      <Block title={t("exercises_name")} onPress={() => {setPageNumber(1)} } disabled={suspended} allowDisablePress={suspended} onDisablePress={suspendedWarning}/>
+      {/* <Block title={t("appointment_title")} onPress={() => {}}/> */}
+        <AppointmentModal/>
+      <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", marginBottom: 10 }}>
+      <Block title={t("forms")} onPress={() => {
+        router.push({
+          pathname: "/history",
+          params: { uid: JSON.stringify(myUid), forms: "true" },
+        });
+      }} />
+      </View>
+      {/* <Block title={t("exercise_history")} onPress={() => {} } /> */}
+      </>
+    );
+  }
+  if (pageNumber === 1) {
+    return (
+      <>
+      <Block title={t("workout_plan")} onPress={() => {setPageNumber(2)} }/>
+      <Block title={t("extra_exercises")} onPress={() => setPageNumber(3)}/>
+      <Block title={t("back")} onPress={() => { setPageNumber(0);} } />
+      </>
+    );
+  }
+  if (pageNumber === 2) {
   return (
     <>
           <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
@@ -290,17 +371,19 @@ export default function TasksModal() {
               title={t("workout")} 
               onPress={handleWorkout}
               disabled={!warmupCompleted}
+              onDisablePress={workoutLockedWarning}
+              allowDisablePress={!warmupCompleted}
               completed={workoutCompleted} />
-          <Block title={t("extra_exercises")} onPress={() => {setPageNumber(1); } } />
+          <Block title={t("back")} onPress={() => { setPageNumber(1);} } />
       </>
   );
   }
-  if (pageNumber === 1) {
+  if (pageNumber === 3) {
     return (
       <>
       <Block title={t(`exercises.${extraExercises[index]}`)} onPress={() => {handleExtra(extraExercises[index])} }/>
-      <Block title={t("next")} onPress={handleIndexChange} half={true}/>
-      <Block title={t("back")} onPress={() => { setPageNumber(0);} } />
+      <Block title={t("next")} onPress={handleIndexChange}/>
+      <Block title={t("back")} onPress={() => { setPageNumber(1);} } />
       </>
     );
   }
@@ -322,6 +405,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#845BB1",
   },
   blockText: {
     fontSize: 18,
@@ -329,7 +414,7 @@ const styles = StyleSheet.create({
   },
   completed: {
     backgroundColor: "#DCFCE7",
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#4ADE80",
   },
   disabled: {

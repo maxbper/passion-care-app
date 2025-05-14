@@ -34,7 +34,7 @@ export default function AppointmentScreen() {
         Sat: false,
         Sun: false,
       });
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const [myAppointments, setMyAppointments] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);

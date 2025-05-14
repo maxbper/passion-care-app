@@ -14,7 +14,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default function ProfileModal({ visible, onClose }) {
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
-  const cancerColor = useUserColor();
+  const cancerColor = "#845BB1";
   const [flag, setFlag] = React.useState(t("flag"));
   const [isAdminOrMod, setIsAdminOrMod] = React.useState(false);
 
@@ -70,17 +70,14 @@ export default function ProfileModal({ visible, onClose }) {
         <Pressable style={styles.backdrop} onPress={onClose} />
 
         <Pressable style={styles.modal} onPress={onClose}>
-        <TouchableOpacity onPress={changeLanguage} style={styles.button}>
-                <Text style={{ fontSize: 36}}> {flag} </Text>
+        <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
+                <Text style={{ fontSize: 30}}> {flag} </Text>
         </TouchableOpacity>
         {isAdminOrMod ? (
-          <TouchableOpacity style={styles.button} onPress={handleHome}>
-          <Entypo name="home" size={36} color={cancerColor}/>
-        </TouchableOpacity>
-        ) : (<WearableComponent />)}
-        <AppointmentModal/>
-          <TouchableOpacity style={styles.button} onPress={handleLogout}>
-            <MaterialIcons name="logout" size={36} color={cancerColor}/>
+          null
+        ) : (<WearableComponent  />)}
+          <TouchableOpacity style={[styles.button, { borderBottomLeftRadius: 50, borderBottomRightRadius: 0 }]} onPress={handleLogout}>
+            <MaterialIcons name="logout" size={34} color={cancerColor}/>
           </TouchableOpacity>
         </Pressable>
       </Animated.View>
@@ -117,14 +114,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.3,
     borderRadius: 0,
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     marginVertical: 50,
   },
   button: {
-    marginVertical: 0,
+    marginVertical: -1,
     backgroundColor: "#fff",
-    borderRadius: 50,
     width: 100,
     height: 100,
     elevation: 3,

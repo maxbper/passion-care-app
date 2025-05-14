@@ -23,6 +23,7 @@ export default function DashboardScreen() {
     const [isDeletingAdmins, setIsDeletingAdmins] = React.useState(false);
     const [isDeletingUsers, setIsDeletingUsers] = React.useState(false);
     const myUid = auth.currentUser?.uid;
+    const [amIadmin, setAmIadmin] = React.useState(false);
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -33,6 +34,8 @@ export default function DashboardScreen() {
         const isAdminOrMod = async () => {
             const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
             const mod = await ReactNativeAsyncStorage.getItem("isMod");
+
+            setAmIadmin(admin === "true");
 
             const isAdminOrMod = admin === "true" || mod === "true";
             if (!isAdminOrMod) {
@@ -244,12 +247,14 @@ export default function DashboardScreen() {
         <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
             {t("users")}
         </Text>
+        {!amIadmin && (
         <Pressable
                 onPress={handleManageUsers}
                 style={{ position: "absolute", right: 0, top: 0, padding: 10, paddingRight: 20, zIndex: 996 }}
             >
                 <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
         </Pressable>
+        )}
         <View>
         {userList.length > 0 ? (
             userList.map((user, index) => (

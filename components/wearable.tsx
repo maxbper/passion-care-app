@@ -49,7 +49,7 @@ export const refreshTokens = async (tokens) => {
 }
   
 export default function WearableComponent() {
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
     const [isConnected, setIsConnected] = useState(false);
 
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
@@ -76,6 +76,7 @@ export default function WearableComponent() {
                         redirectUri,
                         extraParams: {
                         code_verifier: request.codeVerifier,
+                        prompt: 'login',
                         },
                     },
                     discovery
@@ -110,10 +111,27 @@ export default function WearableComponent() {
           };
         checkStoredToken();
 
-    }, [response, request]);
+    }, [response, request, isConnected]);
+
+    const disconnectFitbit = async () => {
+        const tokenData = await ReactNativeAsyncStorage.getItem('tokens');
+        if (tokenData) {
+            const { accessToken } = JSON.parse(tokenData);
+            await AuthSession.revokeAsync(
+                { token: accessToken },
+                discovery
+            );
+            await ReactNativeAsyncStorage.removeItem('tokens');
+            setIsConnected(false);
+        }
+    };
+
+    const connectFitbit = async () => {
+      promptAsync();
+    };
 
     return (
-        <TouchableOpacity onPress={() => promptAsync()} style={styles.button}>
+        <TouchableOpacity onPress={isConnected ? () => disconnectFitbit() : () => connectFitbit()} style={styles.button}>
                 <Feather name="watch" size={36} color={cancerColor}/>
                 <View style={styles.statusIcon}>
                     {isConnected ? (
@@ -138,7 +156,6 @@ const styles = StyleSheet.create({
     button: {
         marginVertical: 0,
         backgroundColor: "#fff",
-        borderRadius: 50,
         width: 100,
         height: 100,
         elevation: 3,

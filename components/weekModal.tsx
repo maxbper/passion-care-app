@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
-import { checkAuth } from "../services/authService";
+import { View, Text, Pressable, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { checkAuth, getUid } from "../services/authService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import { fetchLast7Workouts } from "../services/dbService";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function WeekModal() {
   const today = dayjs();
@@ -12,11 +14,15 @@ export default function WeekModal() {
   const days = Array.from({ length: 7 }, (_, i) => startOfWeek.add(i, 'day'));
   const [completedDays, setCompletedDays] = useState<string[]>([]);
   const { t } = useTranslation();
-
+  const [myUid, setMyUid] = useState("");
 
   useEffect(() => {
         const checkAuthentication = async () => {
             await checkAuth();
+            const uid = getUid();
+            if (uid) {
+                setMyUid(uid);
+            }
         };
         checkAuthentication();
 
@@ -37,7 +43,17 @@ export default function WeekModal() {
 
   return (
     <>
-    <Text style={styles.title}>{t("weekly")}</Text>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center', position: 'relative' }}>
+    <Text style={{...styles.title, flex: 1, textAlign: 'center'}}>{t("weekly")}</Text>
+    <TouchableOpacity onPress={() => {
+      router.push({
+        pathname: "/history",
+        params: { uid: JSON.stringify(myUid), workouts: "true" },
+      });
+    }} style={{ position: 'absolute', top: 0, right: 15, marginBottom: 10, marginLeft: 10}}>
+    <FontAwesome5 name="history" size={22} color="grey" />
+    </TouchableOpacity>
+</View>
     <View style={styles.row}>
       {days.map((day, idx) => {
         const dateStr = day.format('YYYY-MM-DD');
@@ -113,7 +129,7 @@ const styles = StyleSheet.create({
       },
       future: {
          backgroundColor: 'white',
-         borderColor: 'lightgrey',
+         borderColor: "#845BB1",
           borderStyle: 'dashed',
       },
       dayText: {

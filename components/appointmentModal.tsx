@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Button, Text, TouchableOpacity, View, StyleSheet, Pressable } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from 'expo-router';
 import { Feather, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useUserColor } from '../context/cancerColor';
 import { useProfileModal } from '../context/ProfileModalContext';
-import { fetchMyAppointments, fetchMyAppointmentsMod, fetchMyAppointmentsUser } from '../services/dbService';
+import { fetchMyAppointmentsMod, fetchMyAppointmentsUser } from '../services/dbService';
+import { useTranslation } from 'react-i18next';
 
 export default function AppointmentModal() {
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
     const [isDue, setIsDue] = useState(false);
     const { hideModal } = useProfileModal();
     const [isAdmin, setIsAdmin] = useState(false);
+    const { t } = useTranslation();
 
 
     useEffect(() => {
@@ -62,16 +64,18 @@ export default function AppointmentModal() {
       };
 
     if (isAdmin) {
-      return (
-        <TouchableOpacity onPress={() => {}} style={styles.button}>
-                <FontAwesome5 name="comment-medical" size={36} color="grey"/>
-        </TouchableOpacity>
+      return (null
     );
       }
 
     return (
-        <TouchableOpacity onPress={handleClick} style={styles.button}>
-                <FontAwesome5 name="comment-medical" size={36} color={cancerColor}/>
+        <Pressable
+        onPress={handleClick}
+        style={styles.block}
+      >
+
+        <Text style={styles.blockText}>{t("appointment_title")}</Text>
+        <FontAwesome5 name="comment-medical" size={24} color={"lightgrey"}/>
                 <View style={styles.statusIcon}>
                     {isDue && (
                         <FontAwesome
@@ -81,7 +85,7 @@ export default function AppointmentModal() {
                         />
                     )}
                 </View>
-        </TouchableOpacity>
+      </Pressable>
     );
 }
 
@@ -98,7 +102,29 @@ const styles = StyleSheet.create({
       },
       statusIcon: {
         position: 'absolute',
-        top: 25,
-        right: 25,
+        top: 10,
+        right: 10,
+      },
+      block: {
+        alignSelf: "center",
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: "#FFFFFF",
+        marginBottom: 16,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        elevation: 2,
+        borderWidth: 1,
+        borderColor: "#845BB1",
+        width: "90%",
+      },
+      blockText: {
+        fontSize: 18,
+        fontWeight: "600",
       },
  });

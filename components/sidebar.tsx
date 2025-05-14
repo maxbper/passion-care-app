@@ -12,7 +12,7 @@ export default function SidebarNav() {
     const pathname = usePathname();
     const [isAdmin, setIsAdmin] = React.useState(false);
     const [isMod, setIsMod] = React.useState(false);
-    const cancerColor = useUserColor();
+    const cancerColor = "#845BB1";
 
     const navItemsUser: { name: string; label: string; route: any; library: any }[] = [];
 

@@ -23,6 +23,27 @@ export const fetchIsSuspended = async (userId=null) => {
       }
 };
 
+export const fetchName = async (userId=null) => {
+  if (!userId) {
+      while (auth.currentUser == null) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      userId = auth.currentUser?.uid;
+  }
+  try {
+      const docRef = doc(db, "users", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data().name;
+      } else {
+        console.log("No user data found!");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+};
+
 export const fetchGender = async () => {
   while (auth.currentUser == null) {
       await new Promise(resolve => setTimeout(resolve, 1000));
