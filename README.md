@@ -43,7 +43,7 @@ To run the app locally:
 1.  Clone the repository:
 
     ```bash
-    git clone [https://github.com/duartelopes19/passion-care-app.git](https://github.com/duartelopes19/passion-care-app.git)
+    git clone https://github.com/duartelopes19/passion-care-app.git
     cd passion-care-app
     ```
 2.  Install dependencies:
