@@ -63,6 +63,7 @@ To run the app locally:
     * **To run on an Android emulator or connected device:**
 
         ```bash
+        npx expo prebuild
         npx expo run:android
         ```
 
