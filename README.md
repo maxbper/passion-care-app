@@ -29,6 +29,11 @@ Before you begin, ensure you have the following installed:
     * [Android Studio](https://developer.android.com/studio) and the Android SDK are required to build and run the app on an Android device or emulator.
     * Make sure you have configured the `ANDROID_HOME` environment variable and that `adb` is in your PATH.
 
+5.  **iOS Development Environment (if you want to run on an iOS emulator)**:
+    * Requires macOS.
+    * [Xcode](https://developer.apple.com/xcode/) is required to run the app on an iOS simulator.
+
+
 ---
 
 ## Running the App
