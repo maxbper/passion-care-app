@@ -18,7 +18,8 @@ export default function TasksModal() {
   const [gender, setGender] = useState<string | null>(null);
   const { t } = useTranslation();
   const [pageNumber, setPageNumber] = useState(0);
-  const extraExercises = ["pinch", "walk_various_surfaces", "textures", "spiky_ball"];
+
+  const extraExercises = ["pinch", "walk_various_surfaces", "textures", "spiky_ball", "straight_line_walk", "ball_squeeze", "single_leg_stand", "stand_soft_surface", "side_weight_shift", "reach_fixed_support"];
   const extraPlan = {
     pinch : [{
       exercise: "pinch",
@@ -49,6 +50,105 @@ export default function TasksModal() {
       exercise: "spiky_ball",
       duration: 180,
     }],
+    straight_line_walk: [{
+      exercise: "straight_line_walk",
+      duration: 0,
+      reps: 10,
+      sets: 2,
+      interval: 3
+    },
+    {
+      exercise: "rest",
+      duration: 3,
+    },
+    {
+      exercise: "straight_line_walk",
+      duration: 0,
+      reps: 10,
+      sets: 1,
+    },
+    ],
+    ball_squeeze: [{
+      exercise: "ball_squeeze",
+      duration: 0,
+      reps: 10,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 20,
+    },
+    {
+      exercise: "ball_squeeze",
+      duration: 0,
+      reps: 10,
+      sets: 1,
+    },
+    ],
+    single_leg_stand: [{
+      exercise: "single_leg_stand",
+      duration: 30,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 20,
+    },
+    {
+      exercise: "single_leg_stand",
+      duration: 30,
+      sets: 1,
+    },
+    ],
+    stand_soft_surface: [{
+      exercise: "stand_soft_surface",
+      duration: 30,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 30,
+    },
+    {
+      exercise: "stand_soft_surface",
+      duration: 30,
+      sets: 1,
+    },
+    ],
+    side_weight_shift: [{
+      exercise: "side_weight_shift",
+      duration: 0,
+      reps: 10,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 30,
+    },
+    {
+      exercise: "side_weight_shift",
+      duration: 0,
+      reps: 10,
+      sets: 1,
+    },
+    ],
+    reach_fixed_support: [{
+      exercise: "reach_fixed_support",
+      duration: 0,
+      reps: 8,
+      sets: 2,
+    },
+    {
+      exercise: "rest",
+      duration: 30,
+    },
+    {
+      exercise: "reach_fixed_support",
+      duration: 0,
+      reps: 8,
+      sets: 1,
+    },
+    ],
   };
   const [index, setIndex] = useState(0);
   const [myUid, setMyUid] = useState("");

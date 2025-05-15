@@ -193,8 +193,26 @@ export default function ExerciseScreen() {
       }
     }
     else {
-      await incrementExerciseAmount(parsedWorkoutPlan[0].exercise)
-      await addXp(5);
+      let exercises = [];
+      parsedWorkoutPlan.forEach((item) => {
+        if(item.exercise !== "rest" && !exercises.includes(item.exercise)) {
+          exercises.push(item.exercise);
+        }
+      }
+      );
+      skippedExercises.forEach((item) => {
+        if(exercises.includes(item)) {
+          const index = exercises.indexOf(item);
+          if (index > -1) {
+            exercises.splice(index, 1);
+          }
+        }
+      }
+      );
+      if(exercises.length !== 0) {
+        await incrementExerciseAmount(parsedWorkoutPlan[0].exercise)
+        await addXp(5);
+      }
     }
     router.replace("/home");
   };
