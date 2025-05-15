@@ -1,4 +1,4 @@
-# PASSiON Care App
+# PASSiON Care
 
 Welcome to the PASSiON Care app! This project is a mobile application built with [Expo](https://expo.dev) and React Native. It is designed to assist users in managing their health and well-being.
 
