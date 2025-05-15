@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# PASSiON Care App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to the PASSiON Care app! This project is a mobile application built with [Expo](https://expo.dev) and React Native. It is designed to assist users in managing their health and well-being.
 
-## Get started
+---
 
-1. Install dependencies
+## Table of Contents
 
-   ```bash
-   npm install
-   ```
+1.  [Getting Started](#getting-started)
+2.  [Running the App](#running-the-app)
 
-2. Start the app
+---
 
-   ```bash
-    npx expo start
-   ```
+## Getting Started
 
-In the output, you'll find options to open the app in a
+### Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Before you begin, ensure you have the following installed:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1.  **Node.js** (v16 or later)
+2.  **npm** (v8 or later) or **yarn**
+3.  **Expo CLI**: Install globally using:
 
-## Get a fresh project
+    ```bash
+    npm install -g expo-cli
+    ```
 
-When you're ready, run:
+4.  **Android Development Environment (if you want to run on Android)**:
+    * [Android Studio](https://developer.android.com/studio) and the Android SDK are required to build and run the app on an Android device or emulator.
+    * Make sure you have configured the `ANDROID_HOME` environment variable and that `adb` is in your PATH.
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Running the App
 
-## Learn more
+To run the app locally:
 
-To learn more about developing your project with Expo, look at the following resources:
+1.  Clone the repository:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+    ```bash
+    git clone [https://github.com/duartelopes19/passion-care-app.git](https://github.com/duartelopes19/passion-care-app.git)
+    cd passion-care-app
+    ```
+2.  Install dependencies:
 
-## Join the community
+    ```bash
+    npm install
+    ```
+3.  Start the development server:
 
-Join our community of developers creating universal apps.
+    ```bash
+    expo start
+    ```
+4.  Run the app:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+    * **To run on a mobile device (Expo Go):** Use the Expo Go app on your iOS or Android device to scan the QR code displayed in the terminal.  Make sure your device is on the same network as your computer.
+
+    * **To run on an Android emulator or connected device:**
+
+        ```bash
+        npx expo run:android
+        ```
+
+        This command will build the Android app and install it on your connected device or emulator.  Ensure you have an Android emulator running or an Android device connected and in developer mode.
