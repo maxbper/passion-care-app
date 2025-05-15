@@ -35,6 +35,9 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+ios/
+android/
+
 app-example
 
 cipn-app-firebase-adminsdk-fbsvc-ac3d819cb1.json
