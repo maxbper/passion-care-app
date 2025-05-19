@@ -6,10 +6,10 @@ import { checkAuth, getUid } from "../services/authService";
 import { fetchLastWorkoutDate, fetchWorkoutPlan, fetchExercise, fetchWarmupPlan, fetchGender, fetchIsSuspended } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import AppointmentModal from "./appointmentModal";
 
-export default function TasksModal() {
+export default function TasksModal({page=0}) {
   const [warmupCompleted, setWarmupCompleted] = useState(false);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [lastDateChecked, setLastDateChecked] = useState(false);
@@ -17,7 +17,7 @@ export default function TasksModal() {
   const [warmupPlan, setWarmupPlan] = useState<any[]>([]);
   const [gender, setGender] = useState<string | null>(null);
   const { t } = useTranslation();
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(page);
 
   const extraExercises = ["pinch", "walk_various_surfaces", "textures", "spiky_ball", "straight_line_walk", "ball_squeeze", "single_leg_stand", "stand_soft_surface", "side_weight_shift", "reach_fixed_support"];
   const extraPlan = {
@@ -182,7 +182,7 @@ export default function TasksModal() {
   };
 
   const handleIndexChange = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % extraExercises.length);
+    setIndex((prevIndex) => (prevIndex + 3) % extraExercises.length);
   }
 
   useEffect(() => {
@@ -397,7 +397,7 @@ export default function TasksModal() {
     disabled?: boolean;
     completed?: boolean;
     half?: boolean;
-    icon?: boolean;
+    icon?: string;
     onDisablePress?: () => void;
     allowDisablePress?: boolean;
   }) => {
@@ -409,7 +409,7 @@ export default function TasksModal() {
     }
     if (half) {
       //containerStyle.push({ width: "41%" });
-      containerStyle.push({ width: "25%", margin: 10, marginTop:0, marginBottom: 3, marginLeft: 10, marginRight: 10 }); 
+      containerStyle.push({ width: "41%", margin: 10, marginTop:0, marginBottom: 3, marginLeft: 10, marginRight: 10 }); 
     }
     else {
       containerStyle.push({ width: "90%" });
@@ -421,16 +421,19 @@ export default function TasksModal() {
         disabled={allowDisablePress ? (completed) : (disabled || completed)}
         style={containerStyle}
       >
-        {icon ? (
-          <MaterialIcons name="logout" size={26} color={"grey"}/>
-        ) : (
+
         <Text style={styles.blockText}>{title}</Text>
-        )}
+
         {completed ? (
           <CheckCircle2 size={24} color="#22c55e" />
-        ) : disabled ? (
+        ) : disabled && !half ? (
           <Lock size={24} color="#6b7280" />
+        ) : icon==="run" ? (
+          <FontAwesome6 name="person-running" size={26} color={"#845BB1"}/>
+        ) : icon==="history" ? (
+          <FontAwesome5 name="comment-medical" size={26} color={"#845BB1"}/>
         ) : null}
+
       </Pressable>
     );
   };
@@ -439,7 +442,7 @@ export default function TasksModal() {
   if (pageNumber === 0) {
     return (
       <>
-      <Block title={t("exercises_name")} onPress={() => {setPageNumber(1)} } disabled={suspended} allowDisablePress={suspended} onDisablePress={suspendedWarning}/>
+      <Block title={t("exercises_name")} onPress={() => {router.push("/exercisePlan") }} disabled={suspended} allowDisablePress={suspended} onDisablePress={suspendedWarning} icon={"run"}/>
       {/* <Block title={t("appointment_title")} onPress={() => {}}/> */}
         <AppointmentModal/>
       <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center", marginBottom: 10 }}>
@@ -448,7 +451,7 @@ export default function TasksModal() {
           pathname: "/history",
           params: { uid: JSON.stringify(myUid), forms: "true" },
         });
-      }} />
+      }} icon={"history"}/>
       </View>
       {/* <Block title={t("exercise_history")} onPress={() => {} } /> */}
       </>
@@ -474,16 +477,37 @@ export default function TasksModal() {
               onDisablePress={workoutLockedWarning}
               allowDisablePress={!warmupCompleted}
               completed={workoutCompleted} />
-          <Block title={t("back")} onPress={() => { setPageNumber(1);} } />
       </>
   );
   }
   if (pageNumber === 3) {
     return (
       <>
-      <Block title={t(`exercises.${extraExercises[index]}`)} onPress={() => {handleExtra(extraExercises[index])} }/>
-      <Block title={t("next")} onPress={handleIndexChange}/>
-      <Block title={t("back")} onPress={() => { setPageNumber(1);} } />
+      {extraExercises.slice(index, index + 2).map((exercise, idx) => (
+        <Block
+          key={idx}
+          title={t(`exercises.${exercise}`)}
+          onPress={() => {
+            handleExtra(exercise);
+          }}
+        />
+      ))}
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+
+          <Block
+            title={t("previous_page")}
+            onPress={() => setIndex((prevIndex) => Math.max(prevIndex - 2, 0))}
+            disabled={index <= 0}
+            half={true}
+          />
+
+          <Block
+            title={t("next_page")}
+            onPress={() => setIndex((prevIndex) => Math.min(prevIndex + 2, extraExercises.length))}
+            disabled={index + 2 >= extraExercises.length}
+            half={true}
+          />
+      </View>
       </>
     );
   }

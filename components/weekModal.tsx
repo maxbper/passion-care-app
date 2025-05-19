@@ -51,7 +51,7 @@ export default function WeekModal() {
         params: { uid: JSON.stringify(myUid), workouts: "true" },
       });
     }} style={{ position: 'absolute', top: 0, right: 15, marginBottom: 10, marginLeft: 10}}>
-    <FontAwesome5 name="history" size={22} color="grey" />
+    <FontAwesome5 name="history" size={22} color="#845BB1" />
     </TouchableOpacity>
 </View>
     <View style={styles.row}>
@@ -84,7 +84,7 @@ export default function WeekModal() {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 20,
+        fontSize: 24,
         marginBottom: 12,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
       },
       today: {
         backgroundColor: '#e0e0e0',
-        borderColor: 'grey',
+        borderColor: '#845BB1',
         borderStyle: 'dashed',
       },
       todayCompleted: {

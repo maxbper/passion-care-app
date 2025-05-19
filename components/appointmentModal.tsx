@@ -75,7 +75,7 @@ export default function AppointmentModal() {
       >
 
         <Text style={styles.blockText}>{t("appointment_title")}</Text>
-        <FontAwesome5 name="comment-medical" size={24} color={"lightgrey"}/>
+        <FontAwesome name="calendar-plus-o" size={24} color={"#845BB1"}/>
                 <View style={styles.statusIcon}>
                     {isDue && (
                         <FontAwesome

@@ -15,7 +15,6 @@ const screenWidth = Dimensions.get('window').width;
 export default function ProfileModal({ visible, onClose }) {
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
   const cancerColor = "#845BB1";
-  const [flag, setFlag] = React.useState(t("flag"));
   const [isAdminOrMod, setIsAdminOrMod] = React.useState(false);
 
   useEffect(() => {
@@ -41,7 +40,6 @@ export default function ProfileModal({ visible, onClose }) {
 
   const changeLanguage = () => {
     i18n.changeLanguage(i18n.language === "en" ? "pt" : "en");
-    setFlag(t("flag"));
   };
 
   const handleLogout = async () => {
@@ -71,7 +69,17 @@ export default function ProfileModal({ visible, onClose }) {
 
         <Pressable style={styles.modal} onPress={onClose}>
         <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
-                <Text style={{ fontSize: 30}}> {flag} </Text>
+          {i18n.language === "pt" ? (
+        <View style={{position: 'relative', width: '100%', height: '100%'}}>
+            <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 35, right: 25, zIndex:2 }}>🇵🇹</Text>
+            <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 25, right: 15, zIndex:1 }}>🇬🇧</Text>
+        </View>
+        ) : (
+          <View style={{position: 'relative', width: '100%', height: '100%'}}>
+            <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 35, right: 25, zIndex:2 }}>🇬🇧</Text>
+            <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 25, right: 15, zIndex:1 }}>🇵🇹</Text>
+        </View>
+        )}
         </TouchableOpacity>
         {isAdminOrMod ? (
           null

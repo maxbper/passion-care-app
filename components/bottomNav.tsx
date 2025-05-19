@@ -24,9 +24,9 @@ export default function BottomNav() {
   
       }, []);
 
-    if (!isAdmin && !isMod) {
+    /* if (!isAdmin && !isMod) {
         return null;
-    }
+    } */
     
   return (
     <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", marginTop: insets.top + 50, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 80, zIndex: 995 }}>

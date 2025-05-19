@@ -257,7 +257,7 @@ export default function AppointmentScreen() {
           {completedCheck ? (
             <FontAwesome name="check" size={24} color="black" />
           ) : (
-            <Text style={styles.emailText}>{subtitle}</Text>
+            <Text style={[styles.emailText, {color: subtitle===t("available") ? cancerColor : "grey"}]}>{subtitle}</Text>
           )}
             
         </Pressable>
@@ -586,8 +586,9 @@ export default function AppointmentScreen() {
                 <DateSelector
                     visible={showCalendarModal}
                     onClose={(date) => {setSelectedDate(date);setShowCalendarModal(false)}}
+                    slots={slots}
                 />
-                {slots[getDay()] ? slots[getDay()].map((slot, index) => (
+                {slots[getDay()].length > 0 ? slots[getDay()].map((slot, index) => (
                     <Block
                       key={index}
                       title={getLocalTime(slot)}
@@ -641,7 +642,6 @@ export default function AppointmentScreen() {
     emailText: {
       fontSize: 14,
       fontWeight: "300",
-      color: "grey",
     },
     completed: {
       backgroundColor: "#DCFCE7",

@@ -107,14 +107,12 @@ export default function ExerciseScreen() {
         temp.splice(index, 1);
       }
     }
-    setSkippedExercises(temp);
     setTransitioning(true);
-    setTimeout(() => {
-      setCurrentIndex((prev) => prev - 1)
-    }, 500);
+    setSkippedExercises(temp);
+    setCurrentIndex((prev) => prev - 1)
     setTimeout(() => {
       setTransitioning(false);
-    }, 2000);
+    }, 1000);
   }
 
   const next = () => {
@@ -123,14 +121,12 @@ export default function ExerciseScreen() {
     if(parsedWorkoutPlan[currentIndex].exercise !== "rest" && !temp.includes(parsedWorkoutPlan[currentIndex].exercise)) {
       temp.push(parsedWorkoutPlan[currentIndex].exercise);
     }
-    setSkippedExercises(temp);
     setTransitioning(true);
-    setTimeout(() => {
-      setCurrentIndex((prev) => prev + 1)
-    }, 500);
+    setSkippedExercises(temp);
+    setCurrentIndex((prev) => prev + 1)
     setTimeout(() => {
       setTransitioning(false);
-    }, 2000);
+    }, 1000);
   }
 
   const handlePause = async () => {
@@ -146,7 +142,7 @@ export default function ExerciseScreen() {
             [
                 {
                     text: "OK",
-                    onPress: () => router.replace("/home"),
+                    onPress: () => router.replace("/exercisePlan"),
                 },
             ],
             { cancelable: false }
@@ -214,7 +210,7 @@ export default function ExerciseScreen() {
         await addXp(5);
       }
     }
-    router.replace("/home");
+    router.replace("/exercisePlan");
   };
 
   const handleStart = () => {
@@ -302,14 +298,14 @@ export default function ExerciseScreen() {
           <>
         <Text style={{ fontSize: 18, marginVertical: 10 }}>{t("feel")}</Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginBottom: 30 }}>
-        <TouchableOpacity onPress={() => setFeedbackMood('happy')} style={feedbackMood==='happy' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60} : {}}>
-          <Text style={{ fontSize: 36, textAlign: 'center' }}>😊</Text>
+        <TouchableOpacity onPress={() => setFeedbackMood('sad')} style={feedbackMood==='sad' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😢</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setFeedbackMood('neutral')} style={feedbackMood==='neutral' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
           <Text style={{ fontSize: 36, textAlign: 'center' }}>😐</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setFeedbackMood('sad')} style={feedbackMood==='sad' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
-          <Text style={{ fontSize: 36, textAlign: 'center' }}>😢</Text>
+        <TouchableOpacity onPress={() => setFeedbackMood('happy')} style={feedbackMood==='happy' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60} : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😊</Text>
         </TouchableOpacity>
       </View>
           </>
@@ -427,7 +423,8 @@ const styles = StyleSheet.create({
   timer: {
     fontSize: 48,
     marginVertical: 20,
-    color: '#E15E3C',
+    fontWeight: 'bold',
+    color: '#845BB1',
   },
   details: {
     fontSize: 20,

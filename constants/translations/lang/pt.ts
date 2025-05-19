@@ -141,7 +141,7 @@ const pt = {
         "": "Nenhum",
     },
     workouts: "Histórico de Treinos",
-    forms: "Histórico de Formulários",
+    forms: "Histórico de Saúde",
     clinical_details: "Detalhes Clínicos",
     clinical_registers: "Registos Clínicos",
     new_clinical_register: "Novo Registo Clínico",
@@ -228,7 +228,7 @@ const pt = {
     no_appointments: "Não existem consultas pendentes.",
     no_clinical_registers: "Ainda não existem registos clínicos.",
     back: "Voltar",
-    extra_exercises: "Exercícios Extra",
+    extra_exercises: "Sensório-Motores",
     no_extra_exercises: "Não existem exercícios extra realizados neste dia.",
     reps: "Repetições",
     sets: "Séries",
@@ -300,7 +300,7 @@ const pt = {
     no_fitbit: "Não existem dados do Fitbit disponíveis.",
     workout_plan: "Plano de Treino",
     are_you_sure: "Tem a certeza que não deseja continuar?",
-    exercises_name: "Exercícios",
+    exercises_name: "Planos de Exercício",
     resources: "Recursos",
     symptom_evaluation: "Avaliação de Sintomas",
     how_you_feeling: "Como se sente hoje?",
@@ -370,7 +370,8 @@ const pt = {
         "muscle_relaxation": "Contrair e relaxar sequencialmente diferentes grupos musculares, dos pés até à cabeça. Pausar apenas se desejar." ,
         "rest": "",
     },
-  
+    previous_page: "Anterior",
+    next_page: "Próxima",
    };
 
 export default pt;

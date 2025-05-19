@@ -141,7 +141,7 @@ const en = {
         "": "None",
     },
     workouts: "Workout History",
-    forms: "Form History",
+    forms: "Health History",
     clinical_details: "Clinical Details",
     clinical_registers: "Clinical Registers",
     new_clinical_register: "New Clinical Register",
@@ -228,7 +228,7 @@ const en = {
     no_clinical_registers: "No clinical registers to show.",
     no_appointments: "No appointments to show.",
     back: "Back",
-    extra_exercises: "Extra Exercises",
+    extra_exercises: "Sensorimotor",
     no_extra_exercises: "No extra exercises were done this day.",
     reps: "Reps",
     sets: "Sets",
@@ -300,7 +300,7 @@ const en = {
     no_fitbit: "No Fitbit data available.",
     workout_plan: "Workout Plan",
     are_you_sure: "Are you sure?",
-    exercises_name: "Exercises",
+    exercises_name: "Exercise Plans",
     resources: "Resources",
     symptom_evaluation: "Symptom Evaluation",
     how_you_feeling: "How are you feeling today?",
@@ -369,7 +369,9 @@ const en = {
         "seated_diaphragmatic_breathing": "Inhale deeply expanding the abdomen and exhale slowly, seated in a comfortable position.",
         "muscle_relaxation": "Sequentially contract and relax different muscle groups, from feet to head. Pause only if desired.",
         "rest": ""
-    }    
+    },
+    previous_page: "Previous",
+    next_page: "Next",
    };
 
 
