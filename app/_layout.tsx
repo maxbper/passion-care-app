@@ -2,7 +2,7 @@ import { Slot, usePathname } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
 import BottomNav from "../components/bottomNav";
 import Sidebar from "../components/sidebar";
-import React from "react";
+import React, { useRef } from "react";
 import Header from "../components/header";
 import ProfileModal from "../components/profileModal";
 import { ProfileModalProvider, useProfileModal } from "../context/ProfileModalContext";
@@ -10,13 +10,15 @@ import UserBasedDetailColorProvider from "../context/cancerColorProvider";
 import { LocaleConfig } from "react-native-calendars";
 import { useTranslation } from 'react-i18next';
 
+export const scrollRef = React.createRef<ScrollView>();
+
 function LayoutContent() {
   const pathname = usePathname();
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
   const isHomePage = pathname === "/home";
   const isExercisePage = pathname === "/exercise";
-  const page = isLoginPage || isDontExercisePage || isHomePage || isExercisePage;
+  const page = isLoginPage || isDontExercisePage || isExercisePage;
   const { isVisible, hideModal } = useProfileModal();
 
   const { t } = useTranslation();
@@ -57,7 +59,7 @@ function LayoutContent() {
       {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && !isHomePage && <BottomNav />}
       {Platform.OS === "web" && !isLoginPage && <Sidebar />}
       {!page ? (
-      <ScrollView>
+      <ScrollView ref={scrollRef}>
       <Slot />
       </ScrollView>
       ) : (

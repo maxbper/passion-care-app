@@ -9,6 +9,7 @@ import CustomDropdown from "../components/customDropdown";
 import { addUserToList, registerAdmin, registerMod, registerUser } from "../services/dbService";
 import { auth, resetPassword } from "../firebaseConfig";
 import { useUserColor } from "../context/cancerColor";
+import { scrollRef } from "./_layout";
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
@@ -178,6 +179,7 @@ export default function RegisterScreen() {
 
       const handleRegister = async () => {
         if (isFormValid()) {
+          scrollRef.current?.scrollTo({ y: 0, animated: true });
           setModalVisible(true);
         } else {
           if (Platform.OS === "web") {
