@@ -8,14 +8,15 @@ import { Trash, Lock } from "lucide-react-native";
 import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import TasksModal from "../components/tasksModal";
-import WeekModal from "../components/weekModal";
+import WearableComponent from "../components/wearable";
 import { router } from "expo-router";
+import { auth } from "../firebaseConfig";
 
-export default function ExercisePlanScreen() {
+export default function HistoryPageScreen() {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const cancerColor = "#845BB1";
-    const [showModal, setShowModal] = useState(false);
+    const myUid = auth.currentUser?.uid;
 
 
     useEffect(() => {
@@ -31,10 +32,6 @@ export default function ExercisePlanScreen() {
         onPress,
         disabled,
         completed,
-        half,
-        icon,
-        onDisablePress,
-        allowDisablePress
       }: {
         title: string;
         onPress: () => void;
@@ -50,8 +47,8 @@ export default function ExercisePlanScreen() {
     
         return (
           <Pressable
-            onPress={allowDisablePress ? onDisablePress : onPress}
-            disabled={allowDisablePress ? (completed) : (disabled || completed)}
+            onPress={onPress}
+            disabled={(disabled || completed)}
             style={containerStyle}
           >
     
@@ -64,16 +61,31 @@ export default function ExercisePlanScreen() {
         return (
           <>
             <View style={[styles.container, { marginTop: insets.top + 120 }]}>
-            <WeekModal />
-                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 20}}>
+                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
-                    {t("exercises_name")}
+                    {t("history")}
                 </Text>
-                {/* <FontAwesome6 name="person-running" size={24} color={cancerColor} style={{marginBottom: 20, marginLeft: 5}} /> */}
               </View>
-                <TasksModal page={2}/>
-                <Block title={t("extra_exercises")} onPress={() => {router.push("/sensori")} } />
+                <Block title={t("forms")} onPress={() => {
+                  router.push({
+                            pathname: "/history",
+                            params: { uid: JSON.stringify(myUid), forms: "true" },
+                          });
+                } } />
+                <Block title={t("workouts")} onPress={() => {
+                  router.push({
+                    pathname: "/history",
+                    params: { uid: JSON.stringify(myUid), workouts: "true" },
+                  });
+                } } />
+                <Block title={t("sensori")} onPress={() => {
+                  router.push({
+                    pathname: "/history",
+                    params: { uid: JSON.stringify(myUid), sensori: "true" },
+                  });
+                } } />
             </View>
+            
           </>
         );
         

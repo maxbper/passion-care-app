@@ -9,16 +9,18 @@ import { fetchClinicalRegister, fetchUserData, fetchWeeklyForms, fetchWorkouts, 
 import { useUserColor } from "../context/cancerColor";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "../constants/translations";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HistoryScreen() {
   const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
   const cancerColor = "#845BB1";
-  const { uid, forms, workouts, clinical } = useLocalSearchParams();
+  const { uid, forms, workouts, clinical, sensori } = useLocalSearchParams();
   const userId = uid ? JSON.parse(uid as string) : false;
   const isFormsHistory = forms ? JSON.parse(forms as string) : false;
   const isWorkoutHistory = workouts ? JSON.parse(workouts as string) : false;
   const isClinicalHistory = clinical ? JSON.parse(clinical as string) : false;
+  const isSensoriHistory = sensori ? JSON.parse(sensori as string) : false;
   const [currentIndex, setCurrentIndex] = useState(0);
   const insets = useSafeAreaInsets();
   const [functionalOrHealth, setFunctionalOrHealth] = useState(true);
@@ -30,12 +32,24 @@ export default function HistoryScreen() {
   const [extraExercises, setExtraExercises] = useState([]);
   const [extraExercisesDates, setExtraExercisesDates] = useState([]);
   const [currentExtraIndex, setCurrentExtraIndex] = useState(0);
+  const [adminOrMod, setAdminOrMod] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = async () => {
         await checkAuth();
     };
     checkAuthentication();
+
+    const isAdminOrMod = async () => {
+      const admin = await ReactNativeAsyncStorage.getItem("isAdmin");
+      const mod = await ReactNativeAsyncStorage.getItem("isMod");
+
+      const isAdminOrMod = admin === "true" || mod === "true";
+      if (isAdminOrMod) {
+          setAdminOrMod(isAdminOrMod);
+      }
+  };
+  isAdminOrMod();
 
     const getUserData = async () => {
       if (userId) {
@@ -61,6 +75,13 @@ export default function HistoryScreen() {
           setUserData(data);
           setCurrentIndex(data.length - 1);
         }
+        else if(isSensoriHistory) {
+          const data = await fetchUserData(userId);
+          const dates = Object.keys(data.extra_exercises).sort();
+          setExtraExercises(data.extra_exercises);
+          setExtraExercisesDates(dates);
+          setCurrentExtraIndex(dates.length - 1);
+        }
       }
     }
 
@@ -71,17 +92,6 @@ export default function HistoryScreen() {
     setFunctionalOrHealth(true);
 
   }, [currentIndex]);
-
-  useEffect(() => {
-    const getExtraExercises = async () => {
-      const data = await fetchUserData(userId);
-      const dates = Object.keys(data.extra_exercises).sort();
-      setExtraExercises(data.extra_exercises);
-      setExtraExercisesDates(dates);
-      setCurrentExtraIndex(dates.length - 1);
-    }
-    getExtraExercises();
-  }, [isExtraModalVisible]);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
@@ -260,7 +270,7 @@ export default function HistoryScreen() {
             <View style={[styles.card, { alignItems: "center"}]}>
             <View style={{ flexDirection: "row"}}>
                 <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor, paddingRight: 5}}>
-                {t(`workout_plans.${userData[currentIndex].workout_plan}`)}
+                {adminOrMod ? t(`workout_plans.${userData[currentIndex].workout_plan}`) : t("workout")}
                 </Text>
                 <TouchableOpacity onPress={() => {userData[currentIndex].exercises ? setShowWorkoutModal(true) : null}} style={{ alignSelf: "center" }}>
                 <Feather name="info" size={24} color="grey" style={{ alignSelf:"center" }} />
@@ -341,6 +351,12 @@ export default function HistoryScreen() {
       {userData ? (
         <>
         <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
+        {userData[currentIndex - 1] && (
+            <TouchableOpacity onPress={() => {setCurrentIndex(i => i - 1)}}>
+            <Text style={{marginLeft: 10, fontSize: 16 }}>{"<"}</Text>
+            </TouchableOpacity>
+          )}
+
         {!userData[currentIndex + 1] && userData[currentIndex - 2] && (
             <TouchableOpacity onPress={() => setCurrentIndex(i => i - 2)}>
             <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex - 2].date)}</Text>
@@ -366,9 +382,15 @@ export default function HistoryScreen() {
             <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex + 2].date)}</Text>
             </TouchableOpacity>
         )}
+
+{userData[currentIndex + 1] && (
+            <TouchableOpacity onPress={() => {setCurrentIndex(i => i + 1)}}>
+            <Text style={{marginLeft: 10, fontSize: 16 }}>{">"}</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <AnswersBlock/>
-        <Text style={{marginBottom: 20, fontWeight: "bold", fontSize: 20, color: cancerColor}}>{t(`workout_plans.${userData[currentIndex].decision}`)}</Text>
+        {adminOrMod && <Text style={{marginBottom: 20, fontWeight: "bold", fontSize: 20, color: cancerColor}}>{t(`workout_plans.${userData[currentIndex].decision}`)}</Text>}
         <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
             <View style={{ width: "50%" }}>
             <Block
@@ -413,6 +435,12 @@ if(isWorkoutHistory) {
           {userData ? (
             <>
             <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
+
+            {userData[currentIndex - 1] && (
+            <TouchableOpacity onPress={() => {setCurrentIndex(i => i - 1)}}>
+            <Text style={{marginLeft: 10, fontSize: 16 }}>{"<"}</Text>
+            </TouchableOpacity>
+          )}
             {!userData[currentIndex + 1] && userData[currentIndex - 2] && (
                 <TouchableOpacity onPress={() => setCurrentIndex(i => i - 2)}>
                 <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex - 2].date)}</Text>
@@ -438,12 +466,13 @@ if(isWorkoutHistory) {
                 <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate(userData[currentIndex + 2].date)}</Text>
                 </TouchableOpacity>
             )}
+            {userData[currentIndex + 1] && (
+            <TouchableOpacity onPress={() => {setCurrentIndex(i => i + 1)}}>
+            <Text style={{marginLeft: 10, fontSize: 16 }}>{">"}</Text>
+            </TouchableOpacity>
+          )}
             </View>
             <AnswersBlock/>
-            <Block
-              title={t("extra_exercises")}
-              onPress={() => {setIsExtraModalVisible(true)}}
-            />
             </>
               ) : (
             <>
@@ -472,65 +501,84 @@ if(isWorkoutHistory) {
                 </View>
             </Pressable>
           )}
-          {isExtraModalVisible && (
-            <Pressable style={[styles.modalContainer, {height: Dimensions.get("window").height}]} onPress={() => {setIsExtraModalVisible(false)}}>
-                <View style={styles.modalContent2}>
-                <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
-                                {t("extra_exercises")}
-                            </Text>
-          {extraExercisesDates ? (
-            <>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
-            {!extraExercisesDates[currentExtraIndex + 1] && extraExercisesDates[currentExtraIndex - 2] && (
-                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 2)}>
-                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 2])}</Text>
-                </TouchableOpacity>
-            )}
-    
-            {extraExercisesDates[currentExtraIndex - 1] && (
-                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 1)}>
-                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 1])}</Text>
-                </TouchableOpacity>
-            )}
-            
-            <Text style={{ fontWeight: "bold", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex])}</Text>
-    
-            {extraExercisesDates[currentExtraIndex + 1] && (
-                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 1)}>
-                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 1])}</Text>
-                </TouchableOpacity>
-            )}
-    
-            {!extraExercisesDates[currentExtraIndex - 1] && extraExercisesDates[currentExtraIndex + 2] && (
-                <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 2)}>
-                <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 2])}</Text>
-                </TouchableOpacity>
-            )}
-            </View>
-            {Object.keys(extraExercises[extraExercisesDates[currentExtraIndex]]).map((item, index) => (
-              <Block2
-              key={index}
-              title={t(`exercises.${item}`)}
-              subtitle={t(extraExercises[extraExercisesDates[currentExtraIndex]][item])}
-              onPress={() => {}}
-              disabled={true}
-            />
-                ))}
-            </>
-              ) : (
-            <>
-            <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
-            <Text style={{ fontSize: 14, textAlign: "center" }}>
-                {t("no_extra_exercises")}
-            </Text>
-        </View>
-            </>
-          )}
-                </View>
-            </Pressable>
-          )}
         </>
       );
+}
+
+if(isSensoriHistory) {
+  return (
+      <>
+      <View style={[styles.container, { marginTop: insets.top + 100 }]}>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  {t("extra_exercises")}
+              </Text>
+
+        {extraExercisesDates ? (
+          <>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
+            {extraExercisesDates[currentExtraIndex - 1] && (
+            <TouchableOpacity onPress={() => {extraExercisesDates[currentExtraIndex - 1] ? setCurrentExtraIndex(i => i - 1) : null}}>
+            <Text style={{marginLeft: 10, fontSize: 16 }}>{"<"}</Text>
+            </TouchableOpacity>
+          )}
+
+          {!extraExercisesDates[currentExtraIndex + 1] && extraExercisesDates[currentExtraIndex - 2] && (
+              <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 2)}>
+              <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 2])}</Text>
+              </TouchableOpacity>
+          )}
+  
+          {extraExercisesDates[currentExtraIndex - 1] && (
+              <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i - 1)}>
+              <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex - 1])}</Text>
+              </TouchableOpacity>
+          )}
+          
+          {extraExercisesDates[currentExtraIndex] && (<Text style={{ fontWeight: "bold", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex])}</Text>)}
+  
+          {extraExercisesDates[currentExtraIndex + 1] && (
+              <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 1)}>
+              <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 1])}</Text>
+              </TouchableOpacity>
+          )}
+  
+          {!extraExercisesDates[currentExtraIndex - 1] && extraExercisesDates[currentExtraIndex + 2] && (
+              <TouchableOpacity onPress={() => setCurrentExtraIndex(i => i + 2)}>
+              <Text style={{ color: "gray", marginHorizontal: 10 }}>{formatDate2(extraExercisesDates[currentExtraIndex + 2])}</Text>
+              </TouchableOpacity>
+          )}
+
+          {extraExercisesDates[currentExtraIndex + 1] && (
+        <TouchableOpacity onPress={() => {extraExercisesDates[currentExtraIndex + 1] ? setCurrentExtraIndex(i => i + 1) : null}}>
+            <Text style={{marginRight: 10, fontSize: 16 }}>{">"}</Text>
+            </TouchableOpacity>
+          )}
+          </View>
+          {extraExercises[extraExercisesDates[currentExtraIndex]] ? Object.keys(extraExercises[extraExercisesDates[currentExtraIndex]]).map((item, index) => (
+            <Block2
+            key={index}
+            title={t(`exercises.${item}`)}
+            subtitle={t(extraExercises[extraExercisesDates[currentExtraIndex]][item])}
+            onPress={() => {}}
+            disabled={false}
+          />
+              ))
+            : (
+              <ActivityIndicator size="large" color={cancerColor} style={styles.loader} />
+            )}
+          </>
+            ) : (
+          <>
+          <View style={[styles.card, { alignItems: "center", justifyContent: "center", marginTop: 20}]}>
+          <Text style={{ fontSize: 14, textAlign: "center" }}>
+              {t("no_extra_exercises")}
+          </Text>
+      </View>
+          </>
+        )}
+              </View>
+      </>
+    );
 }
 
  if(isClinicalHistory) {

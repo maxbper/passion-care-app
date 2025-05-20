@@ -177,6 +177,7 @@ export default function ProfileScreen() {
         <Block title={t("clinical_registers")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), clinical: "true" }})} />
         <Block title={t("forms")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), forms: "true" }})} />
         <Block title={t("workouts")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), workouts: "true" }})} />
+        <Block title={t("sensori")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), sensori: "true" }})} />
         </>
           ) : (
             <>

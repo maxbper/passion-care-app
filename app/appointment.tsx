@@ -379,9 +379,6 @@ export default function AppointmentScreen() {
             <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
                 {t("appointment_title")}
             </Text>
-            <TouchableOpacity onPress={() => {setShowAvailabilityModal(true)}} style={{marginLeft: 10}}>
-            <FontAwesome name="calendar" size={24} color={cancerColor} style={{marginBottom: 20}} />
-            </TouchableOpacity>
           </View>
             {myAppointments.map((appointment, index) => (
             <Block
@@ -402,6 +399,10 @@ export default function AppointmentScreen() {
                     </Text>
                 </View>
                 )}
+            <TouchableOpacity style={{ borderColor: cancerColor, marginTop: 50, borderWidth: 2, flexDirection: "row", marginHorizontal: 50, borderRadius: 10 }} onPress={() => {setShowAvailabilityModal(true)}}>
+                    <Text style={{color: cancerColor, margin: 20}}>{t("weekly_availability")}</Text>
+                    <FontAwesome name="calendar" size={24} color={cancerColor} style={{margin: 20}} />
+              </TouchableOpacity>
         </View>
 
         {showAvailabilityModal && (
@@ -527,9 +528,6 @@ export default function AppointmentScreen() {
                 <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
                     {t("appointment_title")}
                 </Text>
-                <TouchableOpacity onPress={() => {setShowAddAppointmentModal(true)}} style={{marginLeft: 10}}>
-                <FontAwesome name="calendar-plus-o" size={24} color={cancerColor} style={{marginBottom: 20}} />
-                </TouchableOpacity>
               </View>
                 {myAppointments.map((appointment, index) => (
                 <Block
@@ -549,6 +547,10 @@ export default function AppointmentScreen() {
                     </Text>
                 </View>
                 )}
+                <TouchableOpacity style={{ borderColor: cancerColor, marginTop: 50, borderWidth: 2, flexDirection: "row", marginHorizontal: 50, borderRadius: 10 }} onPress={() => {setShowAddAppointmentModal(true)}}>
+                    <Text style={{color: cancerColor, margin: 20}}>{t("add_appointment")}</Text>
+                    <FontAwesome name="calendar-plus-o" size={24} color={cancerColor} style={{margin: 20}} />
+                </TouchableOpacity>
             </View>
             {showSelectedAppointmentModal && (
               <Pressable

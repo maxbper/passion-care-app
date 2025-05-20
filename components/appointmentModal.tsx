@@ -71,20 +71,20 @@ export default function AppointmentModal() {
     return (
         <Pressable
         onPress={handleClick}
-        style={styles.block}
+        style={styles.card}
       >
-
-        <Text style={styles.blockText}>{t("appointment_title")}</Text>
-        <FontAwesome name="calendar-plus-o" size={24} color={"#845BB1"}/>
+        <FontAwesome name="calendar-plus-o" size={36} color={"#845BB1"}/>
                 <View style={styles.statusIcon}>
                     {isDue && (
                         <FontAwesome
                         name="exclamation-circle"
-                        size={20}
+                        size={30}
                         color={"red"}
                         />
                     )}
                 </View>
+
+                <Text style={styles.xpText1}>{t("appointment_title")}</Text>
       </Pressable>
     );
 }
@@ -102,29 +102,28 @@ const styles = StyleSheet.create({
       },
       statusIcon: {
         position: 'absolute',
-        top: 10,
-        right: 10,
+        top: 15,
+        right: 40,
       },
-      block: {
-        alignSelf: "center",
+      card: {
+        width: "45%",
+        height: 120,
+        backgroundColor: "#fff",
         padding: 20,
         borderRadius: 10,
-        backgroundColor: "#FFFFFF",
-        marginBottom: 16,
-        flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
+        alignSelf: "center",
+        justifyContent: "center",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 4,
-        elevation: 2,
-        borderWidth: 1,
+        marginBottom: 20,
         borderColor: "#845BB1",
-        width: "90%",
-      },
-      blockText: {
-        fontSize: 18,
-        fontWeight: "600",
-      },
+        borderWidth: 1,
+    },
+    xpText1: {
+      fontSize: 18,
+      color: "#845BB1",
+  },
  });

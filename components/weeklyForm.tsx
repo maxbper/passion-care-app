@@ -89,7 +89,7 @@ const WeeklyHealthAssessment = ({ }) => {
             const diffTime = currentDate.getTime() - new Date(lastAssessmentDate).getTime();
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-            if (diffDays > 5) {
+            if (diffDays >= 1) {
                 setChecking(false);
                 startHealthAssessmentInitial();
                 return;
@@ -279,7 +279,11 @@ const WeeklyHealthAssessment = ({ }) => {
 
                         {currentQuestion.type === 'scale' && currentQuestion.range && (
                             <View style={styles.scaleContainer}>
-                                <Text>{scaleValue}</Text>
+                                <View style={styles.plusMinusContainer}>
+                                    <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
+                                    <Text>{scaleValue}</Text>
+                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} />
+                                </View>
                                 <Slider
                                     style={styles.slider}
                                     minimumValue={currentQuestion.range[0]}
@@ -290,10 +294,6 @@ const WeeklyHealthAssessment = ({ }) => {
                                     minimumTrackTintColor="#007AFF"
                                     maximumTrackTintColor="#D3D3D3"
                                 />
-                                <View style={styles.plusMinusContainer}>
-                                    <Text>-</Text>
-                                    <Text>+</Text>
-                                </View>
                                 <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
                                     <Text style={styles.buttonText}>{t("submit")}</Text>
                                 </TouchableOpacity>
@@ -396,13 +396,14 @@ const styles = StyleSheet.create({
     },
     slider: {
         width: '90%',
-        height: 40,
+        height: 50,
+        marginBottom: 20,
     },
     plusMinusContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '90%',
-        marginBottom: 20,
+        marginBottom: 0,
     },
 });
 

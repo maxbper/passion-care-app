@@ -10,11 +10,13 @@ import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
 import AdminModal from "../components/adminModal";
-import { MaterialIcons } from "@expo/vector-icons";
-import { refreshTokens } from "../components/wearable";
+import { FontAwesome5, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import WearableComponent, { refreshTokens } from "../components/wearable";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WeekModal from "../components/weekModal";
+import AppointmentModal from "../components/appointmentModal";
+import { useProfileModal } from "../context/ProfileModalContext";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -28,6 +30,7 @@ export default function HomeScreen() {
     const [changeMessage, setChangeMessage] = useState(true);
     const [myUid, setMyUid] = useState("");
     const [name, setName] = useState("");
+    const { showModal } = useProfileModal();
 
     const messages = [
         t("encouragement_messages.0"),
@@ -73,7 +76,6 @@ export default function HomeScreen() {
             if (showWarning) {
                 dailyWarning();
             }
-            setWarningShown(true);
         };
     }, []);
 
@@ -107,7 +109,7 @@ export default function HomeScreen() {
                     },
                     {
                         text: t("yes"),
-                        onPress: () => {},
+                        onPress: () => {setWarningShown(true)},
                     },
                 ],
                 { cancelable: false }
@@ -188,9 +190,9 @@ export default function HomeScreen() {
                     <View style={{width: "90%", padding: 20}}>
                     <Text style={styles.levelText}>{t("hello")}{name}</Text>
                     </View>
-                    <View style={styles.card2}>
+                    {/* <View style={styles.card2}>
                     <WeekModal />
-                    </View>
+                    </View> */}
                     {/* <View style={styles.card}>
                         <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
                         <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
@@ -201,11 +203,23 @@ export default function HomeScreen() {
                         <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
                         <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
                     </Pressable>
-                    <View style={styles.card}>
-                        <Text style={styles.levelText}>{t("resources")}</Text>
-                    <TasksModal />
+                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
+                    <Pressable style={styles.card} onPress={() => router.push("/exercisePlan")}>
+                        <FontAwesome6 name="person-running" size={36} color={"#845BB1"}/>
+                        <Text style={styles.xpText1}>{t("exercises_name")}</Text>
+                    </Pressable>
+                    <AppointmentModal />
                     </View>
-
+                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
+                    <Pressable style={styles.card} onPress={() => router.push("/historyPage")}>
+                        <FontAwesome5 name="history" size={36} color="#845BB1" />
+                        <Text style={styles.xpText1}>{t("history")}</Text>
+                    </Pressable>
+                    <Pressable onPress={showModal} style={styles.card}>
+                            <Feather name="watch" size={36} color={cancerColor}/>
+                            <Text style={styles.xpText1}>Fitbit</Text>
+                    </Pressable>
+                    </View>
                     </>
             </View>
             </>
@@ -213,7 +227,7 @@ export default function HomeScreen() {
             </>
             ) : (
                 <>
-                <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 150, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
+                <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 120, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
                     <Text style={[styles.levelText, {color: cancerColor}]}>PASSiON CARE</Text>
                     <Text style={[{fontSize: 18, color: cancerColor}]}>{t("admin_panel")}</Text>
                 </View>
@@ -228,13 +242,14 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        paddingTop: 0,
         justifyContent: "center",
         backgroundColor: "#F9FAFB",
     },
     card: {
-        width: "90%",
-        backgroundColor: "#FFF",
+        width: "45%",
+        height: 120,
+        backgroundColor: "#fff",
         padding: 20,
         borderRadius: 10,
         alignItems: "center",
@@ -292,7 +307,11 @@ const styles = StyleSheet.create({
     },
     xpText: {
         fontSize: 18,
-        marginBottom: 20,
+        color: "#845BB1",
+        marginBottom: 10,
+    },
+    xpText1: {
+        fontSize: 18,
         color: "#845BB1",
     },
     statsText: {

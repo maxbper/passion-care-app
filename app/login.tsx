@@ -31,6 +31,7 @@ export default function LoginScreen() {
         style={styles.input}
         value={email}
         onChangeText={setEmail}
+        autoCapitalize='none'
         placeholder={t("placeholder_email")}
       />
   
@@ -40,6 +41,7 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCapitalize='none'
         placeholder={t("placeholder_password")}
         onSubmitEditing={handleLogin}
       />

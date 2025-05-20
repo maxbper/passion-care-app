@@ -483,7 +483,7 @@ export default function TasksModal({page=0}) {
   if (pageNumber === 3) {
     return (
       <>
-      {extraExercises.slice(index, index + 2).map((exercise, idx) => (
+      {extraExercises.map((exercise, idx) => (
         <Block
           key={idx}
           title={t(`exercises.${exercise}`)}
@@ -492,7 +492,7 @@ export default function TasksModal({page=0}) {
           }}
         />
       ))}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+      {/* <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
 
           <Block
             title={t("previous_page")}
@@ -507,7 +507,7 @@ export default function TasksModal({page=0}) {
             disabled={index + 2 >= extraExercises.length}
             half={true}
           />
-      </View>
+      </View> */}
       </>
     );
   }

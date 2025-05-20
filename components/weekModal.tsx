@@ -43,17 +43,17 @@ export default function WeekModal() {
 
   return (
     <>
-    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center', position: 'relative' }}>
+    {/* <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center', position: 'relative' }}>
     <Text style={{...styles.title, flex: 1, textAlign: 'center'}}>{t("weekly")}</Text>
     <TouchableOpacity onPress={() => {
       router.push({
         pathname: "/history",
         params: { uid: JSON.stringify(myUid), workouts: "true" },
       });
-    }} style={{ position: 'absolute', top: 0, right: 15, marginBottom: 10, marginLeft: 10}}>
+    }} style={{ position: 'absolute', top: -10, right: 10, marginBottom: 10, marginLeft: 10}}>
     <FontAwesome5 name="history" size={22} color="#845BB1" />
     </TouchableOpacity>
-</View>
+</View> */}
     <View style={styles.row}>
       {days.map((day, idx) => {
         const dateStr = day.format('YYYY-MM-DD');
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
       },
       dayContainer: {
         alignItems: 'center',
-        marginHorizontal: 4,
+        marginHorizontal: 3,
       },
       circle: {
         width: 40,

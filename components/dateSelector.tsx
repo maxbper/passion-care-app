@@ -40,7 +40,7 @@ const DateSelector = ({ visible, onClose, slots }) => {
             currentDate.setDate(currentDate.getDate() + 1);
             continue;
           }
-          
+
           if (currentDate.getDay() === weekdayMap[weekday]) {
             const dateString = currentDate.toISOString().split('T')[0];
             markedDates[dateString] = {
@@ -82,6 +82,7 @@ const DateSelector = ({ visible, onClose, slots }) => {
             markedDates={generateMarkedDates()}
             onDayPress={(day) => {
               setSelectedDate(day.dateString);
+              onClose(day.dateString);
             }}
             onMonthChange={(month) => {
               setCurrentMonth(new Date(month.year, month.month - 1, 1));

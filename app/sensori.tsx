@@ -9,7 +9,6 @@ import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import TasksModal from "../components/tasksModal";
 import WeekModal from "../components/weekModal";
-import { router } from "expo-router";
 
 export default function ExercisePlanScreen() {
     const { t } = useTranslation();
@@ -63,16 +62,14 @@ export default function ExercisePlanScreen() {
 
         return (
           <>
-            <View style={[styles.container, { marginTop: insets.top + 120 }]}>
-            <WeekModal />
+            <View style={[styles.container, { marginTop: insets.top + 100 }]}>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 20}}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
-                    {t("exercises_name")}
+                    {t("extra_exercises")}
                 </Text>
                 {/* <FontAwesome6 name="person-running" size={24} color={cancerColor} style={{marginBottom: 20, marginLeft: 5}} /> */}
               </View>
-                <TasksModal page={2}/>
-                <Block title={t("extra_exercises")} onPress={() => {router.push("/sensori")} } />
+                <TasksModal page={3}/>
             </View>
           </>
         );
