@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-native';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
@@ -280,11 +280,34 @@ const WeeklyHealthAssessment = ({ }) => {
                         {currentQuestion.type === 'scale' && currentQuestion.range && (
                             <View style={styles.scaleContainer}>
                                 <View style={styles.plusMinusContainer}>
-                                    <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
+                                    {/* <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
                                     <Text>{scaleValue}</Text>
-                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} />
+                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} /> */}
+                                    <Pressable onPress={() => setScaleValue(1)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==1 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>1</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setScaleValue(2)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==2 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>2</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setScaleValue(3)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==3 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>3</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setScaleValue(4)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==4 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>4</Text>
+                                    </Pressable>
                                 </View>
-                                <Slider
+                                <View style={styles.plusMinusContainer}>
+                                    <Pressable onPress={() => setScaleValue(5)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==5 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>5</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setScaleValue(6)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==6 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>6</Text>
+                                    </Pressable>
+                                    <Pressable onPress={() => setScaleValue(7)}>
+                                        <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==7 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>7</Text>
+                                    </Pressable>
+                                </View>
+                                {/* <Slider
                                     style={styles.slider}
                                     minimumValue={currentQuestion.range[0]}
                                     maximumValue={currentQuestion.range[1]}
@@ -293,7 +316,7 @@ const WeeklyHealthAssessment = ({ }) => {
                                     onValueChange={(value) => setScaleValue(value)}
                                     minimumTrackTintColor="#007AFF"
                                     maximumTrackTintColor="#D3D3D3"
-                                />
+                                /> */}
                                 <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
                                     <Text style={styles.buttonText}>{t("submit")}</Text>
                                 </TouchableOpacity>
@@ -401,9 +424,9 @@ const styles = StyleSheet.create({
     },
     plusMinusContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         width: '90%',
-        marginBottom: 0,
+        marginBottom: 20,
     },
 });
 

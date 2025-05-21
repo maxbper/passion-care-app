@@ -1,3 +1,5 @@
+import { Watch } from "lucide-react-native";
+
 const en = {
     welcome: "Welcome",
     select_language: "Select Language",
@@ -167,7 +169,7 @@ const en = {
     },
     well_done: "Well done!",
     ex: "Exercises of the Workout",
-    appointment_title: "Appointments",
+    appointment_title: "Online Appointments",
     pending: "Pending...",
     weekly_availability: "Availability",
     join: "Join",
@@ -374,6 +376,13 @@ const en = {
     },
     previous_page: "Previous",
     next_page: "Next",
+    dashboard: "List of Patients",
+    watch: "Watch",
+    delete_register: "Delete Clinical Register",
+    are_you_sure_delete_register: "Are you sure you want to delete this clinical register?",
+    are_you_sure_logout: "Are you sure you want to logout?",
+    no_exercises_title: "No Exercises",
+    no_exercises_message: "No exercises were done in this day.",
    };
 
 

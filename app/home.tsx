@@ -76,6 +76,7 @@ export default function HomeScreen() {
             if (showWarning) {
                 dailyWarning();
             }
+            setWarningShown(true);
         };
     }, []);
 
@@ -217,7 +218,7 @@ export default function HomeScreen() {
                     </Pressable>
                     <Pressable onPress={showModal} style={styles.card}>
                             <Feather name="watch" size={36} color={cancerColor}/>
-                            <Text style={styles.xpText1}>Fitbit</Text>
+                            <Text style={styles.xpText1}>{t("watch")}</Text>
                     </Pressable>
                     </View>
                     </>
@@ -235,6 +236,12 @@ export default function HomeScreen() {
                     <AdminModal />
                 </View></>
             )}
+            {/* <TouchableOpacity style={[styles.card2, {marginTop: 50, width: "50%"}]} onPress={logout}>
+                <View style={{flexDirection: "row", justifyContent: "center", width: "90%", alignSelf: "center"}}>
+                        <Text style={[styles.levelText, {color: cancerColor}]}>{t("logout")}</Text>
+                        <MaterialIcons name="logout" size={30} color={cancerColor}/>
+                </View>
+                      </TouchableOpacity> */}
         </>
     );
 }
@@ -330,10 +337,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#fff",
-        borderRadius: 50,
-        width: 100,
-        height: 100,
-        elevation: 3,
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
       },

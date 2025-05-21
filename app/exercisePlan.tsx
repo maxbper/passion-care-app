@@ -15,7 +15,7 @@ export default function ExercisePlanScreen() {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const cancerColor = "#845BB1";
-    const [showModal, setShowModal] = useState(false);
+    const [pressed, setPressed] = useState(false);
 
 
     useEffect(() => {
@@ -61,9 +61,13 @@ export default function ExercisePlanScreen() {
         );
       };
 
+      const handlePress = () => {
+        setPressed(!pressed);
+      }
+
         return (
           <>
-            <View style={[styles.container, { marginTop: insets.top + 120 }]}>
+            <View style={[styles.container, { marginTop: 0}]}>
             <WeekModal />
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 20}}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
@@ -71,8 +75,18 @@ export default function ExercisePlanScreen() {
                 </Text>
                 {/* <FontAwesome6 name="person-running" size={24} color={cancerColor} style={{marginBottom: 20, marginLeft: 5}} /> */}
               </View>
-                <TasksModal page={2}/>
+                {pressed ? (
+                    <>
+                    <TasksModal page={2}/>
+                    <Block title={t("back")} onPress={handlePress} />
+                    </>
+                ) : (
+                <>
+                <Block title={t("workout")} onPress={handlePress} />
                 <Block title={t("extra_exercises")} onPress={() => {router.push("/sensori")} } />
+                <Block title={t("back")} onPress={() => {router.push("/home")}} />
+                </>
+                )}
             </View>
           </>
         );

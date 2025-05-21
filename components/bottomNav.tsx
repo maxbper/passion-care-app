@@ -30,8 +30,8 @@ export default function BottomNav() {
     
   return (
     <View style={{ padding: 10, flexDirection: "row", justifyContent: "space-between", marginTop: insets.top + 50, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 80, zIndex: 995 }}>
-        <Pressable onPress={() => router.back()} style={{ padding: 10 }}>
-                    <Text style={{ fontSize: 20 }}>{"<"}</Text>
+        <Pressable onPress={() => router.back()} style={{ paddingHorizontal: 10, borderRadius: 10, borderColor: "#845BB1", borderWidth: 1, alignItems: "center", flexDirection: "row", justifyContent: "center",}}>
+                    <Text style={{ fontSize: 25}}>{"<"}</Text>
                   </Pressable>
     </View>
   );

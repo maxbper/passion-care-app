@@ -363,7 +363,6 @@ export default function TasksModal({page=0}) {
             t("workout_locked_title"),
             t("workout_locked_message"),
             [
-                { text: t("cancel"), style: "cancel" },
                 { text: t("ok"), onPress: () => {} },
             ],
             { cancelable: false }
@@ -375,7 +374,6 @@ export default function TasksModal({page=0}) {
           t("workout_locked_title"),
           t("dont_exercise"),
           [
-              { text: t("cancel"), style: "cancel" },
               { text: t("ok"), onPress: () => {} },
           ],
           { cancelable: false }

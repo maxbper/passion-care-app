@@ -20,7 +20,7 @@ export default function ProfileModal({ visible, onClose }) {
   useEffect(() => {
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : screenWidth,
-      duration: 350,
+      duration: 250,
       useNativeDriver: false,
     }).start();
 
@@ -68,7 +68,7 @@ export default function ProfileModal({ visible, onClose }) {
         <Pressable style={styles.backdrop} onPress={onClose} />
 
         <Pressable style={styles.modal} onPress={onClose}>
-        <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
+        {/* <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
           {i18n.language === "pt" ? (
         <View style={{position: 'relative', width: '100%', height: '100%'}}>
             <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 35, right: 25, zIndex:2 }}>🇵🇹</Text>
@@ -80,13 +80,13 @@ export default function ProfileModal({ visible, onClose }) {
             <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 25, right: 15, zIndex:1 }}>🇵🇹</Text>
         </View>
         )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {isAdminOrMod ? (
           null
         ) : (<WearableComponent  />)}
-          <TouchableOpacity style={[styles.button, { borderBottomLeftRadius: 50, borderBottomRightRadius: 0 }]} onPress={handleLogout}>
+          {/* <TouchableOpacity style={[styles.button, { borderBottomLeftRadius: 50, borderBottomRightRadius: 0 }]} onPress={handleLogout}>
             <MaterialIcons name="logout" size={34} color={cancerColor}/>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </Pressable>
       </Animated.View>
       </>
@@ -108,22 +108,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0, 0.3)',
+    backgroundColor: 'rgba(0,0,0, 0.7)',
     zIndex: 999,
 },
   backdrop: {
-    width: '70%',
+    width: '37%',
     backgroundColor: 'rgba(0,0,0,0)',
   },
   modal: {
-    width: '30%',
+    width: '63%',
     backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
     shadowOpacity: 0.3,
     borderRadius: 0,
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     marginVertical: 50,
   },
   button: {

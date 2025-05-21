@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable, FlatList, ScrollView, Dimensions, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Pressable, FlatList, ScrollView, Dimensions, TextInput, Alert } from "react-native";
 import { AntDesign, Feather, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import { checkAuth, logout } from "../services/authService";
@@ -215,6 +215,20 @@ export default function HistoryScreen() {
         );
       };
 
+  const noExercises = () => {
+    Alert.alert(
+      t("no_exercises_title"),
+      t("no_exercises_message"),
+      [
+        {
+          text: t("ok"),
+          style: "cancel",
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
   const AnswersBlock = ({}: {}) => {
     if(isFormsHistory) {
 
@@ -272,9 +286,6 @@ export default function HistoryScreen() {
                 <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor, paddingRight: 5}}>
                 {adminOrMod ? t(`workout_plans.${userData[currentIndex].workout_plan}`) : t("workout")}
                 </Text>
-                <TouchableOpacity onPress={() => {userData[currentIndex].exercises ? setShowWorkoutModal(true) : null}} style={{ alignSelf: "center" }}>
-                <Feather name="info" size={24} color="grey" style={{ alignSelf:"center" }} />
-                </TouchableOpacity>
             </View>
             <Text style={[styles.label, { textAlign: "center", fontWeight: "bold", fontSize: 18}]}>
             {t("total_time")} {parseMillisecondsToMinutes(userData[currentIndex].time)}
@@ -311,17 +322,45 @@ export default function HistoryScreen() {
         <Text style={{ fontSize: 20, fontWeight: "bold" , color: cancerColor}}>
             {t(`feedback.${userData[currentIndex].feedback}`)}
             </Text>
+            <TouchableOpacity onPress={() => {userData[currentIndex].exercises ? setShowWorkoutModal(true) : noExercises()}} style={{ alignSelf: "center", flexDirection: "row", marginTop: 20, marginBottom: 10}}>
+                <Text style={{ fontSize: 20, fontWeight: "bold", color: "grey", marginRight: 5}}>
+                    {t("exercises_name")}
+                </Text>
+                <Feather name="info" size={24} color="grey" style={{ alignSelf:"center" }} />
+                </TouchableOpacity>
         </View>
         );
     }
     else if(isClinicalHistory) {
         return (
-        <View style={{ width: "100%", height: Dimensions.get("window").height - (insets.top + 250), marginBottom: 20, alignItems: "center"}}>
+        <View style={{ width: "100%", marginBottom: 20, alignItems: "center"}}>
         {userData.map((item, index) => (
             <View style={[styles.card]} key={index}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>
                 {formatDate(item.date)}
             </Text>
+            <TouchableOpacity onPress={() => {
+              Alert.alert(
+                t("delete_register"),
+                t("are_you_sure_delete_register"),
+                [
+                  {
+                    text: t("no"),
+                    style: "cancel",
+                  },
+                  {
+                    text: t("yes"),
+                    onPress: async () => {
+                    },
+                  },
+                ],
+                { cancelable: false }
+              );
+            }}>
+                <AntDesign name="delete" size={24} color="#845BB1" />
+            </TouchableOpacity>
+            </View>
             <View style={{ flexDirection: "row", marginBottom: 8, width: "100%" }}>
                 <Text style={[styles.label, { textAlign: "left"}]}>
                 {item.text}
@@ -513,7 +552,7 @@ if(isSensoriHistory) {
                   {t("extra_exercises")}
               </Text>
 
-        {extraExercisesDates ? (
+        {extraExercisesDates.length!=0 ? (
           <>
           <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
             {extraExercisesDates[currentExtraIndex - 1] && (
@@ -588,9 +627,6 @@ if(isSensoriHistory) {
         <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 20 }}>
                     {t("clinical_registers")}
                 </Text>
-          {userData ? (
-            <>
-            <AnswersBlock/>
             <Pressable
             onPress={() => {setShowClinicalModal(true)}}
             style={{backgroundColor: "#DCFCE7",
@@ -599,11 +635,15 @@ if(isSensoriHistory) {
                 height: 60,
                 width: 60,
                 marginHorizontal: 5,
+                marginBottom: 20,
                 alignItems: "center",
                 justifyContent: "center",}}
             >
                 <AntDesign name="plus" size={24} color="#4ade80" />
             </Pressable>
+          {userData ? (
+            <>
+            <AnswersBlock/>
             </>
               ) : (
             <>
@@ -612,7 +652,7 @@ if(isSensoriHistory) {
         </View>
         {showClinicalModal && (
             <Pressable style={styles.modalContainer} onPress={() => {setShowClinicalModal(false); setNewClinicalText("")}}>
-                <View style={styles.modalContent}>
+                <Pressable style={styles.modalContent}>
                     <View style={styles.input}>
                     <TextInput
                             style={{}}
@@ -621,12 +661,12 @@ if(isSensoriHistory) {
                             onChangeText={(text) => {setNewClinicalText(text)}}
                             />
                         </View>
-                </View>
                 <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor, borderRadius: 30 }]} onPress={handleAddClinicalRegister}>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: cancerColor, borderRadius: 30, marginTop:20 }]} onPress={handleAddClinicalRegister}>
                             <AntDesign name="plus" size={24} color="white" />
                         </TouchableOpacity>
                     </View>
+                    </Pressable>
             </Pressable>
           )}
         </>
@@ -647,7 +687,6 @@ modalContainer: {
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
     alignItems: 'center',
     margin: 0,
     zIndex: 949,
@@ -660,6 +699,7 @@ modalContent: {
     paddingVertical: 20,
     zIndex: 950,
     marginBottom: 20,
+    marginTop: 300,
 },
 modalContent2: {
     backgroundColor: 'white',
@@ -669,6 +709,7 @@ modalContent2: {
     paddingVertical: 20,
     zIndex: 950,
     marginBottom: 20,
+    marginTop: 150,
 },
 button: {
     borderRadius: 10,

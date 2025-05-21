@@ -1,6 +1,6 @@
 import { Entypo } from "@expo/vector-icons";
 import { router, Stack, usePathname } from "expo-router";
-import { TouchableOpacity, Text, Button, View, Platform } from "react-native";
+import { TouchableOpacity, Text, Button, View, Platform, Alert } from "react-native";
 import i18n from "../constants/translations";
 import { useTranslation } from "react-i18next";
 import React from "react";
@@ -8,6 +8,8 @@ import { useProfileModal } from "../context/ProfileModalContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUserColor } from "../context/cancerColor";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { StyleSheet } from "react-native";
+import { logout } from "../services/authService";
 
 export default function Header() {
     const { t } = useTranslation();
@@ -29,12 +31,32 @@ export default function Header() {
       const isAdmin = await ReactNativeAsyncStorage.getItem("isAdmin");
       const isMod = await ReactNativeAsyncStorage.getItem("isMod");
 
-      if (isAdmin === "true" || isMod === "true") {
+    if (!isHomePage) {
         router.push("/home");
       }
-      else if (!isHomePage) {
-        router.push("/home");
+      else {
+        Alert.alert(
+          t("logout"),
+          t("are_you_sure_logout"),
+          [
+            {
+              text: t("cancel"),
+              style: "cancel",
+            },
+            {
+              text: t("logout"),
+              onPress: () => {
+                logout();
+              },
+            },
+          ],
+          { cancelable: true }
+        );
       }
+    };
+
+    const changeLanguage = () => {
+      i18n.changeLanguage(i18n.language === "en" ? "pt" : "en");
     };
 
     return (
@@ -43,10 +65,34 @@ export default function Header() {
       <Entypo name="awareness-ribbon" size={40} color={awarenessRibbonColor ? "white" : (cancerColor === "#000000" ? "white" : cancerColor)} style={{ marginRight: 15, textShadowColor:'black', textShadowOffset: { width: 0.01, height: 0.01 }, textShadowRadius: 1, }} />
       </TouchableOpacity>
       {!dontShowModal && (
-        <TouchableOpacity onPress={showModal}>
+        /* <TouchableOpacity onPress={showModal}>
         <Entypo name="dots-three-vertical" size={20} color="black" style={{ marginRight: 15 }} />
-        </TouchableOpacity>
+        </TouchableOpacity> */
+        <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
+        {i18n.language === "pt" ? (
+          <View style={{position: 'relative', width: '100%', height: '100%'}}>
+              <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 35, right: 25, zIndex:2 }}>🇵🇹</Text>
+              <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 25, right: 15, zIndex:1 }}>🇬🇧</Text>
+          </View>
+          ) : (
+            <View style={{position: 'relative', width: '100%', height: '100%'}}>
+              <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 35, right: 25, zIndex:2 }}>🇬🇧</Text>
+              <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 25, right: 15, zIndex:1 }}>🇵🇹</Text>
+          </View>
+          )}
+      </TouchableOpacity>
       )}
     </View>
     )
 }
+
+
+const styles = StyleSheet.create({
+  button: {
+    marginVertical: -1,
+    width: 100,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

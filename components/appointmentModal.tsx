@@ -125,5 +125,6 @@ const styles = StyleSheet.create({
     xpText1: {
       fontSize: 18,
       color: "#845BB1",
+      textAlign: "center",
   },
  });

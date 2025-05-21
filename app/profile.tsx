@@ -44,9 +44,9 @@ export default function ProfileScreen() {
   }, [isSuspended]);
 
   const handleLockToggle = async (locked) => {
+    setSuspended(!locked);
     await setIsSuspended(!locked, userId);
     await setNeedsForm(locked, userId);
-    setSuspended(!locked);
   };
 
   const LockToggle = ({locked }) => {
@@ -55,9 +55,15 @@ export default function ProfileScreen() {
         handleLockToggle(locked);
         }}>
         {locked ? (
-          <Lock size={24} color="#ef4444" />
+          <>
+          <Text style={{color: "#ef4444", fontSize: 16, fontWeight: "bold", marginRight: 10}}>{t("suspended")}</Text>
+          <Lock size={20} color="#ef4444" />
+          </>
         ) : (
-          <Unlock size={24} color="#22c55e" />
+          <>
+          <Text style={{color: "#22c55e", fontSize: 16, fontWeight: "bold", marginRight: 10}}>{t("suspend")}</Text>
+          <Unlock size={20} color="#22c55e" />
+          </>
         )}
       </Pressable>
     );
@@ -133,8 +139,8 @@ export default function ProfileScreen() {
     <View style={[styles.container, {marginTop: insets.top + 80}]}>
       {userData ? (
         <>
-        <View style={{ flexDirection: "row" }}>
-        <Text style={{color: cancerColor, fontSize: 30, fontWeight: "bold", marginBottom: 20, marginRight: 10}}>{userData.name}</Text>
+        <View style={{ flexDirection: "column", alignItems: "center", marginBottom: 10 }}>
+        <Text style={{color: cancerColor, fontSize: 30, fontWeight: "bold", marginBottom: 10}}>{userData.name}</Text>
         <LockToggle locked={isSuspended} />
         </View>
           {!showClinicalDetails ? (
@@ -175,9 +181,7 @@ export default function ProfileScreen() {
         </View>
         <Block title={t("clinical_details")} onPress={() => {setShowClinicalDetails(!showClinicalDetails)}} />
         <Block title={t("clinical_registers")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), clinical: "true" }})} />
-        <Block title={t("forms")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), forms: "true" }})} />
-        <Block title={t("workouts")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), workouts: "true" }})} />
-        <Block title={t("sensori")} onPress={() => router.push({pathname: "/history", params: { uid: JSON.stringify(userId), sensori: "true" }})} />
+        <Block title={t("history")} onPress={() => router.push({pathname: "/historyPage", params: { uid: JSON.stringify(userId)}})} />
         </>
           ) : (
             <>
@@ -287,8 +291,11 @@ const styles = StyleSheet.create({
       lockContainer: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
         marginBottom: 16,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10,
+        borderColor: "#845BB1",
       },
       radioContainer: {
         flexDirection: "row",

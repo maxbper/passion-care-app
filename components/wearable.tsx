@@ -161,6 +161,9 @@ const styles = StyleSheet.create({
         elevation: 3,
         alignItems: "center",
         justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "#000",
+        borderRadius: 50,
       },
       statusIcon: {
         position: 'absolute',

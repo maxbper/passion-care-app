@@ -9,14 +9,20 @@ import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import TasksModal from "../components/tasksModal";
 import WearableComponent from "../components/wearable";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { auth } from "../firebaseConfig";
+import { use } from "i18next";
 
 export default function HistoryPageScreen() {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const cancerColor = "#845BB1";
-    const myUid = auth.currentUser?.uid;
+    const { uid } = useLocalSearchParams();
+    const userId = uid ? JSON.parse(uid as string) : false;
+    let myUid = auth.currentUser?.uid;
+    if (userId) {
+      myUid = userId;
+    }
 
 
     useEffect(() => {

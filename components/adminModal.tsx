@@ -63,42 +63,67 @@ const Block = ({
     );
   };
 
-  return (
-    <>
+  if (isAdmin) {
+    return (
+      <>
+          <Block
+          title={t("register_patient")}
+          onPress={() => router.push("/register")}
+          disabled={isAdmin}
+        />
         <Block
-        title={t("register_patient")}
-        onPress={() => router.push("/register")}
-        disabled={isAdmin}
-      />
-      <Block
-        title={t("register_mod")}
-        onPress={() => router.push({
-            pathname: "/register",
-            params: { isModRegister: "true" },
-        })}
-        disabled={!isAdmin}
-      />
-      <Block
-        title={t("register_admin")}
-        onPress={() => router.push({
-            pathname: "/register",
-            params: { isAdminRegister: "true" },
-        })}
-        disabled={!isAdmin}
-      />
-        <Block title="Dashboard" onPress={() => router.push({
-            pathname: "/dashboard",
-            params: { admin: isAdmin.toString() },
-        })} />
-        <AppointmentModal />
-        {Platform.OS === "web" && (
-        <>
-        <Block title={t("change_language") + " " + t("flag")} onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} />
-        <Block title={t("logout")} onPress={logout} />
-        </>
-        )}
-    </>
-  );
+          title={t("register_mod")}
+          onPress={() => router.push({
+              pathname: "/register",
+              params: { isModRegister: "true" },
+          })}
+          disabled={!isAdmin}
+        />
+        <Block
+          title={t("register_admin")}
+          onPress={() => router.push({
+              pathname: "/register",
+              params: { isAdminRegister: "true" },
+          })}
+          disabled={!isAdmin}
+        />
+          <Block title="Dashboard" onPress={() => router.push({
+              pathname: "/dashboard",
+              params: { admin: isAdmin.toString() },
+          })} />
+          <AppointmentModal />
+          {Platform.OS === "web" && (
+          <>
+          <Block title={t("change_language") + " " + t("flag")} onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} />
+          <Block title={t("logout")} onPress={logout} />
+          </>
+          )}
+      </>
+    );
+  }
+
+  if (isMod) {
+    return (
+      <>
+        <Block title={t("dashboard")} onPress={() => router.push({
+              pathname: "/dashboard",
+              params: { admin: isAdmin.toString() },
+          })} />
+          <Block
+          title={t("register_patient")}
+          onPress={() => router.push("/register")}
+          disabled={isAdmin}
+        />
+          <AppointmentModal />
+          {Platform.OS === "web" && (
+          <>
+          <Block title={t("change_language") + " " + t("flag")} onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} />
+          <Block title={t("logout")} onPress={logout} />
+          </>
+          )}
+      </>
+    );
+  }
 
 }
 

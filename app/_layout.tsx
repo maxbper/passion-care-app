@@ -17,7 +17,7 @@ function LayoutContent() {
   const isLoginPage = pathname === "/login";
   const isDontExercisePage = pathname === "/dontExercise";
   const isHomePage = pathname === "/home";
-  const isExercisePage = pathname === "/exercise";
+  const isExercisePage = pathname === "/exercisePlan";
   const page = isLoginPage || isDontExercisePage || isExercisePage;
   const { isVisible, hideModal } = useProfileModal();
 
@@ -56,7 +56,7 @@ function LayoutContent() {
     <>
     <View style={{ flex: 1, flexDirection: Platform.OS === "web" ? "row" : "column", backgroundColor: "#F9FAFB" }}>
       <Header />
-      {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && !isHomePage && <BottomNav />}
+      {Platform.OS !== "web" && !isLoginPage && !isDontExercisePage && !isHomePage && !isExercisePage && <BottomNav />}
       {Platform.OS === "web" && !isLoginPage && <Sidebar />}
       {!page ? (
       <ScrollView ref={scrollRef}>

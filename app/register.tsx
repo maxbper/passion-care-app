@@ -486,22 +486,22 @@ export default function RegisterScreen() {
     </View>
 
     <View style={styles.singleInput}>
-      <Text>{t("neurotoxic_agents")}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t("neurotoxic_agents")}
-        value={form.neurotoxic_agent}
-        onChangeText={text => handleChange("neurotoxic_agent", text)}
-      />
-    </View>
-
-    <View style={styles.singleInput}>
       <Text>{t("chemo_protocol")}</Text>
       <TextInput
         style={styles.input}
         placeholder={t("chemo_protocol")}
         value={form.chemo_protocol}
         onChangeText={text => handleChange("chemo_protocol", text)}
+      />
+    </View>
+
+    <View style={styles.singleInput}>
+      <Text>{t("neurotoxic_agents")}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder={t("neurotoxic_agents")}
+        value={form.neurotoxic_agent}
+        onChangeText={text => handleChange("neurotoxic_agent", text)}
       />
     </View>
 

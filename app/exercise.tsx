@@ -32,6 +32,7 @@ export default function ExerciseScreen() {
   const [endDate, setEndDate] = useState<number | null>(null);
   const [feedbackMood, setFeedbackMood] = useState<string | null>(null);
   const [skippedExercises, setSkippedExercises] = useState<string[]>([]);
+  const [clocking, setClocking] = useState(false);
 
   useEffect(() => {
       const checkAuthentication = async () => {
@@ -61,18 +62,8 @@ export default function ExerciseScreen() {
   }, [currentIndex, hasStarted]);
 
   useEffect(() => {
-    if (paused || timeLeft <= 0 || !hasStarted || transitioning) return;
-
-    if (!noTimer) {
-      timerRef.current = setTimeout(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    }
-    else {
-      timerRef.current = setTimeout(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 2000);
-    }
+    if (paused || timeLeft <= 0 || !hasStarted || transitioning || clocking) return;
+    setClocking(true);
 
     if (timeLeft === 1 && currentIndex >= 0) {
       if (!noTimer) {
@@ -84,6 +75,9 @@ export default function ExerciseScreen() {
           setTransitioning(false);
           setCurrentIndex((prev) => prev + 1)
         }, 2000);
+        setTimeout(() => {
+          setClocking(false);
+        }, 3000);
       }
       else {
         setTimeout(() => {
@@ -94,12 +88,29 @@ export default function ExerciseScreen() {
           setTransitioning(false);
           setCurrentIndex((prev) => prev + 1)
         }, 3000);
+        setTimeout(() => {
+          setClocking(false);
+        }, 4000);
       }
     }
-  }, [timeLeft, paused, hasStarted, transitioning]);
+    else {
+      if (!noTimer) {
+        timerRef.current = setTimeout(() => {
+          setTimeLeft((prev) => prev - 1);
+          setClocking(false);
+        }, 1000);
+      }
+      else {
+        timerRef.current = setTimeout(() => {
+          setTimeLeft((prev) => prev - 1);
+          setClocking(false);
+        }, 2000);
+      }
+    }
+  }, [timeLeft, paused, hasStarted, transitioning, clocking]);
 
   const previous = () => {
-    if(currentIndex <= 0) return;
+    if(transitioning || currentIndex <= 0) return;
     const temp = [...skippedExercises];
     if(temp.includes(parsedWorkoutPlan[currentIndex-1].exercise)) {
       const index = temp.indexOf(parsedWorkoutPlan[currentIndex-1].exercise);
@@ -116,7 +127,7 @@ export default function ExerciseScreen() {
   }
 
   const next = () => {
-    if(currentIndex >= parsedWorkoutPlan.length) return;
+    if(transitioning || currentIndex >= parsedWorkoutPlan.length) return;
     const temp = [...skippedExercises];
     if(parsedWorkoutPlan[currentIndex].exercise !== "rest" && !temp.includes(parsedWorkoutPlan[currentIndex].exercise)) {
       temp.push(parsedWorkoutPlan[currentIndex].exercise);
@@ -149,6 +160,7 @@ export default function ExerciseScreen() {
         );
       } else {
         setPaused(false);
+        setClocking(false);
         setPauseStart(null);
       }
     }

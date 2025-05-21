@@ -9,6 +9,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { deleteAdminOrMod, deleteUser, fetchAdminsAndMods, fetchUserList, setIsSuspended } from "../services/dbService";
 import { Trash, Lock } from "lucide-react-native";
 import { auth } from "../firebaseConfig";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 
 export default function DashboardScreen() {
     const { t } = useTranslation();
@@ -247,14 +248,6 @@ export default function DashboardScreen() {
         <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
             {t("users")}
         </Text>
-        {!amIadmin && (
-        <Pressable
-                onPress={handleManageUsers}
-                style={{ position: "absolute", right: 0, top: 0, padding: 10, paddingRight: 20, zIndex: 996 }}
-            >
-                <Text style={{ fontSize: 12 }}>{isDeletingMods ? t("cancel") : t("manage")}</Text>
-        </Pressable>
-        )}
         <View>
         {userList.length > 0 ? (
             userList.map((user, index) => (
@@ -271,6 +264,15 @@ export default function DashboardScreen() {
         ) : (
             <Text style={{ fontSize: 18, textAlign: "center" }}>{t("no_users")}</Text>
         )}
+        {!amIadmin && userList.length > 0 && (
+                <Pressable
+                        onPress={handleManageUsers}
+                        style={{ borderWidth: 1, borderColor: isDeletingUsers ? "red" : "#845BB1", borderRadius: 10, padding: 20, marginTop: 20, alignSelf: "center",backgroundColor: "#fff", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+                    >
+                        <Text style={{ fontSize: 18, marginRight: isDeletingUsers ? 0 : 10 }}>{isDeletingUsers ? t("cancel") : t("manage")}</Text>
+                        {!isDeletingUsers && <AntDesign name="delete" size={24} color="#845BB1" />}
+                </Pressable>
+                )}
         </View>
         </View>
         );
