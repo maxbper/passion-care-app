@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Image, Pressable, Alert, Dimensions } from 'react-native';
 import { router, Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { checkAuth } from '../services/authService';
 import { Entypo, FontAwesome } from '@expo/vector-icons';
@@ -172,6 +172,19 @@ export default function ExerciseScreen() {
       await addXp(10);
     }
     else if(isWorkout) {
+      if (feedbackMood === null) {
+        Alert.alert(
+          t("warning"),
+          t("feedback_warning"),
+          [
+            {
+              text: "OK",
+            },
+          ],
+          { cancelable: false }
+        );
+        return;
+      }
       let heartRateData = await fetchFitbitData();
       if (!heartRateData) {
         heartRateData = [];
@@ -222,7 +235,12 @@ export default function ExerciseScreen() {
         await addXp(5);
       }
     }
-    router.replace("/exercisePlan");
+    router.replace({
+      pathname: "/exercisePlan",
+      params: {
+        p: JSON.stringify(true),
+      },
+    });
   };
 
   const handleStart = () => {
@@ -303,21 +321,27 @@ export default function ExerciseScreen() {
       setEndDate(Date.now());
     }
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {height: Dimensions.get('window').height}]}>
         <Text style={styles.doneText}>{t("well_done")}</Text>
 
         {isWorkout ? (
           <>
         <Text style={{ fontSize: 18, marginVertical: 10 }}>{t("feel")}</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginBottom: 30 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '90%', marginBottom: 30 }}>
+      <TouchableOpacity onPress={() => setFeedbackMood('very_sad')} style={feedbackMood==='very_sad' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😫</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => setFeedbackMood('sad')} style={feedbackMood==='sad' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
-          <Text style={{ fontSize: 36, textAlign: 'center' }}>😢</Text>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😟</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setFeedbackMood('neutral')} style={feedbackMood==='neutral' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60 } : {}}>
           <Text style={{ fontSize: 36, textAlign: 'center' }}>😐</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setFeedbackMood('happy')} style={feedbackMood==='happy' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60} : {}}>
-          <Text style={{ fontSize: 36, textAlign: 'center' }}>😊</Text>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>🙂</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setFeedbackMood('very_happy')} style={feedbackMood==='very_happy' ? { backgroundColor: '#d1e7dd', borderWidth: 2, borderColor: '#0f5132', borderRadius: 30, height: 60, width: 60} : {}}>
+          <Text style={{ fontSize: 36, textAlign: 'center' }}>😄</Text>
         </TouchableOpacity>
       </View>
           </>
@@ -332,7 +356,7 @@ export default function ExerciseScreen() {
 
   if(!hasStarted) {
     return (
-      <Pressable onPress={handleStart} style={styles.greenBackground}>
+      <Pressable onPress={handleStart} style={[styles.greenBackground, {height: Dimensions.get('window').height}]}>
       <Text style={styles.initialText}>{t("tap")}</Text>
       </Pressable>
     );
@@ -341,7 +365,7 @@ export default function ExerciseScreen() {
 
   return (
     <>
-    <View style={[styles.container, { backgroundColor: transitioning ? "#845BB1" : '#F9FAFB' }]}>
+    <View style={[styles.container, { backgroundColor: transitioning ? "#845BB1" : '#F9FAFB', height: Dimensions.get('window').height }]}>
       {currentIndex < 0 ? (
         <View style={styles.redBackground}>
         <Text style={styles.countdown}>{Math.abs(currentIndex)}</Text>
@@ -357,7 +381,7 @@ export default function ExerciseScreen() {
           )}
 
           <Text style={styles.details}>
-            {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} ${t("reps")}` : ''} {parsedWorkoutPlan[currentIndex]?.sets ? (parsedWorkoutPlan[currentIndex]?.sets != 1 ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("sets")}` : ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("set")}`) : ''}
+            {parsedWorkoutPlan[currentIndex]?.reps ? `${parsedWorkoutPlan[currentIndex].reps} ${t("reps")}` : ''} {/* {parsedWorkoutPlan[currentIndex]?.sets ? (parsedWorkoutPlan[currentIndex]?.sets != 1 ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("sets")}` : ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("set")}`) : ''} */}
           </Text>
 
           <Text style={[styles.details, { marginTop: 20 }]}>
@@ -405,7 +429,6 @@ const styles = StyleSheet.create({
   greenBackground: {
     alignItems: 'center',
     backgroundColor: "#845BB1",
-    height: '100%',
     width: '100%',
     justifyContent: 'center',
   },

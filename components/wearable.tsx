@@ -5,6 +5,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from 'expo-router';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useUserColor } from '../context/cancerColor';
+import { useTranslation } from 'react-i18next';
 
 const redirectUri = AuthSession.makeRedirectUri();
 console.log(redirectUri);
@@ -51,6 +52,7 @@ export const refreshTokens = async (tokens) => {
 export default function WearableComponent() {
     const cancerColor = "#845BB1";
     const [isConnected, setIsConnected] = useState(false);
+    const { t } = useTranslation();
 
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
@@ -132,22 +134,25 @@ export default function WearableComponent() {
 
     return (
         <TouchableOpacity onPress={isConnected ? () => disconnectFitbit() : () => connectFitbit()} style={styles.button}>
-                <Feather name="watch" size={36} color={cancerColor}/>
+                <Feather name="watch" size={40} color={cancerColor}/>
                 <View style={styles.statusIcon}>
                     {isConnected ? (
                         <FontAwesome
                         name="check-circle"
-                        size={20}
+                        size={30}
                         color={"green"}
                         />
                     ) : (
                         <FontAwesome
                         name="exclamation-circle"
-                        size={20}
+                        size={30}
                         color={"red"}
                         />
                     )}
                 </View>
+                <Text style={{ fontSize: 22, color: cancerColor, textAlign: "center", fontWeight: "bold", marginTop: 10 }}>
+                    {isConnected ? t("disconnect") : t("connect")}
+                </Text>
         </TouchableOpacity>
     );
 }
@@ -156,18 +161,18 @@ const styles = StyleSheet.create({
     button: {
         marginVertical: 0,
         backgroundColor: "#fff",
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         elevation: 3,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
         borderColor: "#000",
-        borderRadius: 50,
+        borderRadius: 10,
       },
       statusIcon: {
         position: 'absolute',
         top: 20,
-        right: 25,
+        right: 65,
       },
  });

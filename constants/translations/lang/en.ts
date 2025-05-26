@@ -30,9 +30,9 @@ const en = {
     dont_exercise: "You are not eligible to exercise today. \n\nPlease contact your healthcare provider.",
     assesment_result: "Assessment Result",
     weekly_health_assessment: {
-        title: "Weekly Health Assessment",
+        title: "Daily Assessment",
         type: "Health",
-        description: "This is a weekly form to assess your health status. \nPlease answer the questions honestly.",
+        description: "Let's start?",
         questions: {
             0: "Fever >38°C?",
             1: "Vomiting/diarrhea 12h?",
@@ -48,7 +48,7 @@ const en = {
         }
     },
     weekly_functional_assessment: {
-        title: "Weekly Functional Assessment",
+        title: "Daily Assessment",
         type: "Functional",
         description: "This is a weekly form to assess your functional status. \nPlease answer the questions honestly.",
         questions: {
@@ -60,7 +60,7 @@ const en = {
             5: "On a scale of 0 to 7, what is your level of fatigue today?",
         },
         results : {
-            decision: "Thank you. \nBased on this result, your plan for this week will be defined.",
+            decision: "Thank you. \nBased on this result, your plan will be defined.",
         }
     },
     start_workout_message: "It's workout time, let's get moving. \n The clock will start when you press start. \n\n Get ready!",
@@ -118,6 +118,8 @@ const en = {
     not_available: "Not available",
     fitbit_data: "Fitbit Data",
     fitbit_not_connected: " Fitbit not connected",
+    connect: "Press here to connect your Fitbit",
+    disconnect: "Press here to disconnect your Fitbit",
     wrong_password: "Wrong password. Please try again.",
     user_registered: "User registered successfully.",
     success: "Success",
@@ -163,10 +165,13 @@ const en = {
     total_time: "Workout time:",
     feedback: {
         title: "User Feedback:",
+        very_happy: "Excellent",
         happy: "Good",
         neutral: "Normal",
         sad: "Bad",
+        very_sad: "Very Bad",
     },
+    feedback_warning: "Please provide feedback on how you felt during the workout.",
     well_done: "Well done!",
     ex: "Exercises of the Workout",
     appointment_title: "Online Appointments",
@@ -304,8 +309,8 @@ const en = {
     are_you_sure: "Are you sure?",
     exercises_name: "Exercises",
     resources: "Resources",
-    symptom_evaluation: "Symptom Evaluation",
-    how_you_feeling: "How are you feeling today?",
+    symptom_evaluation: "I am not feeling well",
+    how_you_feeling: "Press here",
     fill_new_assessment: "Do you want to fill in a new assessment?",
     hello: "Hello, ",
     workout_locked_title: "Workout Locked",
@@ -383,6 +388,7 @@ const en = {
     are_you_sure_logout: "Are you sure you want to logout?",
     no_exercises_title: "No Exercises",
     no_exercises_message: "No exercises were done in this day.",
+    are_you_sure_assessment: "Are you sure you filled in the correct answer?",
    };
 
 

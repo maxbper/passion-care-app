@@ -9,14 +9,16 @@ import { useUserColor } from "../context/cancerColor";
 import { AntDesign, Entypo, FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import TasksModal from "../components/tasksModal";
 import WeekModal from "../components/weekModal";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import WeeklyHealthAssessment from "../components/weeklyForm";
 
 export default function ExercisePlanScreen() {
     const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const cancerColor = "#845BB1";
+    const { p } = useLocalSearchParams();
+    const is2page = p ? JSON.parse(p as string) : false;
     const [pressed, setPressed] = useState(false);
-
 
     useEffect(() => {
       const checkAuthentication = async () => {
@@ -75,8 +77,9 @@ export default function ExercisePlanScreen() {
                 </Text>
                 {/* <FontAwesome6 name="person-running" size={24} color={cancerColor} style={{marginBottom: 20, marginLeft: 5}} /> */}
               </View>
-                {pressed ? (
+                {/* {pressed ? (
                     <>
+                    <WeeklyHealthAssessment />
                     <TasksModal page={2}/>
                     <Block title={t("back")} onPress={handlePress} />
                     </>
@@ -86,6 +89,14 @@ export default function ExercisePlanScreen() {
                 <Block title={t("extra_exercises")} onPress={() => {router.push("/sensori")} } />
                 <Block title={t("back")} onPress={() => {router.push("/home")}} />
                 </>
+                )} */}
+                {is2page ? (
+                    <>
+                    <WeeklyHealthAssessment />
+                    <TasksModal page={2}/>
+                    </>
+                ) : (
+                    <TasksModal page={1}/>
                 )}
             </View>
           </>

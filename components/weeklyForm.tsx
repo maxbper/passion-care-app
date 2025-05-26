@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
@@ -114,13 +114,14 @@ const WeeklyHealthAssessment = ({ }) => {
     };
 
     const startFunctionalAssessmentInitial = () => {
-        setCurrentAssessmentType('functional');
+        startFunctionalAssessment();
+        /* setCurrentAssessmentType('functional');
         setCurrentQuestion({
             title: t("weekly_functional_assessment.title"),
             description: t("weekly_functional_assessment.description"),
             type: 'info',
         });
-        setIsAssessmentVisible(true);
+        setIsAssessmentVisible(true); */
     };
 
     const startHealthAssessment = () => {
@@ -161,12 +162,38 @@ const WeeklyHealthAssessment = ({ }) => {
         let nextQuestionId;
 
         if (currentAssessmentType === 'health') {
-            const updatedAnswers = [...healthAnswers];
-            updatedAnswers[currentQuestionId] = answer;
-            setHealthAnswers(updatedAnswers);
-            const question = HealthAssessmentQuestions[currentQuestionId];
-            nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
-            showHealthQuestion(nextQuestionId);
+            if (answer) {
+                Alert.alert(
+                    t("weekly_health_assessment.title"),
+                    t("are_you_sure_assessment"),
+                    [
+                        {
+                            text: t("no"),
+                            style: "cancel",
+                        },
+                        {
+                            text: t("yes"),
+                            onPress: () => {
+                                const updatedAnswers = [...healthAnswers];
+                                updatedAnswers[currentQuestionId] = answer;
+                                setHealthAnswers(updatedAnswers);
+                                const question = HealthAssessmentQuestions[currentQuestionId];
+                                nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
+                                showHealthQuestion(nextQuestionId);
+                            },
+                        },
+                    ],
+                    { cancelable: false }
+                );
+            }
+            else {
+                const updatedAnswers = [...healthAnswers];
+                updatedAnswers[currentQuestionId] = answer;
+                setHealthAnswers(updatedAnswers);
+                const question = HealthAssessmentQuestions[currentQuestionId];
+                nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
+                showHealthQuestion(nextQuestionId);
+            }
         } else if (currentAssessmentType === 'functional') {
             const updatedAnswers = [...functionalAnswers];
             updatedAnswers[currentQuestionId] = answer;
@@ -187,6 +214,12 @@ const WeeklyHealthAssessment = ({ }) => {
 
     const showResult = async (resultKey) => {
         const result = results[resultKey];
+        if (currentAssessmentType === 'health') {
+            if (resultKey !== 'suspend') {
+                completeAssessment(resultKey);
+            }
+        } 
+        else {
         setCurrentQuestion({
             title: t("assesment_result"),
             text: result.text,
@@ -194,6 +227,7 @@ const WeeklyHealthAssessment = ({ }) => {
             resultKey,
         });
         setIsAssessmentVisible(true);
+        }
     };
 
     const makeDecision = async () => {
@@ -236,15 +270,20 @@ const WeeklyHealthAssessment = ({ }) => {
                 return;
             }
             else {
-                if(!healthAnswers[4]) {
-                    healthAnswers[5] = false;
+                const updatedAnswers = [...healthAnswers];
+                if(!updatedAnswers[4]) {
+                    updatedAnswers[5] = false;
                 }
+                setHealthAnswers(updatedAnswers);
                 startFunctionalAssessmentInitial();
             }
         }
         else if (currentAssessmentType === 'functional') {
             
             const decision = await makeDecision();
+            console.log("Decision: ", decision);
+            console.log("Functional Answers: ", functionalAnswers);
+            console.log("Health Answers: ", healthAnswers);
             await uploadWeeklyForm(healthAnswers, functionalAnswers, decision, false);
             await setNeedsForm(false);
             setCurrentQuestion(null);
@@ -280,10 +319,10 @@ const WeeklyHealthAssessment = ({ }) => {
                         {currentQuestion.type === 'scale' && currentQuestion.range && (
                             <View style={styles.scaleContainer}>
                                 <View style={styles.plusMinusContainer}>
-                                    {/* <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
-                                    <Text>{scaleValue}</Text>
-                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} /> */}
-                                    <Pressable onPress={() => setScaleValue(1)}>
+                                    <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
+                                    <Text style={{fontSize: 24}}>{scaleValue}</Text>
+                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} />
+                                    {/* <Pressable onPress={() => setScaleValue(1)}>
                                         <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==1 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>1</Text>
                                     </Pressable>
                                     <Pressable onPress={() => setScaleValue(2)}>
@@ -305,18 +344,19 @@ const WeeklyHealthAssessment = ({ }) => {
                                     </Pressable>
                                     <Pressable onPress={() => setScaleValue(7)}>
                                         <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==7 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>7</Text>
-                                    </Pressable>
+                                    </Pressable> */}
                                 </View>
-                                {/* <Slider
+                                <Slider
                                     style={styles.slider}
                                     minimumValue={currentQuestion.range[0]}
                                     maximumValue={currentQuestion.range[1]}
                                     step={1}
                                     value={scaleValue}
                                     onValueChange={(value) => setScaleValue(value)}
-                                    minimumTrackTintColor="#007AFF"
-                                    maximumTrackTintColor="#D3D3D3"
-                                /> */}
+                                    minimumTrackTintColor="#ff0000"
+                                    maximumTrackTintColor="#10F500"
+                                    thumbTintColor="#845BB1"
+                                />
                                 <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
                                     <Text style={styles.buttonText}>{t("submit")}</Text>
                                 </TouchableOpacity>
@@ -331,7 +371,7 @@ const WeeklyHealthAssessment = ({ }) => {
 
                         {currentQuestion.type === 'info' && (
                             <TouchableOpacity style={styles.button} onPress={() => {
-                                setIsAssessmentVisible(false);
+                                /* setIsAssessmentVisible(false); */
                                 if (currentAssessmentType === 'health') {
                                     startHealthAssessment();
                                 } else if (currentAssessmentType === 'functional') {

@@ -34,25 +34,6 @@ export default function Header() {
     if (!isHomePage) {
         router.push("/home");
       }
-      else {
-        Alert.alert(
-          t("logout"),
-          t("are_you_sure_logout"),
-          [
-            {
-              text: t("cancel"),
-              style: "cancel",
-            },
-            {
-              text: t("logout"),
-              onPress: () => {
-                logout();
-              },
-            },
-          ],
-          { cancelable: true }
-        );
-      }
     };
 
     const changeLanguage = () => {
@@ -64,10 +45,10 @@ export default function Header() {
       <TouchableOpacity onPress={() => handleHomeButtonPress()}>
       <Entypo name="awareness-ribbon" size={40} color={awarenessRibbonColor ? "white" : (cancerColor === "#000000" ? "white" : cancerColor)} style={{ marginRight: 15, textShadowColor:'black', textShadowOffset: { width: 0.01, height: 0.01 }, textShadowRadius: 1, }} />
       </TouchableOpacity>
-      {!dontShowModal && (
-        /* <TouchableOpacity onPress={showModal}>
+       {/* {!dontShowModal && (
+        <TouchableOpacity onPress={showModal}>
         <Entypo name="dots-three-vertical" size={20} color="black" style={{ marginRight: 15 }} />
-        </TouchableOpacity> */
+        </TouchableOpacity>
         <TouchableOpacity onPress={changeLanguage} style={[styles.button, { borderTopLeftRadius: 50, borderTopRightRadius: 0 }]}>
         {i18n.language === "pt" ? (
           <View style={{position: 'relative', width: '100%', height: '100%'}}>
@@ -81,7 +62,7 @@ export default function Header() {
           </View>
           )}
       </TouchableOpacity>
-      )}
+      )} */}
     </View>
     )
 }

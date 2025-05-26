@@ -10,13 +10,14 @@ import { ProgressBar } from "react-native-paper";
 import { useUserColor } from "../context/cancerColor";
 import TasksModal from "../components/tasksModal";
 import AdminModal from "../components/adminModal";
-import { FontAwesome5, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import WearableComponent, { refreshTokens } from "../components/wearable";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WeekModal from "../components/weekModal";
 import AppointmentModal from "../components/appointmentModal";
 import { useProfileModal } from "../context/ProfileModalContext";
+import i18n from "../constants/translations";
 
 export default function HomeScreen() {
     const { t } = useTranslation();
@@ -31,6 +32,7 @@ export default function HomeScreen() {
     const [myUid, setMyUid] = useState("");
     const [name, setName] = useState("");
     const { showModal } = useProfileModal();
+    const [wantsForm, setWantsForm]= useState(false);
 
     const messages = [
         t("encouragement_messages.0"),
@@ -131,7 +133,13 @@ export default function HomeScreen() {
                     },
                     {
                         text: t("yes"),
-                        onPress: async () => {await ReactNativeAsyncStorage.setItem("wantsForm", "true")},
+                        onPress: async () => {
+                            await ReactNativeAsyncStorage.setItem("wantsForm", "true");
+                            router.push({
+                                pathname: "/exercisePlan",
+                                params: { p: JSON.stringify(true) },
+                            })
+                        },
                     },
                 ],
                 { cancelable: false }
@@ -185,7 +193,6 @@ export default function HomeScreen() {
                 </View>
             ) : (
             <>
-            {warningShown && <WeeklyHealthAssessment />}
             <View style={[styles.container, {marginTop: insets.top + 50}]}>
                     <>
                     <View style={{width: "90%", padding: 20}}>
@@ -200,25 +207,66 @@ export default function HomeScreen() {
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
                     </View> */}
-                    <Pressable style={styles.card1} onPress={handleSymptomPress}>
-                        <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
-                        <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
-                    </Pressable>
                     <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
                     <Pressable style={styles.card} onPress={() => router.push("/exercisePlan")}>
-                        <FontAwesome6 name="person-running" size={36} color={"#845BB1"}/>
+                        <FontAwesome6 name="person-running" size={36} color={cancerColor}/>
                         <Text style={styles.xpText1}>{t("exercises_name")}</Text>
                     </Pressable>
                     <AppointmentModal />
                     </View>
                     <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
                     <Pressable style={styles.card} onPress={() => router.push("/historyPage")}>
-                        <FontAwesome5 name="history" size={36} color="#845BB1" />
+                        <FontAwesome5 name="history" size={36} color={cancerColor} />
                         <Text style={styles.xpText1}>{t("history")}</Text>
                     </Pressable>
                     <Pressable onPress={showModal} style={styles.card}>
                             <Feather name="watch" size={36} color={cancerColor}/>
                             <Text style={styles.xpText1}>{t("watch")}</Text>
+                    </Pressable>
+                    </View>
+                    <Pressable style={styles.card1} onPress={handleSymptomPress}>
+                        <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
+                        <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                        <AntDesign name="warning" size={25} color="orange" style={{marginRight: 10}} />
+                        <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
+                        </View>
+                    </Pressable>
+                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
+                    <Pressable style={styles.card} onPress={() => 
+                        Alert.alert(
+                                  t("logout"),
+                                  t("are_you_sure_logout"),
+                                  [
+                                    {
+                                      text: t("cancel"),
+                                      style: "cancel",
+                                    },
+                                    {
+                                      text: t("logout"),
+                                      onPress: () => {
+                                        logout();
+                                      },
+                                    },
+                                  ],
+                                  { cancelable: true }
+                                )
+                    }>
+                    <MaterialIcons name="logout" size={34} color={cancerColor}/>
+                        <Text style={styles.xpText1}>{t("logout")}</Text>
+                    </Pressable>
+                    <Pressable onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} style={styles.card}>
+                        {i18n.language === "pt" ? (
+                            <View style={{position: 'relative', width: '100%', height: '100%'}}>
+                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 25, zIndex:2 }}>🇵🇹</Text>
+                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 15, zIndex:1 }}>🇬🇧</Text>
+                            </View>
+                            ) : (
+                            <View style={{position: 'relative', width: '100%', height: '100%'}}>
+                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 25, zIndex:2 }}>🇬🇧</Text>
+                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 15, zIndex:1 }}>🇵🇹</Text>
+                            </View>
+                            )}
+                            <Text style={styles.xpText1}>{i18n.language === "pt" ? "PT" : "EN"}</Text>
                     </Pressable>
                     </View>
                     </>
@@ -272,7 +320,7 @@ const styles = StyleSheet.create({
     },
     card1: {
         width: "90%",
-        backgroundColor: "#FFF",
+        backgroundColor: "rgba(255,191,0,0.2)",
         paddingTop: 10,
         borderRadius: 10,
         alignItems: "center",
@@ -302,9 +350,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     levelText: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: "bold",
         marginBottom: 10,
+        color: "#845BB1",
     },
     progressBar: {
         width: 250,
@@ -314,12 +363,13 @@ const styles = StyleSheet.create({
     },
     xpText: {
         fontSize: 18,
-        color: "#845BB1",
+        color: "orange",
         marginBottom: 10,
     },
     xpText1: {
         fontSize: 18,
         color: "#845BB1",
+        fontWeight: "bold",
     },
     statsText: {
         flexDirection: "row", 

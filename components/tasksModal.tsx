@@ -458,14 +458,16 @@ export default function TasksModal({page=0}) {
   if (pageNumber === 1) {
     return (
       <>
-      <Block title={t("workout_plan")} onPress={() => {setPageNumber(2)} }/>
-      <Block title={t("extra_exercises")} onPress={() => setPageNumber(3)}/>
-      <Block title={t("back")} onPress={() => { setPageNumber(0);} } />
+      <Block title={t("workout_plan")} onPress={() => {setPageNumber(2)} } disabled={suspended} allowDisablePress={suspended} onDisablePress={suspendedWarning}/>
+      <Block title={t("extra_exercises")} onPress={() => {router.push("/sensori")} } />
+      <Block title={t("back")} onPress={() => {router.push("/home")}} />
       </>
     );
   }
   if (pageNumber === 2) {
   return (
+    <>
+    {warmupPlan.length > 0 && workoutPlan.length > 0 ? (
     <>
           <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
           <Block
@@ -475,7 +477,12 @@ export default function TasksModal({page=0}) {
               onDisablePress={workoutLockedWarning}
               allowDisablePress={!warmupCompleted}
               completed={workoutCompleted} />
+              <Block title={t("back")} onPress={() => {setPageNumber(1)}} />
       </>
+    ) : (
+        <ActivityIndicator size="large" color="#845BB1" style={{marginBottom: 20}}/>
+    )}
+    </>
   );
   }
   if (pageNumber === 3) {

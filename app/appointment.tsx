@@ -606,6 +606,11 @@ export default function AppointmentScreen() {
                         {t("no_slots")}
                     </Text>
                 )}
+                {selectedSlot !== null && (
+                    <TouchableOpacity style={[styles.button, { backgroundColor: "#4ADE80", marginTop: 20 }]} onPress={() => {setShowAddAppointmentModal(false)}}>
+                        <Text style={styles.buttonText}>{t("submit")}</Text>
+                    </TouchableOpacity>
+                )}
                 </Pressable>
               </Pressable>
             )}

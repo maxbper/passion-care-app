@@ -28,9 +28,9 @@ const pt = {
     dont_exercise: "Hoje não é elegível para realizar exercício físico. \n\nPor favor, contacte o seu prestador de cuidados de saúde.",
     assesment_result: "Resultado da Avaliação",
     weekly_health_assessment: {
-        title: "Avaliação Semanal de Saúde",
+        title: "Avaliação de Hoje",
         type: "Saúde",
-        description: "Este é um formulário semanal para avaliar o seu estado de saúde. \nPor favor, responda às perguntas honestamente.",
+        description: "Vamos começar?",
         questions: {
             0: "Febre >38°C?",
             1: "Vómitos/diarreia 12h?",
@@ -46,7 +46,7 @@ const pt = {
         }
     },
     weekly_functional_assessment: {
-        title: "Avaliação Funcional Semanal",
+        title: "Avaliação de Hoje",
         type: "Funcional",
         description: "Este é um formulário semanal para avaliar o seu estado funcional. \nPor favor, responda às perguntas honestamente.",
         questions: {
@@ -58,7 +58,7 @@ const pt = {
             5: "De 0 a 7, qual o seu nível de fadiga hoje?",
         },
         results: {
-            decision: "Obrigado. \nCom base neste resultado, será definido o seu plano para esta semana.",
+            decision: "Obrigado. \nCom base neste resultado, será definido o seu plano.",
         }
     },
     start_workout_message: "É hora de treinar, vamos lá. \n O relógio irá começa a contar. \n\n Prepare-se!",
@@ -163,10 +163,15 @@ const pt = {
     total_time: "Tempo de treino:",
     feedback: {
         title: "Feedback do Utilizador:",
+        very_happy: "Muito Bom",
         happy: "Bom",
         neutral: "Normal",
         sad: "Mau",
+        very_sad: "Muito Mau",
     },
+    feedback_warning: "Por favor, preencha o feedback.",
+    connect: "Carregue aqui para conectar o seu Fitbit.",
+    disconnect: "Carregue aqui para desconectar o seu Fitbit.",
     well_done: "Muito bem!",
     ex: "Exercícios do Treino",
     appointment_title: "Consultas Online",
@@ -304,8 +309,8 @@ const pt = {
     are_you_sure: "Tem a certeza que não deseja continuar?",
     exercises_name: "Exercícios",
     resources: "Recursos",
-    symptom_evaluation: "Avaliação de Sintomas",
-    how_you_feeling: "Como se sente hoje?",
+    symptom_evaluation: "Hoje não me sinto bem",
+    how_you_feeling: "Carregue aqui",
     fill_new_assessment: "Quer preencher uma nova avaliação?",
     hello: "Olá, ",
     workout_locked_title: "Treino Bloqueado",
@@ -383,6 +388,7 @@ const pt = {
     are_you_sure_logout: "Tem a certeza que deseja sair?",
     no_exercises_title: "Sem exercícios",
     no_exercises_message: "Não existiram exercícios feitos.",
+    are_you_sure_assessment: "Tem a certeza que escolheu a opção certa?",
    };
 
 export default pt;

@@ -112,11 +112,11 @@ const styles = StyleSheet.create({
     zIndex: 999,
 },
   backdrop: {
-    width: '37%',
+    width: '25%',
     backgroundColor: 'rgba(0,0,0,0)',
   },
   modal: {
-    width: '63%',
+    width: '75%',
     backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOffset: { width: -2, height: 0 },
