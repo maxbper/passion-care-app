@@ -257,13 +257,13 @@ export default function HomeScreen() {
                     <Pressable onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} style={styles.card}>
                         {i18n.language === "pt" ? (
                             <View style={{position: 'relative', width: '100%', height: '100%'}}>
-                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 25, zIndex:2 }}>🇵🇹</Text>
-                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 15, zIndex:1 }}>🇬🇧</Text>
+                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 37, zIndex:2 }}>🇵🇹</Text>
+                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 27, zIndex:1 }}>🇬🇧</Text>
                             </View>
                             ) : (
                             <View style={{position: 'relative', width: '100%', height: '100%'}}>
-                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 25, zIndex:2 }}>🇬🇧</Text>
-                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 15, zIndex:1 }}>🇵🇹</Text>
+                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 37, zIndex:2 }}>🇬🇧</Text>
+                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 27, zIndex:1 }}>🇵🇹</Text>
                             </View>
                             )}
                             <Text style={styles.xpText1}>{i18n.language === "pt" ? "PT" : "EN"}</Text>

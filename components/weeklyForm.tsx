@@ -15,7 +15,7 @@ const WeeklyHealthAssessment = ({ }) => {
     const [currentAssessmentType, setCurrentAssessmentType] = useState(''); 
     const [healthAnswers, setHealthAnswers] = useState<boolean[]>([]);
     const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
-    const [checking, setChecking] = useState(false);
+    const [checking, setChecking] = useState(true);
 
     const HealthAssessmentQuestions = [
         { id: 0, type: 'yesno', text: t("weekly_health_assessment.questions.0"), nextIfYes: 'suspend', nextIfNo: 1 },
@@ -51,9 +51,11 @@ const WeeklyHealthAssessment = ({ }) => {
     );
 
     useEffect(() => {
+        console.log("1");
         if(!checking) {
             return;
         }
+        console.log("2");
         const intervalId = setInterval(() => {
             checkLastAssessmentDate();
         }, 1000);
@@ -63,6 +65,7 @@ const WeeklyHealthAssessment = ({ }) => {
     , [checking]);
 
     const checkLastAssessmentDate = async () => {
+        console.log("3");
         // startHealthAssessmentInitial(); // for testing purposes
         try {
             const needs_form_async = await ReactNativeAsyncStorage.getItem("wantsForm");

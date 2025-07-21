@@ -34,7 +34,14 @@ export default function Header() {
     if (!isHomePage) {
         router.push("/home");
       }
+
+      if (isAdmin === "true" || isMod === "true") {
+        if (isHomePage) {
+          logout();
+        }
+      }
     };
+
 
     const changeLanguage = () => {
       i18n.changeLanguage(i18n.language === "en" ? "pt" : "en");

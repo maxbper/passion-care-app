@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "PASSiON",
-    "slug": "cipn_app",
+    "name": "PASSiON Care",
+    "slug": "passion-care",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#845BB1"
       },
-      "package": "com.duartelopes.cipn_app"
+      "package": "com.duartelopes.passioncare"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +40,15 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "sdkVersion": "52.0.46",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "cd2b5039-7326-4093-b6a7-69c84d8a5adc"
+      }
     }
   }
 }

@@ -15,6 +15,7 @@ export const login = async (email: string, password: string) => {
             router.replace("/dontExercise");
             return;
         }
+        //await ReactNativeAsyncStorage.setItem("wantsForm", "true");
         router.replace("/home");
     } catch (error: any) {
         throw error;

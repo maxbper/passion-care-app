@@ -71,6 +71,7 @@ export default function ExercisePlanScreen() {
           <>
             <View style={[styles.container, { marginTop: 0}]}>
             <WeekModal />
+            <WeeklyHealthAssessment />
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 20}}>
                 <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
                     {t("exercises_name")}
@@ -92,7 +93,7 @@ export default function ExercisePlanScreen() {
                 )} */}
                 {is2page ? (
                     <>
-                    <WeeklyHealthAssessment />
+                    
                     <TasksModal page={2}/>
                     </>
                 ) : (
