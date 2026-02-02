@@ -37,6 +37,7 @@ yarn-error.*
 
 ios/
 android/
+.idea/
 
 app-example
 

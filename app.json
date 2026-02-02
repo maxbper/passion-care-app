@@ -1,54 +1,53 @@
 {
-  "expo": {
-    "name": "PASSiON Care",
-    "slug": "passion-care",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "jsEngine": "hermes",
-    "ios": {
-      "supportsTablet": true,
-      "jsEngine": "jsc",
-      "bundleIdentifier": "com.duartelopes.cipn-app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#845BB1"
-      },
-      "package": "com.duartelopes.passioncare"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#845BB1"
+    "expo": {
+        "name": "PASSiON Care",
+        "slug": "passion-care",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon.png",
+        "scheme": "myapp",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "jsEngine": "hermes",
+        "ios": {
+            "supportsTablet": true,
+            "jsEngine": "jsc",
+            "bundleIdentifier": "com.duartelopes.cipn-app"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/adaptive-icon.png",
+                "backgroundColor": "#845BB1"
+            },
+            "package": "com.duartelopes.passioncare"
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/images/splash-icon.png",
+                    "imageWidth": 200,
+                    "resizeMode": "contain",
+                    "backgroundColor": "#845BB1"
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true
+        },
+        "extra": {
+            "router": {
+                "origin": false
+            },
+            "eas": {
+                "projectId": "cd2b5039-7326-4093-b6a7-69c84d8a5adc"
+            }
         }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    },
-    "sdkVersion": "52.0.46",
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "cd2b5039-7326-4093-b6a7-69c84d8a5adc"
-      }
     }
-  }
 }
