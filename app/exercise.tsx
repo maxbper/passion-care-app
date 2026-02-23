@@ -519,6 +519,7 @@ export default function ExerciseScreen() {
                             setShowPreview(false);
                             handleStart();
                         }}
+                        color="#845BB1"
                     />
                 </View>
             );
