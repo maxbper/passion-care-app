@@ -33,7 +33,7 @@ export default function ExerciseScreen() {
     const [timeLeft, setTimeLeft] = useState(0);
     const [paused, setPaused] = useState(false);
     const [pauseStart, setPauseStart] = useState<number | null>(null);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<NodeJS.Timeout | number | null>(null);
     const [hasStarted, setHasStarted] = useState(false);
     const [transitioning, setTransitioning] = useState(false);
     const [noTimer, setNoTimer] = useState(false);
@@ -64,58 +64,41 @@ export default function ExerciseScreen() {
                 setCurrentIndex((prev) => prev + 1);
             }, 1000);
         } else if (currentIndex >= 0 && currentIndex < parsedWorkoutPlan.length) {
-            // Handle workout timers
+            // Only set timer for duration-based exercises
             if (parsedWorkoutPlan[currentIndex].duration) {
+                setNoTimer(false);
                 setTimeLeft(parsedWorkoutPlan[currentIndex].duration);
             } else {
                 setNoTimer(true);
-                setTimeLeft(parsedWorkoutPlan[currentIndex].reps);
+                setTimeLeft(0); // No timer for rep-based exercises
             }
         }
     }, [currentIndex, hasStarted]);
 
     useEffect(() => {
-        if (paused || timeLeft <= 0 || !hasStarted || transitioning || clocking) return;
+        // Only run timer logic for duration-based exercises
+        if (paused || !hasStarted || transitioning || clocking) return;
+        if (noTimer) return; // Don't run timer for rep-based exercises
+        if (timeLeft <= 0) return;
         setClocking(true);
 
         if (timeLeft === 1 && currentIndex >= 0) {
-            if (!noTimer) {
-                setTimeout(() => {
-                    setTransitioning(true);
-                    setNoTimer(false);
-                }, 1000);
-                setTimeout(() => {
-                    setTransitioning(false);
-                    setCurrentIndex((prev) => prev + 1);
-                }, 2000);
-                setTimeout(() => {
-                    setClocking(false);
-                }, 3000);
-            } else {
-                setTimeout(() => {
-                    setTransitioning(true);
-                    setNoTimer(false);
-                }, 2000);
-                setTimeout(() => {
-                    setTransitioning(false);
-                    setCurrentIndex((prev) => prev + 1);
-                }, 3000);
-                setTimeout(() => {
-                    setClocking(false);
-                }, 4000);
-            }
+            setTimeout(() => {
+                setTransitioning(true);
+                setNoTimer(false);
+            }, 1000);
+            setTimeout(() => {
+                setTransitioning(false);
+                setCurrentIndex((prev) => prev + 1);
+            }, 2000);
+            setTimeout(() => {
+                setClocking(false);
+            }, 3000);
         } else {
-            if (!noTimer) {
-                timerRef.current = setTimeout(() => {
-                    setTimeLeft((prev) => prev - 1);
-                    setClocking(false);
-                }, 1000);
-            } else {
-                timerRef.current = setTimeout(() => {
-                    setTimeLeft((prev) => prev - 1);
-                    setClocking(false);
-                }, 2000);
-            }
+            timerRef.current = setTimeout(() => {
+                setTimeLeft((prev) => prev - 1);
+                setClocking(false);
+            }, 1000);
         }
     }, [timeLeft, paused, hasStarted, transitioning, clocking]);
 
@@ -555,15 +538,11 @@ export default function ExerciseScreen() {
                         {parsedWorkoutPlan[currentIndex]?.duration ? (
                             <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
                         ) : (
-                            <Text style={styles.timer}>{timeLeft != 1 ? `${timeLeft} reps` : `${timeLeft} rep`}</Text>
+                            <Text style={styles.timer}>
+                                {parsedWorkoutPlan[currentIndex]?.reps}
+                                {` ${t("reps")}`}
+                            </Text>
                         )}
-
-                        <Text style={styles.details}>
-                            {parsedWorkoutPlan[currentIndex]?.reps
-                                ? `${parsedWorkoutPlan[currentIndex].reps} ${t("reps")}`
-                                : ""}{" "}
-                            {/* {parsedWorkoutPlan[currentIndex]?.sets ? (parsedWorkoutPlan[currentIndex]?.sets != 1 ? ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("sets")}` : ` × ${parsedWorkoutPlan[currentIndex]?.sets} ${t("set")}`) : ''} */}
-                        </Text>
 
                         <Text style={[styles.details, { marginTop: 20 }]}>
                             {t(`description.${parsedWorkoutPlan[currentIndex]?.exercise}`)}
@@ -572,12 +551,23 @@ export default function ExerciseScreen() {
                         <TouchableOpacity style={styles.previousButton} onPress={previous}>
                             <Entypo name={"controller-fast-backward"} size={16} color="#845BB1" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
-                            <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#845BB1" />
-                        </TouchableOpacity>
                         <TouchableOpacity style={styles.nextButton} onPress={next}>
                             <Entypo name={"controller-fast-forward"} size={16} color="#845BB1" />
                         </TouchableOpacity>
+                        {/* Show Done button at the bottom for rep-based exercises */}
+                        {parsedWorkoutPlan[currentIndex]?.duration ? (
+                            <TouchableOpacity style={styles.pauseButton} onPress={handlePause}>
+                                <FontAwesome name={!paused ? "pause" : "play"} size={16} color="#845BB1" />
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={styles.doneButton}>
+                                <Button
+                                    title={t("done") || "Done"}
+                                    onPress={() => setCurrentIndex((prev) => prev + 1)}
+                                    color="#845BB1"
+                                />
+                            </View>
+                        )}
                     </>
                 )}
 
@@ -645,6 +635,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "#333",
         textAlign: "center",
+    },
+    doneButton: {
+        position: "absolute",
+        bottom: 40,
+        left: 0,
+        right: 0,
+        alignItems: "center",
     },
     doneText: {
         fontSize: 36,

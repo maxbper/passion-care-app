@@ -306,6 +306,7 @@ const en = {
         muscle_relaxation: "Muscle Relaxation",
         rest: "Rest",
     },
+    done: "Done",
     next: "Next Exercise",
     no_fitbit: "No Fitbit data available.",
     workout_plan: "Workout Plan",

@@ -307,6 +307,7 @@ const pt = {
         muscle_relaxation: "Relaxamento Muscular",
         rest: "Descanso",
     },
+    done: "Concluído",
     next: "Próximo Exercício",
     no_fitbit: "Não existem dados do Fitbit disponíveis.",
     workout_plan: "Plano de Treino",
