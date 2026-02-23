@@ -467,7 +467,13 @@ export default function ExerciseScreen() {
                         <ScrollView>
                             {parsedWorkoutPlan && parsedWorkoutPlan.length > 0 ? (
                                 parsedWorkoutPlan.map((exercise, idx) =>
-                                    exercise.exercise !== "rest" ? (
+                                    exercise.exercise === "rest" ||
+                                    (idx > 0 &&
+                                        parsedWorkoutPlan[idx - 1].exercise === parsedWorkoutPlan[idx].exercise) ||
+                                    (idx > 1 &&
+                                        parsedWorkoutPlan[idx - 1].exercise === "rest" &&
+                                        parsedWorkoutPlan[idx - 2].exercise ===
+                                            parsedWorkoutPlan[idx].exercise) ? null : (
                                         <View
                                             key={idx}
                                             style={{
@@ -496,7 +502,7 @@ export default function ExerciseScreen() {
                                                 </Text>
                                             ) : null}
                                         </View>
-                                    ) : null,
+                                    ),
                                 )
                             ) : (
                                 <Text>{t("no_workouts")}</Text>
