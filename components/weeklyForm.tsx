@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable, Alert } from "react-native";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from '@react-navigation/native';
-import { router } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import Slider from '@react-native-community/slider';
-import { fetchLastWeeklyFormDate, fetchNeedsForm, setNeedsForm, uploadWeeklyForm } from '../services/dbService';
+import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
+import Slider from "@react-native-community/slider";
+import { fetchLastWeeklyFormDate, fetchNeedsForm, setNeedsForm, uploadWeeklyForm } from "../services/dbService";
 
-const WeeklyHealthAssessment = ({ }) => {
+const WeeklyHealthAssessment = ({}) => {
     const { t } = useTranslation();
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [isAssessmentVisible, setIsAssessmentVisible] = useState(false);
     const [scaleValue, setScaleValue] = useState(3);
-    const [currentAssessmentType, setCurrentAssessmentType] = useState(''); 
+    const [currentAssessmentType, setCurrentAssessmentType] = useState("");
     const [healthAnswers, setHealthAnswers] = useState<boolean[]>([]);
     const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
     const [checking, setChecking] = useState(true);
 
     const HealthAssessmentQuestions = [
-        { id: 0, type: 'yesno', text: t("weekly_health_assessment.questions.0"), nextIfYes: 'suspend', nextIfNo: 1 },
-        { id: 1, type: 'yesno', text: t("weekly_health_assessment.questions.1"), nextIfYes: 'suspend', nextIfNo: 2 },
-        { id: 2, type: 'yesno', text: t("weekly_health_assessment.questions.2"), nextIfYes: 'suspend', nextIfNo: 3 },
-        { id: 3, type: 'yesno', text: t("weekly_health_assessment.questions.3"), nextIfYes: 'suspend', nextIfNo: 4 },
-        { id: 4, type: 'yesno', text: t("weekly_health_assessment.questions.4"), nextIfYes: 5, nextIfNo: 6 },
-        { id: 5, type: 'yesno', text: t("weekly_health_assessment.questions.5"), nextIfYes: 'suspend', nextIfNo: 6 },
-        { id: 6, type: 'yesno', text: t("weekly_health_assessment.questions.6"), nextIfYes: 7, nextIfNo: 'fullPlan' },
+        { id: 0, type: "yesno", text: t("weekly_health_assessment.questions.0"), nextIfYes: "suspend", nextIfNo: 1 },
+        { id: 1, type: "yesno", text: t("weekly_health_assessment.questions.1"), nextIfYes: "suspend", nextIfNo: 2 },
+        { id: 2, type: "yesno", text: t("weekly_health_assessment.questions.2"), nextIfYes: "suspend", nextIfNo: 3 },
+        { id: 3, type: "yesno", text: t("weekly_health_assessment.questions.3"), nextIfYes: "suspend", nextIfNo: 4 },
+        { id: 4, type: "yesno", text: t("weekly_health_assessment.questions.4"), nextIfYes: 5, nextIfNo: 6 },
+        { id: 5, type: "yesno", text: t("weekly_health_assessment.questions.5"), nextIfYes: "suspend", nextIfNo: 6 },
+        { id: 6, type: "yesno", text: t("weekly_health_assessment.questions.6"), nextIfYes: 7, nextIfNo: "fullPlan" },
     ];
 
     const FunctionalAssessmentQuestions = [
-        { id: 0, type: 'yesno', text: t("weekly_functional_assessment.questions.0"), nextIfYes: 1, nextIfNo: 1 },
-        { id: 1, type: 'yesno', text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 2 },
-        { id: 2, type: 'yesno', text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 3 },
-        { id: 3, type: 'yesno', text: t("weekly_functional_assessment.questions.3"), nextIfYes: 4, nextIfNo: 4 },
-        { id: 4, type: 'scale', text: t("weekly_functional_assessment.questions.4"), range: [0,7], next: 5 },
-        { id: 5, type: 'scale', text: t("weekly_functional_assessment.questions.5"), range: [0,7], next: 'decision'},
+        { id: 0, type: "yesno", text: t("weekly_functional_assessment.questions.0"), nextIfYes: 1, nextIfNo: 1 },
+        { id: 1, type: "yesno", text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 2 },
+        { id: 2, type: "yesno", text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 3 },
+        { id: 3, type: "yesno", text: t("weekly_functional_assessment.questions.3"), nextIfYes: 4, nextIfNo: 4 },
+        { id: 4, type: "scale", text: t("weekly_functional_assessment.questions.4"), range: [0, 7], next: 5 },
+        { id: 5, type: "scale", text: t("weekly_functional_assessment.questions.5"), range: [0, 7], next: "decision" },
     ];
 
     const results = {
@@ -46,23 +46,21 @@ const WeeklyHealthAssessment = ({ }) => {
     useFocusEffect(
         React.useCallback(() => {
             checkLastAssessmentDate();
-        }, [])
-
+        }, []),
     );
 
     useEffect(() => {
         console.log("1");
-        if(!checking) {
+        if (!checking) {
             return;
         }
         console.log("2");
         const intervalId = setInterval(() => {
             checkLastAssessmentDate();
         }, 1000);
-    
+
         return () => clearInterval(intervalId);
-    }
-    , [checking]);
+    }, [checking]);
 
     const checkLastAssessmentDate = async () => {
         console.log("3");
@@ -77,9 +75,8 @@ const WeeklyHealthAssessment = ({ }) => {
                 startHealthAssessmentInitial();
                 return;
             }
-        }
-        catch (error) {
-            console.error('Error fetching needs form:', error);
+        } catch (error) {
+            console.error("Error fetching needs form:", error);
         }
         try {
             const lastAssessmentDate = await fetchLastWeeklyFormDate();
@@ -98,20 +95,20 @@ const WeeklyHealthAssessment = ({ }) => {
                 return;
             }
         } catch (error) {
-            console.error('Error checking assessment date:', error);
+            console.error("Error checking assessment date:", error);
             setChecking(false);
             startHealthAssessmentInitial();
             return;
-          }
+        }
         setChecking(true);
     };
 
     const startHealthAssessmentInitial = () => {
-        setCurrentAssessmentType('health');
+        setCurrentAssessmentType("health");
         setCurrentQuestion({
             title: t("weekly_health_assessment.title"),
             description: t("weekly_health_assessment.description"),
-            type: 'info',
+            type: "info",
         });
         setIsAssessmentVisible(true);
     };
@@ -128,17 +125,17 @@ const WeeklyHealthAssessment = ({ }) => {
     };
 
     const startHealthAssessment = () => {
-        setCurrentAssessmentType('health');
+        setCurrentAssessmentType("health");
         showHealthQuestion(0);
     };
 
     const startFunctionalAssessment = () => {
-        setCurrentAssessmentType('functional');
+        setCurrentAssessmentType("functional");
         showFunctionalQuestion(0);
     };
 
     const showHealthQuestion = (questionId) => {
-        if (typeof questionId === 'string') {
+        if (typeof questionId === "string") {
             showResult(questionId);
             return;
         }
@@ -149,13 +146,17 @@ const WeeklyHealthAssessment = ({ }) => {
     };
 
     const showFunctionalQuestion = (questionId) => {
-        if (typeof questionId === 'string') {
+        if (typeof questionId === "string") {
             showResult(questionId);
             return;
         }
 
         const question = FunctionalAssessmentQuestions[questionId];
-        setCurrentQuestion({ ...question, title: t("weekly_functional_assessment.title"), currentQuestionId: questionId });
+        setCurrentQuestion({
+            ...question,
+            title: t("weekly_functional_assessment.title"),
+            currentQuestionId: questionId,
+        });
         setIsAssessmentVisible(true);
     };
 
@@ -164,7 +165,7 @@ const WeeklyHealthAssessment = ({ }) => {
         const { currentQuestionId } = currentQuestion;
         let nextQuestionId;
 
-        if (currentAssessmentType === 'health') {
+        if (currentAssessmentType === "health") {
             if (answer) {
                 Alert.alert(
                     t("weekly_health_assessment.title"),
@@ -186,10 +187,9 @@ const WeeklyHealthAssessment = ({ }) => {
                             },
                         },
                     ],
-                    { cancelable: false }
+                    { cancelable: false },
                 );
-            }
-            else {
+            } else {
                 const updatedAnswers = [...healthAnswers];
                 updatedAnswers[currentQuestionId] = answer;
                 setHealthAnswers(updatedAnswers);
@@ -197,7 +197,7 @@ const WeeklyHealthAssessment = ({ }) => {
                 nextQuestionId = answer ? question.nextIfYes : question.nextIfNo;
                 showHealthQuestion(nextQuestionId);
             }
-        } else if (currentAssessmentType === 'functional') {
+        } else if (currentAssessmentType === "functional") {
             const updatedAnswers = [...functionalAnswers];
             updatedAnswers[currentQuestionId] = answer;
             setFunctionalAnswers(updatedAnswers);
@@ -217,46 +217,41 @@ const WeeklyHealthAssessment = ({ }) => {
 
     const showResult = async (resultKey) => {
         const result = results[resultKey];
-        if (currentAssessmentType === 'health') {
-            if (resultKey !== 'suspend') {
+        if (currentAssessmentType === "health") {
+            if (resultKey !== "suspend") {
                 completeAssessment(resultKey);
             }
-        } 
-        else {
-        setCurrentQuestion({
-            title: t("assesment_result"),
-            text: result.text,
-            type: 'result',
-            resultKey,
-        });
-        setIsAssessmentVisible(true);
+        } else {
+            setCurrentQuestion({
+                title: t("assesment_result"),
+                text: result.text,
+                type: "result",
+                resultKey,
+            });
+            setIsAssessmentVisible(true);
         }
     };
 
     const makeDecision = async () => {
         let score = 0;
-        const adaptedPlan = (parseInt(functionalAnswers[4]) >= 4) || functionalAnswers[3] === 'false';;
+        const adaptedPlan = parseInt(functionalAnswers[4]) >= 4 || functionalAnswers[3] === "false";
 
         functionalAnswers.forEach((answer, index) => {
-            if(index < 4) {
+            if (index < 4) {
                 if (!answer) {
                     score += 1;
                 }
-            }
-            else {
+            } else {
                 score += parseInt(answer);
             }
-        }
-        );
+        });
 
         let decision: string;
-        if(score <= 4) {
+        if (score <= 4) {
             decision = adaptedPlan ? "plan1_adapted" : "plan1_normal";
-        }
-        else if (score <= 9) {
+        } else if (score <= 9) {
             decision = adaptedPlan ? "plan2_adapted" : "plan2_normal";
-        }
-        else {
+        } else {
             decision = adaptedPlan ? "plan3_adapted" : "plan3_normal";
         }
 
@@ -265,24 +260,20 @@ const WeeklyHealthAssessment = ({ }) => {
 
     const completeAssessment = async (resultKey) => {
         setIsAssessmentVisible(false);
-        if (currentAssessmentType === 'health') {
-
-            if (resultKey === 'suspend') {
+        if (currentAssessmentType === "health") {
+            if (resultKey === "suspend") {
                 await uploadWeeklyForm(healthAnswers, functionalAnswers, resultKey, true);
                 router.replace("/dontExercise");
                 return;
-            }
-            else {
+            } else {
                 const updatedAnswers = [...healthAnswers];
-                if(!updatedAnswers[4]) {
+                if (!updatedAnswers[4]) {
                     updatedAnswers[5] = false;
                 }
                 setHealthAnswers(updatedAnswers);
                 startFunctionalAssessmentInitial();
             }
-        }
-        else if (currentAssessmentType === 'functional') {
-            
+        } else if (currentAssessmentType === "functional") {
             const decision = await makeDecision();
             console.log("Decision: ", decision);
             console.log("Functional Answers: ", functionalAnswers);
@@ -292,7 +283,7 @@ const WeeklyHealthAssessment = ({ }) => {
             setCurrentQuestion(null);
             setHealthAnswers([]);
             setFunctionalAnswers([]);
-            setCurrentAssessmentType('');
+            setCurrentAssessmentType("");
             setScaleValue(3);
             setChecking(true);
         }
@@ -300,32 +291,58 @@ const WeeklyHealthAssessment = ({ }) => {
 
     return (
         <Modal visible={isAssessmentVisible} transparent animationType="slide">
-        <View style={styles.container}>
-            {isAssessmentVisible && currentQuestion && (
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.title}>{currentQuestion.title}</Text>
-                        {currentQuestion.description && <Text style={styles.description}>{currentQuestion.description}</Text>}
-                        <Text style={styles.questionText}>{currentQuestion.text}</Text>
+            <View style={styles.container}>
+                {isAssessmentVisible && currentQuestion && (
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.title}>{currentQuestion.title}</Text>
+                            {currentQuestion.description && (
+                                <Text style={styles.description}>{currentQuestion.description}</Text>
+                            )}
+                            <Text style={styles.questionText}>{currentQuestion.text}</Text>
 
-                        {currentQuestion.type === 'yesno' && (
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={[styles.button, currentAssessmentType === 'functional' ? styles.noButton : styles.yesButton]} onPress={() => handleYesNoAnswer(false)}>
-                                    <Text style={styles.buttonText}>{t("no")}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={[styles.button, currentAssessmentType === 'functional' ? styles.yesButton : styles.noButton]} onPress={() => handleYesNoAnswer(true)}>
-                                    <Text style={styles.buttonText}>{t("yes")}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
+                            {currentQuestion.type === "yesno" && (
+                                <View style={styles.buttonContainer}>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button,
+                                            currentAssessmentType === "functional" ? styles.noButton : styles.yesButton,
+                                        ]}
+                                        onPress={() => handleYesNoAnswer(false)}
+                                    >
+                                        <Text style={styles.buttonText}>{t("no")}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button,
+                                            currentAssessmentType === "functional" ? styles.yesButton : styles.noButton,
+                                        ]}
+                                        onPress={() => handleYesNoAnswer(true)}
+                                    >
+                                        <Text style={styles.buttonText}>{t("yes")}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
 
-                        {currentQuestion.type === 'scale' && currentQuestion.range && (
-                            <View style={styles.scaleContainer}>
-                                <View style={styles.plusMinusContainer}>
-                                    <Button title="-" onPress={() => setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))} />
-                                    <Text style={{fontSize: 24}}>{scaleValue}</Text>
-                                    <Button title="+" onPress={() => setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))} />
-                                    {/* <Pressable onPress={() => setScaleValue(1)}>
+                            {currentQuestion.type === "scale" && currentQuestion.range && (
+                                <View style={styles.scaleContainer}>
+                                    <View style={styles.plusMinusContainer}>
+                                        <Button
+                                            title="-"
+                                            onPress={() =>
+                                                setScaleValue(Math.max(scaleValue - 1, currentQuestion.range[0]))
+                                            }
+                                            color="#845BB1"
+                                        />
+                                        <Text style={{ fontSize: 24 }}>{scaleValue}</Text>
+                                        <Button
+                                            title="+"
+                                            onPress={() =>
+                                                setScaleValue(Math.min(scaleValue + 1, currentQuestion.range[1]))
+                                            }
+                                            color="#845BB1"
+                                        />
+                                        {/* <Pressable onPress={() => setScaleValue(1)}>
                                         <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==1 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>1</Text>
                                     </Pressable>
                                     <Pressable onPress={() => setScaleValue(2)}>
@@ -348,46 +365,52 @@ const WeeklyHealthAssessment = ({ }) => {
                                     <Pressable onPress={() => setScaleValue(7)}>
                                         <Text style={{ backgroundColor: '#845BB1', borderWidth: scaleValue==7 ? 3 : 1, padding: 10, borderRadius: 10, color: "#fff", fontSize: 20 }}>7</Text>
                                     </Pressable> */}
+                                    </View>
+                                    <Slider
+                                        style={styles.slider}
+                                        minimumValue={currentQuestion.range[0]}
+                                        maximumValue={currentQuestion.range[1]}
+                                        step={1}
+                                        value={scaleValue}
+                                        onValueChange={(value) => setScaleValue(value)}
+                                        minimumTrackTintColor="#ff0000"
+                                        maximumTrackTintColor="#10F500"
+                                        thumbTintColor="#845BB1"
+                                    />
+                                    <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
+                                        <Text style={styles.buttonText}>{t("submit")}</Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <Slider
-                                    style={styles.slider}
-                                    minimumValue={currentQuestion.range[0]}
-                                    maximumValue={currentQuestion.range[1]}
-                                    step={1}
-                                    value={scaleValue}
-                                    onValueChange={(value) => setScaleValue(value)}
-                                    minimumTrackTintColor="#ff0000"
-                                    maximumTrackTintColor="#10F500"
-                                    thumbTintColor="#845BB1"
-                                />
-                                <TouchableOpacity style={styles.button} onPress={handleScaleAnswer}>
-                                    <Text style={styles.buttonText}>{t("submit")}</Text>
+                            )}
+
+                            {currentQuestion.type === "result" && (
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => completeAssessment(currentQuestion.resultKey)}
+                                >
+                                    <Text style={styles.buttonText}>OK</Text>
                                 </TouchableOpacity>
-                            </View>
-                        )}
+                            )}
 
-                        {currentQuestion.type === 'result' && (
-                            <TouchableOpacity style={styles.button} onPress={() => completeAssessment(currentQuestion.resultKey)}>
-                                <Text style={styles.buttonText}>OK</Text>
-                            </TouchableOpacity>
-                        )}
-
-                        {currentQuestion.type === 'info' && (
-                            <TouchableOpacity style={styles.button} onPress={() => {
-                                /* setIsAssessmentVisible(false); */
-                                if (currentAssessmentType === 'health') {
-                                    startHealthAssessment();
-                                } else if (currentAssessmentType === 'functional') {
-                                    startFunctionalAssessment();
-                                }
-                            }}>
-                                <Text style={styles.buttonText}>OK</Text>
-                            </TouchableOpacity>
-                        )}
+                            {currentQuestion.type === "info" && (
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => {
+                                        /* setIsAssessmentVisible(false); */
+                                        if (currentAssessmentType === "health") {
+                                            startHealthAssessment();
+                                        } else if (currentAssessmentType === "functional") {
+                                            startFunctionalAssessment();
+                                        }
+                                    }}
+                                >
+                                    <Text style={styles.buttonText}>OK</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     </View>
-                </View>
-            )}
-        </View>
+                )}
+            </View>
         </Modal>
     );
 };
@@ -395,80 +418,80 @@ const WeeklyHealthAssessment = ({ }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
     },
     modalContainer: {
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+        alignItems: "center",
     },
     modalContent: {
-        backgroundColor: 'white',
+        backgroundColor: "white",
         borderRadius: 10,
         padding: 20,
-        width: '80%',
-        alignItems: 'center',
+        width: "80%",
+        alignItems: "center",
     },
     title: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 10,
-        textAlign: 'center',
+        textAlign: "center",
     },
     description: {
         fontSize: 16,
         marginBottom: 15,
-        textAlign: 'center',
-        color: 'gray',
+        textAlign: "center",
+        color: "gray",
     },
     questionText: {
         fontSize: 18,
         marginBottom: 20,
-        textAlign: 'center',
+        textAlign: "center",
     },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "100%",
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: "#845BB1",
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
         marginBottom: 10,
     },
     yesButton: {
-        backgroundColor: '#28a745',
+        backgroundColor: "#28a745",
     },
     noButton: {
-        backgroundColor: '#dc3545',
+        backgroundColor: "#dc3545",
     },
     buttonText: {
-        color: 'white',
+        color: "white",
         fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        fontWeight: "bold",
+        textAlign: "center",
     },
     scaleContainer: {
-        width: '100%',
-        alignItems: 'center',
+        width: "100%",
+        alignItems: "center",
     },
     slider: {
-        width: '90%',
+        width: "90%",
         height: 50,
         marginBottom: 20,
     },
     plusMinusContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '90%',
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "90%",
         marginBottom: 20,
     },
 });

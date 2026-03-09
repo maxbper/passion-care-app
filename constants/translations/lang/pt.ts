@@ -36,7 +36,7 @@ const pt = {
         questions: {
             0: "Febre >38°C?",
             1: "Vómitos/diarreia 12h?",
-            2: "Fadiga extrema?",
+            2: "Incapacidade para realizar as atividades diárias?",
             3: "Dor intensa?",
             4: "Ferida, infecção, inflamação?",
             5: "Impacta a capacidade de realizar exercício?",

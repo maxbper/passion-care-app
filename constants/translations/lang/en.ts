@@ -37,7 +37,7 @@ const en = {
         questions: {
             0: "Fever >38°C?",
             1: "Vomiting/diarrhea 12h?",
-            2: "Extreme fatigue?",
+            2: "Inability to perform daily activities?",
             3: "Intense pain?",
             4: "Wound, infection, inflammation?",
             5: "Does it impact the ability to perform exercise?",
