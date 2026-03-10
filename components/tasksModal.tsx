@@ -48,7 +48,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 20,
+                duration: 10,
             },
             {
                 exercise: "pinch",
@@ -103,7 +103,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 20,
+                duration: 10,
             },
             {
                 exercise: "ball_squeeze",
@@ -120,7 +120,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 20,
+                duration: 10,
             },
             {
                 exercise: "single_leg_stand",
@@ -136,7 +136,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 30,
+                duration: 10,
             },
             {
                 exercise: "stand_soft_surface",
@@ -153,7 +153,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 30,
+                duration: 10,
             },
             {
                 exercise: "side_weight_shift",
@@ -171,7 +171,7 @@ export default function TasksModal({ page = 0 }) {
             },
             {
                 exercise: "rest",
-                duration: 30,
+                duration: 10,
             },
             {
                 exercise: "reach_fixed_support",
