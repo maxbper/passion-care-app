@@ -16,6 +16,7 @@ import {
 import { router, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { checkAuth } from "../services/authService";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import LoopingImage from "../components/imageLoop";
@@ -59,7 +60,7 @@ export default function ExerciseScreen() {
     const [endTime, setEndTime] = useState("");
     const [startDate, setStartDate] = useState<number | null>(null);
     const [endDate, setEndDate] = useState<number | null>(null);
-    const [feedbackMood, setFeedbackMood] = useState<string | null>(null);
+    const [feedbackScore, setFeedbackScore] = useState<number | null>(null);
     const [skippedExercises, setSkippedExercises] = useState<string[]>([]);
     const [clocking, setClocking] = useState(false);
 
@@ -188,7 +189,7 @@ export default function ExerciseScreen() {
             await ReactNativeAsyncStorage.setItem("warmupCompletedTime", Date.now().toString());
             await addXp(10);
         } else if (isWorkout) {
-            if (feedbackMood === null) {
+            if (feedbackScore === null) {
                 Alert.alert(
                     t("warning"),
                     t("feedback_warning"),
@@ -223,7 +224,7 @@ export default function ExerciseScreen() {
             });
 
             if (exercises.length !== 0) {
-                await uploadWorkout(timeElapsed, heartRateData, feedbackMood, exercises);
+                await uploadWorkout(timeElapsed, heartRateData, String(feedbackScore), exercises);
                 await addXp(20);
             }
         } else {
@@ -339,97 +340,46 @@ export default function ExerciseScreen() {
                         <Text style={{ fontSize: 18, marginVertical: 10 }}>{t("feel")}</Text>
                         <View
                             style={{
-                                flexDirection: "row",
-                                justifyContent: "space-around",
+                                alignItems: "stretch",
                                 width: "90%",
                                 marginBottom: 30,
                             }}
                         >
-                            <TouchableOpacity
-                                onPress={() => setFeedbackMood("very_sad")}
-                                style={
-                                    feedbackMood === "very_sad"
-                                        ? {
-                                              backgroundColor: "#d1e7dd",
-                                              borderWidth: 2,
-                                              borderColor: "#0f5132",
-                                              borderRadius: 30,
-                                              height: 60,
-                                              width: 60,
-                                          }
-                                        : {}
-                                }
+                            <Text style={{ textAlign: "center", fontSize: 16, marginBottom: 12 }}>
+                                {feedbackScore === null
+                                    ? t("feedback.choose")
+                                    : `${feedbackScore} - ${t(`feedback.${feedbackScore}`)}`}
+                            </Text>
+                            <Slider
+                                minimumValue={0}
+                                maximumValue={10}
+                                step={1}
+                                value={feedbackScore ?? 5}
+                                onValueChange={(value) => setFeedbackScore(value)}
+                                minimumTrackTintColor="#27d430"
+                                maximumTrackTintColor="#ec1b1b"
+                                thumbTintColor="#845BB1"
+                            />
+                            <View
+                                style={{
+                                    width: "95%",
+                                    alignSelf: "center",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                }}
                             >
-                                <Text style={{ fontSize: 36, textAlign: "center" }}>😫</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => setFeedbackMood("sad")}
-                                style={
-                                    feedbackMood === "sad"
-                                        ? {
-                                              backgroundColor: "#d1e7dd",
-                                              borderWidth: 2,
-                                              borderColor: "#0f5132",
-                                              borderRadius: 30,
-                                              height: 60,
-                                              width: 60,
-                                          }
-                                        : {}
-                                }
-                            >
-                                <Text style={{ fontSize: 36, textAlign: "center" }}>😟</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => setFeedbackMood("neutral")}
-                                style={
-                                    feedbackMood === "neutral"
-                                        ? {
-                                              backgroundColor: "#d1e7dd",
-                                              borderWidth: 2,
-                                              borderColor: "#0f5132",
-                                              borderRadius: 30,
-                                              height: 60,
-                                              width: 60,
-                                          }
-                                        : {}
-                                }
-                            >
-                                <Text style={{ fontSize: 36, textAlign: "center" }}>😐</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => setFeedbackMood("happy")}
-                                style={
-                                    feedbackMood === "happy"
-                                        ? {
-                                              backgroundColor: "#d1e7dd",
-                                              borderWidth: 2,
-                                              borderColor: "#0f5132",
-                                              borderRadius: 30,
-                                              height: 60,
-                                              width: 60,
-                                          }
-                                        : {}
-                                }
-                            >
-                                <Text style={{ fontSize: 36, textAlign: "center" }}>🙂</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => setFeedbackMood("very_happy")}
-                                style={
-                                    feedbackMood === "very_happy"
-                                        ? {
-                                              backgroundColor: "#d1e7dd",
-                                              borderWidth: 2,
-                                              borderColor: "#0f5132",
-                                              borderRadius: 30,
-                                              height: 60,
-                                              width: 60,
-                                          }
-                                        : {}
-                                }
-                            >
-                                <Text style={{ fontSize: 36, textAlign: "center" }}>😄</Text>
-                            </TouchableOpacity>
+                                <Text>😐</Text>
+                                <Text>🙂</Text>
+                                <Text>🙂</Text>
+                                <Text>🙂</Text>
+                                <Text>😅</Text>
+                                <Text>😅</Text>
+                                <Text>😮‍💨</Text>
+                                <Text>😮‍💨</Text>
+                                <Text>😣</Text>
+                                <Text>😫</Text>
+                                <Text>😵</Text>
+                            </View>
                         </View>
                     </>
                 ) : null}
