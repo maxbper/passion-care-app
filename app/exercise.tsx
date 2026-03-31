@@ -360,7 +360,14 @@ export default function ExerciseScreen() {
                                 maximumTrackTintColor="#ec1b1b"
                                 thumbTintColor="#845BB1"
                             />
-                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                            <View
+                                style={{
+                                    width: "95%",
+                                    alignSelf: "center",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                }}
+                            >
                                 <Text>😐</Text>
                                 <Text>🙂</Text>
                                 <Text>🙂</Text>
