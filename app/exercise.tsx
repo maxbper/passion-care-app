@@ -351,7 +351,7 @@ export default function ExerciseScreen() {
                                     : `${feedbackScore} - ${t(`feedback.${feedbackScore}`)}`}
                             </Text>
                             <Slider
-                                minimumValue={1}
+                                minimumValue={0}
                                 maximumValue={10}
                                 step={1}
                                 value={feedbackScore ?? 5}
@@ -361,16 +361,17 @@ export default function ExerciseScreen() {
                                 thumbTintColor="#845BB1"
                             />
                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                <Text>1</Text>
-                                <Text>2</Text>
-                                <Text>3</Text>
-                                <Text>4</Text>
-                                <Text>5</Text>
-                                <Text>6</Text>
-                                <Text>7</Text>
-                                <Text>8</Text>
-                                <Text>9</Text>
-                                <Text>10</Text>
+                                <Text>😐</Text>
+                                <Text>🙂</Text>
+                                <Text>🙂</Text>
+                                <Text>🙂</Text>
+                                <Text>😅</Text>
+                                <Text>😅</Text>
+                                <Text>😮‍💨</Text>
+                                <Text>😮‍💨</Text>
+                                <Text>😣</Text>
+                                <Text>😫</Text>
+                                <Text>😵</Text>
                             </View>
                         </View>
                     </>
