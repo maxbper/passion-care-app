@@ -50,11 +50,9 @@ const WeeklyHealthAssessment = ({}) => {
     );
 
     useEffect(() => {
-        console.log("1");
         if (!checking) {
             return;
         }
-        console.log("2");
         const intervalId = setInterval(() => {
             checkLastAssessmentDate();
         }, 1000);
@@ -63,7 +61,6 @@ const WeeklyHealthAssessment = ({}) => {
     }, [checking]);
 
     const checkLastAssessmentDate = async () => {
-        console.log("3");
         // startHealthAssessmentInitial(); // for testing purposes
         try {
             const needs_form_async = await ReactNativeAsyncStorage.getItem("wantsForm");
@@ -248,11 +245,11 @@ const WeeklyHealthAssessment = ({}) => {
 
         let decision: string;
         if (score <= 4) {
-            decision = adaptedPlan ? "plan1_adapted" : "plan1_normal";
+            decision = adaptedPlan ? "plan2" : "plan1";
         } else if (score <= 9) {
-            decision = adaptedPlan ? "plan2_adapted" : "plan2_normal";
+            decision = "plan2";
         } else {
-            decision = adaptedPlan ? "plan3_adapted" : "plan3_normal";
+            decision = "plan3";
         }
 
         return decision;
