@@ -420,6 +420,7 @@ export const fetchWorkoutPlan = async () => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
+            console.log("Fetched plan:", plan);
             return [docSnap.data()[plan], plan];
         } else {
             console.log("No workout plan found!");
