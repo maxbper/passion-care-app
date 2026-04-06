@@ -25,6 +25,8 @@ export default function TasksModal({ page = 0 }) {
     const [gender, setGender] = useState<string | null>(null);
     const { t } = useTranslation();
     const [pageNumber, setPageNumber] = useState(page);
+    const [plansLoading, setPlansLoading] = useState(false);
+    const [planLoadFailed, setPlanLoadFailed] = useState(false);
 
     const extraExercises = [
         "pinch",
@@ -290,22 +292,23 @@ export default function TasksModal({ page = 0 }) {
             }
         };
 
-        const getWarmupPlan = async () => {
-            const [_, plan] = await fetchWorkoutPlan();
-            const warmupPlan = "warmup_" + getPlanNumber(plan);
-            const wp = await fetchWarmupPlan(warmupPlan);
-
-            const fetchedWarmupExercises = await Promise.all(
-                wp.map(async (element) => {
+        const buildExercisePlan = async (planItems, planKey) => {
+            const fetchedExercises = await Promise.all(
+                planItems.map(async (element) => {
                     if (element.substring(0, 4) === "rest") {
                         const rest_time = element.substring(5);
-                        const rest = {
+                        return {
                             exercise: "rest",
                             duration: parseInt(rest_time),
                         };
-                        return rest;
                     }
-                    const [name, attr] = await fetchExercise(element, warmupPlan);
+
+                    const exerciseData = await fetchExercise(element, planKey);
+                    if (!exerciseData || !Array.isArray(exerciseData) || !exerciseData[1]) {
+                        return null;
+                    }
+
+                    const [name, attr] = exerciseData;
                     if (attr.sets && attr.sets > 1) {
                         const sets = attr.sets;
                         const exercises = [];
@@ -318,86 +321,92 @@ export default function TasksModal({ page = 0 }) {
                             };
                             exercises.push(exercise);
                             if (exercise.sets > 1) {
-                                const rest = {
+                                exercises.push({
                                     exercise: "rest",
                                     duration: parseInt(attr.interval),
-                                };
-                                exercises.push(rest);
+                                });
                             }
                         }
                         return exercises;
-                    } else {
-                        const exercise = {
-                            exercise: name,
-                            duration: attr.duration ? attr.duration : 0,
-                            reps: attr.reps ? attr.reps : 0,
-                            sets: attr.sets ? attr.sets : 0,
-                        };
-                        return exercise;
                     }
+
+                    return {
+                        exercise: name,
+                        duration: attr.duration ? attr.duration : 0,
+                        reps: attr.reps ? attr.reps : 0,
+                        sets: attr.sets ? attr.sets : 0,
+                    };
                 }),
             );
-            setWarmupPlan(fetchedWarmupExercises.flat());
+
+            return fetchedExercises.filter(Boolean).flat();
         };
 
-        const getWorkoutPlan = async () => {
-            const [wp, plan] = await fetchWorkoutPlan();
+        const loadPlans = async () => {
+            if (pageNumber !== 2) {
+                return;
+            }
 
-            const fetchedWorkoutExercises = await Promise.all(
-                wp.map(async (element) => {
-                    if (element.substring(0, 4) === "rest") {
-                        const rest_time = element.substring(5);
-                        const rest = {
-                            exercise: "rest",
-                            duration: parseInt(rest_time),
-                        };
-                        return rest;
-                    }
-                    const [name, attr] = await fetchExercise(element, plan);
-                    if (attr.sets && attr.sets > 1) {
-                        const sets = attr.sets;
-                        const exercises = [];
-                        for (let i = 0; i < sets; i++) {
-                            const exercise = {
-                                exercise: name,
-                                duration: attr.duration ? attr.duration : 0,
-                                reps: attr.reps ? attr.reps : 0,
-                                sets: attr.sets ? attr.sets - i : 0,
-                            };
-                            exercises.push(exercise);
-                            if (exercise.sets > 1) {
-                                const rest = {
-                                    exercise: "rest",
-                                    duration: parseInt(attr.interval),
-                                };
-                                exercises.push(rest);
-                            }
-                        }
-                        return exercises;
-                    } else {
-                        const exercise = {
-                            exercise: name,
-                            duration: attr.duration ? attr.duration : 0,
-                            reps: attr.reps ? attr.reps : 0,
-                            sets: attr.sets ? attr.sets : 0,
-                        };
-                        return exercise;
-                    }
-                }),
-            );
-            setWorkoutPlan(fetchedWorkoutExercises.flat());
+            setPlansLoading(true);
+            setPlanLoadFailed(false);
+
+            const workoutPlanData = await fetchWorkoutPlan();
+            if (!workoutPlanData || !Array.isArray(workoutPlanData)) {
+                setPlanLoadFailed(true);
+                setWorkoutPlan([]);
+                setWarmupPlan([]);
+                setPlansLoading(false);
+                return;
+            }
+
+            const [wp, plan] = workoutPlanData;
+            if (!Array.isArray(wp) || typeof plan !== "string" || wp.length === 0) {
+                setPlanLoadFailed(true);
+                setWorkoutPlan([]);
+                setWarmupPlan([]);
+                setPlansLoading(false);
+                return;
+            }
+
+            const builtWorkoutPlan = await buildExercisePlan(wp, plan);
+            if (!builtWorkoutPlan.length) {
+                setPlanLoadFailed(true);
+                setWorkoutPlan([]);
+                setWarmupPlan([]);
+                setPlansLoading(false);
+                return;
+            }
+
+            setWorkoutPlan(builtWorkoutPlan);
+
+            const planNumber = getPlanNumber(plan);
+            if (!planNumber) {
+                setWarmupPlan([]);
+                setPlansLoading(false);
+                return;
+            }
+
+            const warmupPlanKey = "warmup_" + planNumber;
+            const warmupRaw = await fetchWarmupPlan(warmupPlanKey);
+            if (!Array.isArray(warmupRaw) || warmupRaw.length === 0) {
+                setWarmupPlan([]);
+                setPlansLoading(false);
+                return;
+            }
+
+            const builtWarmupPlan = await buildExercisePlan(warmupRaw, warmupPlanKey);
+            setWarmupPlan(builtWarmupPlan);
+            setPlansLoading(false);
         };
-        if (!workoutPlan.length) {
-            getWarmupPlan();
-            getWorkoutPlan();
-        }
+
+        loadPlans();
 
         const getGender = async () => {
             const gender = await fetchGender();
             setGender(gender);
         };
         getGender();
-    }, [lastDateChecked, workoutPlan, warmupPlan]);
+    }, [lastDateChecked, pageNumber]);
 
     const suspendedWarning = () => {
         Alert.alert(t("workout_locked_title"), t("dont_exercise"), [{ text: t("ok"), onPress: () => {} }], {
@@ -424,7 +433,7 @@ export default function TasksModal({ page = 0 }) {
         onDisablePress?: () => void;
         allowDisablePress?: boolean;
     }) => {
-        let containerStyle = [styles.block];
+        let containerStyle: any[] = [styles.block];
         if (completed) {
             containerStyle.push(styles.completed);
         } else if (disabled) {
@@ -536,9 +545,23 @@ export default function TasksModal({ page = 0 }) {
     if (pageNumber === 2) {
         return (
             <>
-                {warmupPlan.length > 0 && workoutPlan.length > 0 ? (
+                {plansLoading ? (
+                    <ActivityIndicator size="large" color="#845BB1" style={{ marginBottom: 20 }} />
+                ) : planLoadFailed ? (
                     <>
-                        <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
+                        <Text style={{ marginBottom: 20, textAlign: "center", width: "90%" }}>{t("no_workouts")}</Text>
+                        <Block
+                            title={t("back")}
+                            onPress={() => {
+                                setPageNumber(1);
+                            }}
+                        />
+                    </>
+                ) : workoutPlan.length > 0 ? (
+                    <>
+                        {warmupPlan.length > 0 ? (
+                            <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
+                        ) : null}
                         <Block title={t("workout")} onPress={handleWorkout} completed={workoutCompleted} />
                         <Block
                             title={t("back")}
@@ -548,7 +571,15 @@ export default function TasksModal({ page = 0 }) {
                         />
                     </>
                 ) : (
-                    <ActivityIndicator size="large" color="#845BB1" style={{ marginBottom: 20 }} />
+                    <>
+                        <Text style={{ marginBottom: 20, textAlign: "center", width: "90%" }}>{t("no_workouts")}</Text>
+                        <Block
+                            title={t("back")}
+                            onPress={() => {
+                                setPageNumber(1);
+                            }}
+                        />
+                    </>
                 )}
             </>
         );

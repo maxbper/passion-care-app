@@ -1,11 +1,26 @@
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, setDoc, arrayUnion, deleteDoc, runTransaction, FieldValue, increment } from 'firebase/firestore';
-import { createUserWithEmailAndPassword, getAuth, } from 'firebase/auth';
-import { db, auth } from '../firebaseConfig';
+import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    limit,
+    getDocs,
+    doc,
+    getDoc,
+    setDoc,
+    arrayUnion,
+    deleteDoc,
+    runTransaction,
+    FieldValue,
+    increment,
+} from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { db, auth } from "../firebaseConfig";
 
-export const fetchIsSuspended = async (userId=null) => {
+export const fetchIsSuspended = async (userId = null) => {
     if (!userId) {
         while (auth.currentUser == null) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
         userId = auth.currentUser?.uid;
     }
@@ -13,188 +28,196 @@ export const fetchIsSuspended = async (userId=null) => {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          return docSnap.data().suspended;
+            return docSnap.data().suspended;
         } else {
-          console.log("No user data found!");
-          return null;
+            console.log("No user data found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching user data:", error);
-      }
+    }
 };
 
-export const fetchName = async (userId=null) => {
-  if (!userId) {
-      while (auth.currentUser == null) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-      userId = auth.currentUser?.uid;
-  }
-  try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data().name;
-      } else {
-        console.log("No user data found!");
-        return null;
-      }
+export const fetchName = async (userId = null) => {
+    if (!userId) {
+        while (auth.currentUser == null) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        userId = auth.currentUser?.uid;
+    }
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().name;
+        } else {
+            console.log("No user data found!");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
     }
 };
 
 export const fetchGender = async () => {
-  while (auth.currentUser == null) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data().gender;
-      } else {
-        console.log("No user gender found!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user gender:", error);
-    }
-};     
-
-export const fetchNeedsForm = async () => {
-  while (auth.currentUser == null) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data().needs_form;
-      } else {
-        console.log("No user needs_form found!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user needs_form:", error);
-    }
-};  
-
-export const setNeedsForm = async (value, uid=null) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  let userId = auth.currentUser?.uid;
-  if (uid) {
-      userId = uid;
-  }
-  if (!userId) return;
-  try {
-      await setDoc(doc(db, 'users', userId), {
-          needs_form: value,
-      }, { merge: true });
-  } catch (error) {
-      console.error('Error setting needs_form:', error);
-  }
-}
-
-export const fetchCancerType = async () => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const userId = auth.currentUser?.uid;
-  if (!userId) return;
-    try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        return docSnap.data().cancer_type;
-      } else {
-        console.log("No user data found!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-};
-
-export const fetchXp = async () => {
     while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     const userId = auth.currentUser?.uid;
     if (!userId) return;
-      try {
+    try {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          return docSnap.data().xp;
+            return docSnap.data().gender;
         } else {
-          console.log("No user data found!");
-          return null;
+            console.log("No user gender found!");
+            return null;
         }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
+    } catch (error) {
+        console.error("Error fetching user gender:", error);
+    }
 };
 
-export const addXp = async (amount) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const userId = auth.currentUser?.uid;
-  if (!userId) return;
-
-  let previous_xp = 0;
-
-  try {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      previous_xp = docSnap.data().xp;
-    } else {
-      console.log("No user data found!");
-    }
-  } catch (error) {
-    console.error("Error fetching user xp:", error);
-  }
-
-  try {
-    await setDoc(doc(db, 'users', userId), {
-        xp: previous_xp + amount,
-    }, { merge: true });
-    } catch (error) {
-        console.error('Error setting xp:', error);
-    }
-}
-
-export const fetchUserData = async (uid=null) => {
+export const fetchNeedsForm = async () => {
     while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().needs_form;
+        } else {
+            console.log("No user needs_form found!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user needs_form:", error);
+    }
+};
+
+export const setNeedsForm = async (value, uid = null) => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     let userId = auth.currentUser?.uid;
     if (uid) {
         userId = uid;
     }
     if (!userId) return;
-      try {
+    try {
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                needs_form: value,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting needs_form:", error);
+    }
+};
+
+export const fetchCancerType = async () => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          return docSnap.data();
+            return docSnap.data().cancer_type;
         } else {
-          console.log("No user data found!");
-          return null;
+            console.log("No user data found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching user data:", error);
-      }
+    }
+};
+
+export const fetchXp = async () => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().xp;
+        } else {
+            console.log("No user data found!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+};
+
+export const addXp = async (amount) => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+
+    let previous_xp = 0;
+
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            previous_xp = docSnap.data().xp;
+        } else {
+            console.log("No user data found!");
+        }
+    } catch (error) {
+        console.error("Error fetching user xp:", error);
+    }
+
+    try {
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                xp: previous_xp + amount,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting xp:", error);
+    }
+};
+
+export const fetchUserData = async (uid = null) => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    let userId = auth.currentUser?.uid;
+    if (uid) {
+        userId = uid;
+    }
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            console.log("No user data found!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
 };
 
 export const fetchAdminList = async () => {
@@ -202,14 +225,14 @@ export const fetchAdminList = async () => {
         const docRef = doc(db, "users", "roles");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          return docSnap.data().admins;
+            return docSnap.data().admins;
         } else {
-          console.log("No admin list found!");
-          return null;
+            console.log("No admin list found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching admin list data:", error);
-      }
+    }
 };
 
 export const fetchModList = async () => {
@@ -217,141 +240,144 @@ export const fetchModList = async () => {
         const docRef = doc(db, "users", "roles");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          return docSnap.data().mods;
+            return docSnap.data().mods;
         } else {
-          console.log("No mod list found!");
-          return null;
+            console.log("No mod list found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching mod list data:", error);
-      }
+    }
 };
 
 export const fetchLastWeeklyFormDate = async () => {
-  try {
-    while (auth.currentUser == null) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-    const userId = auth.currentUser.uid;
-    const weeklyFormRef = collection(db, 'users', userId, 'weeklyform');
+    try {
+        while (auth.currentUser == null) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        const userId = auth.currentUser.uid;
+        const weeklyFormRef = collection(db, "users", userId, "weeklyform");
 
-    const q = query(weeklyFormRef, orderBy('date', 'desc'), limit(1));
-    const snapshot = await getDocs(q);
+        const q = query(weeklyFormRef, orderBy("date", "desc"), limit(1));
+        const snapshot = await getDocs(q);
 
-    const forms = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+        const forms = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
-    if (forms.length == 0) {
+        if (forms.length == 0) {
+            return null;
+        } else {
+            const lastForm = forms[0];
+            const lastDate = lastForm.date.toDate();
+            return lastDate;
+        }
+    } catch (error) {
+        console.error("Error fetching weekly form:", error);
         return null;
-    } else {
-        const lastForm = forms[0];
-        const lastDate = lastForm.date.toDate();
-        return lastDate;
     }
-
-  } catch (error) {
-    console.error('Error fetching weekly form:', error);
-    return null;
-  }
 };
 
 export const uploadWeeklyForm = async (hquestions, fquestions, decision, suspended) => {
-  try {
-    const userId = auth.currentUser?.uid;
+    try {
+        const userId = auth.currentUser?.uid;
 
-    const weeklyFormRef = collection(db, 'users', userId, 'weeklyform');
-    const newFormRef = doc(weeklyFormRef);
-    const date = new Date();
+        const weeklyFormRef = collection(db, "users", userId, "weeklyform");
+        const newFormRef = doc(weeklyFormRef);
+        const date = new Date();
 
-    if(fquestions.length == 0) {
-      await setDoc(newFormRef, {
-        heatlh_answers: hquestions,
-        decision: decision,
-        date: date,
-    });
+        if (fquestions.length == 0) {
+            await setDoc(newFormRef, {
+                heatlh_answers: hquestions,
+                decision: decision,
+                date: date,
+            });
+        } else {
+            await setDoc(newFormRef, {
+                heatlh_answers: hquestions,
+                functional_answers: fquestions,
+                decision: decision,
+                date: date,
+            });
+        }
+
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                suspended: suspended,
+                workout_plan: decision,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error sending weekly form:", error);
     }
-    else {
-      await setDoc(newFormRef, {
-          heatlh_answers: hquestions,
-          functional_answers: fquestions,
-          decision: decision,
-          date: date,
-      });
-    }
-
-    await setDoc(doc(db, 'users', userId), {
-        suspended: suspended,
-        workout_plan: decision,
-    }, { merge: true });
-
-
-  } catch (error) {
-    console.error('Error sending weekly form:', error);
-  }
 };
 
-export const setIsSuspended = async (suspended, userId=auth.currentUser?.uid) => {
+export const setIsSuspended = async (suspended, userId = auth.currentUser?.uid) => {
     try {
-        await setDoc(doc(db, 'users', userId), {
-            suspended: suspended,
-        }, { merge: true });
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                suspended: suspended,
+            },
+            { merge: true },
+        );
     } catch (error) {
-        console.error('Error setting suspended status:', error);
+        console.error("Error setting suspended status:", error);
     }
 };
 
 export const fetchLastWorkoutDate = async () => {
     try {
         while (auth.currentUser == null) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
-      const userId = auth.currentUser?.uid;
-      const weeklyFormRef = collection(db, 'users', userId, 'workouts');
-  
-      const q = query(weeklyFormRef, orderBy('date', 'desc'), limit(1));
-      const snapshot = await getDocs(q);
-  
-      const forms = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-  
-      if (forms.length == 0) {
-          return null;
-      } else {
-          const lastForm = forms[0];
-          const lastDate = lastForm.date.toDate();
-          return lastDate;
-      }
-  
+        const userId = auth.currentUser?.uid;
+        const weeklyFormRef = collection(db, "users", userId, "workouts");
+
+        const q = query(weeklyFormRef, orderBy("date", "desc"), limit(1));
+        const snapshot = await getDocs(q);
+
+        const forms = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+
+        if (forms.length == 0) {
+            return null;
+        } else {
+            const lastForm = forms[0];
+            const lastDate = lastForm.date.toDate();
+            return lastDate;
+        }
     } catch (error) {
-      console.error('Error fetching workout:', error);
-      return null;
+        console.error("Error fetching workout:", error);
+        return null;
     }
 };
 
 export const uploadWorkout = async (t, hr, f, e) => {
-  const userId = auth.currentUser?.uid;
-  let plan = "";
+    const userId = auth.currentUser?.uid;
+    let plan = "";
 
     try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        plan = docSnap.data().workout_plan;
-      } else {
-        console.log("No user workout plan found!");
-        return null;
-      }
+        if (docSnap.exists()) {
+            plan = docSnap.data().workout_plan;
+        } else {
+            console.log("No user workout plan found!");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching user workout plan:", error);
+        console.error("Error fetching user workout plan:", error);
     }
 
     try {
-        const workoutRef = collection(db, 'users', userId, 'workouts');
+        const workoutRef = collection(db, "users", userId, "workouts");
         const newWorkoutRef = doc(workoutRef);
         const date = new Date();
 
@@ -363,15 +389,14 @@ export const uploadWorkout = async (t, hr, f, e) => {
             feedback: f,
             exercises: e,
         });
-
     } catch (error) {
-        console.error('Error sending workout:', error);
+        console.error("Error sending workout:", error);
     }
 };
 
 export const fetchWorkoutPlan = async () => {
     while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     const userId = auth.currentUser?.uid;
     let plan = "";
@@ -381,63 +406,63 @@ export const fetchWorkoutPlan = async () => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          plan = docSnap.data().workout_plan;
+            plan = docSnap.data().workout_plan;
         } else {
-          console.log("No user workout found!");
-          return null;
+            console.log("No user workout found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching user workout:", error);
-      }
+    }
 
     try {
         const docRef = doc(db, "exercises", "workouts");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          return [docSnap.data()[plan], plan];
+            return [docSnap.data()[plan], plan];
         } else {
-          console.log("No workout plan found!");
-          return null;
+            console.log("No workout plan found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching workout plan:", error);
-      }
+    }
 };
 
 export const fetchWarmupPlan = async (plan) => {
-  try {
-    const docRef = doc(db, "exercises", "workouts");
-    const docSnap = await getDoc(docRef);
+    try {
+        const docRef = doc(db, "exercises", "workouts");
+        const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return docSnap.data()[plan];
-    } else {
-      console.log("No workout plan found!");
-      return null;
+        if (docSnap.exists()) {
+            return docSnap.data()[plan];
+        } else {
+            console.log("No workout plan found!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching workout plan:", error);
     }
-  } catch (error) {
-    console.error("Error fetching workout plan:", error);
-  }
-}
+};
 
 export const fetchExercise = async (exerciseId, plan) => {
     while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     try {
         const docRef = doc(db, "exercises", exerciseId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          return [docSnap.data()["name"], docSnap.data()[plan]];
+            return [docSnap.data()["name"], docSnap.data()[plan]];
         } else {
-          console.log("No exercise found!");
-          return null;
+            console.log("No exercise found!");
+            return null;
         }
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching exercise:", error);
-      }
+    }
 };
 
 export const registerUser = async (form) => {
@@ -467,659 +492,676 @@ export const registerUser = async (form) => {
             workout_plan: "",
             xp: 0,
         });
-
     } catch (error) {
         console.error("Error registering user:", error);
     }
 };
 
 export const registerMod = async (form) => {
-  try {
-      const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
-      const userId = userCredential.user.uid;
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
+        const userId = userCredential.user.uid;
 
-      const docRef = doc(db, "users", userId);
+        const docRef = doc(db, "users", userId);
 
-      await setDoc(docRef, {
-          name: form.name,
-          email: form.email,
-          users: [],
-      });
+        await setDoc(docRef, {
+            name: form.name,
+            email: form.email,
+            users: [],
+        });
+    } catch (error) {
+        console.error("Error registering mod:", error);
+    }
 
-  } catch (error) {
-      console.error("Error registering mod:", error);
-  }
-
-  try {
-    const uid = auth.currentUser.uid;
-    await setDoc(doc(db, "users", "roles"), {
-        mods: arrayUnion(uid),
-    }, { merge: true });
-  } catch (error) {
-      console.error("Error adding mod to list:", error);
-  }
+    try {
+        const uid = auth.currentUser.uid;
+        await setDoc(
+            doc(db, "users", "roles"),
+            {
+                mods: arrayUnion(uid),
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error adding mod to list:", error);
+    }
 };
 
 export const registerAdmin = async (form) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
-    const userId = userCredential.user.uid;
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
+        const userId = userCredential.user.uid;
 
-    const docRef = doc(db, "users", userId);
+        const docRef = doc(db, "users", userId);
 
-      await setDoc(docRef, {
-          name: form.name,
-          email: form.email,
-          users: [],
-      });
-
+        await setDoc(docRef, {
+            name: form.name,
+            email: form.email,
+            users: [],
+        });
     } catch (error) {
-      console.error("Error registering admin:", error);
-  }
+        console.error("Error registering admin:", error);
+    }
 
-  try {
-    const userId = auth.currentUser.uid;
-    await setDoc(doc(db, "users", "roles"), {
-        admins: arrayUnion(userId),
-    }, { merge: true });
-  } catch (error) {
-      console.error("Error adding admin to list:", error);
-  }
+    try {
+        const userId = auth.currentUser.uid;
+        await setDoc(
+            doc(db, "users", "roles"),
+            {
+                admins: arrayUnion(userId),
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error adding admin to list:", error);
+    }
 };
 
 export const addUserToList = async (uid) => {
     while (auth.currentUser == null) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     const adminUid = auth.currentUser.uid;
 
     try {
-        await setDoc(doc(db, "users", adminUid), {
-            users: arrayUnion(uid),
-        }, { merge: true });
+        await setDoc(
+            doc(db, "users", adminUid),
+            {
+                users: arrayUnion(uid),
+            },
+            { merge: true },
+        );
     } catch (error) {
         console.error("Error adding user to list:", error);
     }
 };
 
 export const incrementExerciseAmount = async (exerciseName) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const userId = auth.currentUser.uid;
-  const today = new Date().toISOString().slice(0, 10);
-  const userRef = doc(db,'users', userId);
-  try {
-    await runTransaction(db, async (transaction) => {
-      const docSnapshot = await transaction.get(userRef);
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser.uid;
+    const today = new Date().toISOString().slice(0, 10);
+    const userRef = doc(db, "users", userId);
+    try {
+        await runTransaction(db, async (transaction) => {
+            const docSnapshot = await transaction.get(userRef);
 
-      if (docSnapshot.exists()) {
-        const userData = docSnapshot.data();
-        const extraExercises = userData.extra_exercises || {};
+            if (docSnapshot.exists()) {
+                const userData = docSnapshot.data();
+                const extraExercises = userData.extra_exercises || {};
 
-        if (extraExercises[today] && extraExercises[today][exerciseName]) {
-          const amountPath = `extra_exercises.${today}.${exerciseName}`;
-          transaction.update(userRef, {
-            [amountPath]: increment(1),
-          });
-        } else {
-          const newData = {
-            extra_exercises: {
-              ...extraExercises,
-              [today]: {
-                ...extraExercises[today],
-                [exerciseName]: 1,
-              },
-            },
-          };
-          transaction.set(userRef, newData, { merge: true });
-        }
-      } else {
-        const initialData = {
-          extra_exercises: {
-            [today]: {
-              [exerciseName]: 1,
-            },
-          },
-        };
-        transaction.set(userRef, initialData);
-      }
-    });
-  } catch (error) {
-    console.error('Error incrementing exercise amount:', error);
-    throw error;
-  }
+                if (extraExercises[today] && extraExercises[today][exerciseName]) {
+                    const amountPath = `extra_exercises.${today}.${exerciseName}`;
+                    transaction.update(userRef, {
+                        [amountPath]: increment(1),
+                    });
+                } else {
+                    const newData = {
+                        extra_exercises: {
+                            ...extraExercises,
+                            [today]: {
+                                ...extraExercises[today],
+                                [exerciseName]: 1,
+                            },
+                        },
+                    };
+                    transaction.set(userRef, newData, { merge: true });
+                }
+            } else {
+                const initialData = {
+                    extra_exercises: {
+                        [today]: {
+                            [exerciseName]: 1,
+                        },
+                    },
+                };
+                transaction.set(userRef, initialData);
+            }
+        });
+    } catch (error) {
+        console.error("Error incrementing exercise amount:", error);
+        throw error;
+    }
 };
 
-export const fetchUserList = async (uid=null) => {
-  let userId = auth.currentUser?.uid;
-  if (uid) {
-    userId = uid;
-  }
-  let userList = [];
+export const fetchUserList = async (uid = null) => {
+    let userId = auth.currentUser?.uid;
+    if (uid) {
+        userId = uid;
+    }
+    let userList = [];
 
-  if (!userId) return;
+    if (!userId) return;
     try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        userList = docSnap.data().users;
-      } else {
-        console.log("No user list found!");
-        return null;
-      }
+        if (docSnap.exists()) {
+            userList = docSnap.data().users;
+        } else {
+            console.log("No user list found!");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching user list:", error);
+        console.error("Error fetching user list:", error);
     }
 
     const users = await Promise.all(
-      userList?.map(async (uid) => {
-        try {
-          const docRef = doc(db, "users", uid);
-          const docSnap = await getDoc(docRef);
-  
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            return {
-              id: uid,
-              name: userData.name,
-            };
-          } else {
-            console.log("No user data found for", uid);
-            return null;
-          }
-        } catch (error) {
-          console.error("Error fetching user data for", uid, ":", error);
-          return null;
-        }
-      })
+        userList?.map(async (uid) => {
+            try {
+                const docRef = doc(db, "users", uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    return {
+                        id: uid,
+                        name: userData.name,
+                    };
+                } else {
+                    console.log("No user data found for", uid);
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching user data for", uid, ":", error);
+                return null;
+            }
+        }),
     );
     return users.filter((user) => user !== null);
-
-}
+};
 
 export const fetchAdminsAndMods = async () => {
-  const adminList = await fetchAdminList();
-  const modList = await fetchModList();
+    const adminList = await fetchAdminList();
+    const modList = await fetchModList();
 
-  const adminPromises = adminList?.map(async (adminId) => {
-    try {
-      const docRef = doc(db, "users", adminId);
-      const docSnap = await getDoc(docRef);
+    const adminPromises = adminList?.map(async (adminId) => {
+        try {
+            const docRef = doc(db, "users", adminId);
+            const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const adminData = docSnap.data();
-        return {
-          id: adminId,
-          name: adminData.name,
-          email: adminData.email,
-        };
-      } else {
-        console.log("No admin data found!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching admin data:", error);
-      return null;
-    }
-  });
-  const modPromises = modList?.map(async (modId) => {
-    try {
-      const docRef = doc(db, "users", modId);
-      const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const adminData = docSnap.data();
+                return {
+                    id: adminId,
+                    name: adminData.name,
+                    email: adminData.email,
+                };
+            } else {
+                console.log("No admin data found!");
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetching admin data:", error);
+            return null;
+        }
+    });
+    const modPromises = modList?.map(async (modId) => {
+        try {
+            const docRef = doc(db, "users", modId);
+            const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const modData = docSnap.data();
-        return {
-          id: modId,
-          name: modData.name,
-          email: modData.email,
-        };
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching mod data:", error);
-      return null;
-    }
-  });
+            if (docSnap.exists()) {
+                const modData = docSnap.data();
+                return {
+                    id: modId,
+                    name: modData.name,
+                    email: modData.email,
+                };
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetching mod data:", error);
+            return null;
+        }
+    });
 
-  const admins = (await Promise.all(adminPromises)).filter((admin) => admin !== null);
-  const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
+    const admins = (await Promise.all(adminPromises)).filter((admin) => admin !== null);
+    const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
 
-  return [admins, mods];
+    return [admins, mods];
 };
 
 export const deleteAdminOrMod = async (received_uid) => {
     let admins = await fetchAdminList();
     let mods = await fetchModList();
 
-    if(admins.includes(received_uid)) {
-        admins = admins.filter(item => item !== received_uid);
+    if (admins.includes(received_uid)) {
+        admins = admins.filter((item) => item !== received_uid);
     }
-    if(mods.includes(received_uid)) {
-        mods = mods.filter(item => item !== received_uid);
+    if (mods.includes(received_uid)) {
+        mods = mods.filter((item) => item !== received_uid);
     }
 
     try {
+        await setDoc(
+            doc(db, "users", "roles"),
+            {
+                admins: admins,
+                mods: mods,
+            },
+            { merge: false },
+        );
+    } catch (error) {
+        console.error("Error deleting user from roles:", error);
+    }
 
-      await setDoc(doc(db, "users", "roles"), {
-          admins: admins,
-          mods: mods,
-      }, { merge: false });
-
-  } catch (error) {
-    console.error("Error deleting user from roles:", error);
-  }
-
-  try {
-    const userRef = doc(db, "users", received_uid);
-    await deleteDoc(userRef);
-
-  } catch (error) {
-    console.error("Error deleting user doc:", error);
-  }
+    try {
+        const userRef = doc(db, "users", received_uid);
+        await deleteDoc(userRef);
+    } catch (error) {
+        console.error("Error deleting user doc:", error);
+    }
 };
 
 export const deleteUser = async (user_uid, mod_uid) => {
-  let usersList = [];
-  try {
-    const docRef = doc(db, "users", mod_uid);
-    const docSnap = await getDoc(docRef);
+    let usersList = [];
+    try {
+        const docRef = doc(db, "users", mod_uid);
+        const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      usersList = docSnap.data().users;
-    } else {
-      console.log("No user list found!");
-      return null;
+        if (docSnap.exists()) {
+            usersList = docSnap.data().users;
+        } else {
+            console.log("No user list found!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user list:", error);
     }
-  } catch (error) {
-    console.error("Error fetching user list:", error);
-  }
 
-  if(usersList.includes(user_uid)) {
-    usersList = usersList.filter(item => item !== user_uid);
-  }
+    if (usersList.includes(user_uid)) {
+        usersList = usersList.filter((item) => item !== user_uid);
+    }
 
-  try {
-    await setDoc(doc(db, "users", mod_uid), {
-        users: usersList,
-    }, { merge: true });
+    try {
+        await setDoc(
+            doc(db, "users", mod_uid),
+            {
+                users: usersList,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error deleting user from list:", error);
+    }
 
-  } catch (error) {
-    console.error("Error deleting user from list:", error);
-  }
+    try {
+        const userRef = collection(db, "users", user_uid, "weeklyform");
+        const snapshot = await getDocs(userRef);
 
-  try {
-    const userRef = collection(db, "users", user_uid, "weeklyform");
-    const snapshot = await getDocs(userRef);
+        snapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
+    } catch (error) {
+        console.error("Error deleting user weeklyfroms:", error);
+    }
+    try {
+        const userRef = collection(db, "users", user_uid, "workouts");
+        const snapshot = await getDocs(userRef);
 
-    snapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-  } catch (error) {
-    console.error("Error deleting user weeklyfroms:", error);
-  }
-  try {
-    const userRef = collection(db, "users", user_uid, "workouts");
-    const snapshot = await getDocs(userRef);
+        snapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
+    } catch (error) {
+        console.error("Error deleting user workouts:", error);
+    }
+    try {
+        const userRef = collection(db, "users", user_uid, "clinical_register");
+        const snapshot = await getDocs(userRef);
 
-    snapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-  } catch (error) {
-    console.error("Error deleting user workouts:", error);
-  }
-  try {
-    const userRef = collection(db, "users", user_uid, "clinical_register");
-    const snapshot = await getDocs(userRef);
+        snapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
+    } catch (error) {
+        console.error("Error deleting user clinical register:", error);
+    }
 
-    snapshot.forEach(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
-  } catch (error) {
-    console.error("Error deleting user clinical register:", error);
-  }
-
-  try {
-    const userRef = doc(db, "users", user_uid);
-    await deleteDoc(userRef);
-
-  } catch (error) {
-    console.error("Error deleting user doc:", error);
-  }
+    try {
+        const userRef = doc(db, "users", user_uid);
+        await deleteDoc(userRef);
+    } catch (error) {
+        console.error("Error deleting user doc:", error);
+    }
 };
 
 export const fetchWeeklyForms = async (uid) => {
-      try {
-        const weeklyFormRef = collection(db, 'users', uid, 'weeklyform');
-        const q = query(weeklyFormRef, orderBy('date', 'asc'));
+    try {
+        const weeklyFormRef = collection(db, "users", uid, "weeklyform");
+        const q = query(weeklyFormRef, orderBy("date", "asc"));
         const snapshot = await getDocs(q);
-  
-        const forms = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
+
+        const forms = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
         }));
-  
+
         return forms;
-      } catch (error) {
-        console.error('Error fetching weekly form:', error);
+    } catch (error) {
+        console.error("Error fetching weekly form:", error);
         return null;
-      }
-}
+    }
+};
 
 export const fetchWorkouts = async (uid) => {
-  try {
-    const weeklyFormRef = collection(db, 'users', uid, 'workouts');
-    const q = query(weeklyFormRef, orderBy('date', 'asc'));
-    const snapshot = await getDocs(q);
+    try {
+        const weeklyFormRef = collection(db, "users", uid, "workouts");
+        const q = query(weeklyFormRef, orderBy("date", "asc"));
+        const snapshot = await getDocs(q);
 
-    const workouts = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+        const workouts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
-    return workouts;
-  } catch (error) {
-    console.error('Error fetching workouts:', error);
-    return null;
-  }
-}
+        return workouts;
+    } catch (error) {
+        console.error("Error fetching workouts:", error);
+        return null;
+    }
+};
 
 export const fetchClinicalRegister = async (uid) => {
-  try {
-    const clinicalRegisterRef = collection(db, 'users', uid, 'clinical_register');
-    const q = query(clinicalRegisterRef, orderBy('date', 'desc'));
-    const snapshot = await getDocs(q);
+    try {
+        const clinicalRegisterRef = collection(db, "users", uid, "clinical_register");
+        const q = query(clinicalRegisterRef, orderBy("date", "desc"));
+        const snapshot = await getDocs(q);
 
-    const reg = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+        const reg = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
-    return reg;
-  } catch (error) {
-    console.error('Error fetching clinical register:', error);
-    return null;
-  }
-}
+        return reg;
+    } catch (error) {
+        console.error("Error fetching clinical register:", error);
+        return null;
+    }
+};
 
 export const uploadClinicalRegister = async (uid, text) => {
-  try {
-    const clinicalRegisterRef = collection(db, 'users', uid, 'clinical_register');
-    const newFormRef = doc(clinicalRegisterRef);
-    const date = new Date();
+    try {
+        const clinicalRegisterRef = collection(db, "users", uid, "clinical_register");
+        const newFormRef = doc(clinicalRegisterRef);
+        const date = new Date();
 
-    await setDoc(newFormRef, {
-        date: date,
-        text: text,
-    });
-
-  } catch (error) {
-    console.error('Error sending clinical register:', error);
-  }
-}
+        await setDoc(newFormRef, {
+            date: date,
+            text: text,
+        });
+    } catch (error) {
+        console.error("Error sending clinical register:", error);
+    }
+};
 
 export const fetchLast7Workouts = async () => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const uid = auth.currentUser.uid;
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const uid = auth.currentUser.uid;
 
-  try {
-    const workoutRef = collection(db, 'users', uid, 'workouts');
-    const q = query(workoutRef, orderBy('date', 'desc'), limit(7));
-    const snapshot = await getDocs(q);
+    try {
+        const workoutRef = collection(db, "users", uid, "workouts");
+        const q = query(workoutRef, orderBy("date", "desc"), limit(7));
+        const snapshot = await getDocs(q);
 
-    const workouts = snapshot.docs.map(doc => ({
-      id: doc.id,
-      date: doc.data().date.toDate(),
-    }));
+        const workouts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            date: doc.data().date.toDate(),
+        }));
 
-    return workouts;
-  } catch (error) {
-    console.error('Error fetching last 7 workouts:', error);
-    return null;
-  }
-}
+        return workouts;
+    } catch (error) {
+        console.error("Error fetching last 7 workouts:", error);
+        return null;
+    }
+};
 
 export const setAppointmentAvailability = async (list) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  let userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      await setDoc(doc(db, 'users', userId), {
-          availability: list,
-      }, { merge: true });
-  } catch (error) {
-      console.error('Error setting availability:', error);
-  }
-}
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    let userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                availability: list,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting availability:", error);
+    }
+};
 
 export const setAppointmentSlots = async (s) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  let userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      await setDoc(doc(db, 'users', userId), {
-          slots: s,
-      }, { merge: true });
-  } catch (error) {
-      console.error('Error setting availability slots:', error);
-  }
-}
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    let userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        await setDoc(
+            doc(db, "users", userId),
+            {
+                slots: s,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting availability slots:", error);
+    }
+};
 
 export const fetchAppointmentSlots = async (uid) => {
-  try {
-      const docRef = doc(db, "users", uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data().slots;
-      } else {
-        console.log("No user slots found!");
-        return null;
-      }
+    try {
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().slots;
+        } else {
+            console.log("No user slots found!");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching user slots:", error);
+        console.error("Error fetching user slots:", error);
     }
 };
 
 export const fetchAppointmentAvailability = async () => {
-  while (auth.currentUser == null) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      const docRef = doc(db, "users", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data().availability;
-      } else {
-        console.log("No user availability found!");
-        return null;
-      }
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data().availability;
+        } else {
+            console.log("No user availability found!");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching user availability:", error);
+        console.error("Error fetching user availability:", error);
     }
 };
 
 export const fetchMyAppointmentsMod = async () => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      const docRef = collection(db, "appointments");
-      const q = query(docRef, orderBy('date', 'asc'));
-      const snapshot = await getDocs(q);
-      const appointments = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const myAppointments = appointments.filter(appointment => appointment.mod === userId);
-      return myAppointments;
-      
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const docRef = collection(db, "appointments");
+        const q = query(docRef, orderBy("date", "asc"));
+        const snapshot = await getDocs(q);
+        const appointments = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const myAppointments = appointments.filter((appointment) => appointment.mod === userId);
+        return myAppointments;
     } catch (error) {
-      console.error("Error fetching user appointments:", error);
+        console.error("Error fetching user appointments:", error);
     }
 };
 
 export const fetchMyAppointmentsUser = async () => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try {
-      const docRef = collection(db, "appointments");
-      const q = query(docRef, orderBy('date', 'asc'));
-      const snapshot = await getDocs(q);
-      const appointments = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const myAppointments = appointments.filter(appointment => appointment.user === userId);
-      return myAppointments;
-      
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const docRef = collection(db, "appointments");
+        const q = query(docRef, orderBy("date", "asc"));
+        const snapshot = await getDocs(q);
+        const appointments = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const myAppointments = appointments.filter((appointment) => appointment.user === userId);
+        return myAppointments;
     } catch (error) {
-      console.error("Error fetching user appointments:", error);
+        console.error("Error fetching user appointments:", error);
     }
 };
 
 export const setApproved = async (id) => {
-  try{
-    const docRef = doc(db, "appointments", id);
-    await setDoc(docRef, {
-      state: "approved",
-    }, { merge: true });
-    
-  } catch (error) {
-    console.error("Error setting appointment approved:", error);
-  }
-}
+    try {
+        const docRef = doc(db, "appointments", id);
+        await setDoc(
+            docRef,
+            {
+                state: "approved",
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting appointment approved:", error);
+    }
+};
 
 export const deleteAppointment = async (id) => {
-  try{
-    const docRef = doc(db, "appointments", id);
-    await deleteDoc(docRef);
-    
-  } catch (error) {
-    console.error("Error deleting appointment:", error);
-  }
-}
+    try {
+        const docRef = doc(db, "appointments", id);
+        await deleteDoc(docRef);
+    } catch (error) {
+        console.error("Error deleting appointment:", error);
+    }
+};
 
 export const addAppointment = async (dateR, modId) => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-  try{
-    const appointmentRef = collection(db, 'appointments');
-    const newAppointmentRef = doc(appointmentRef);
-    await setDoc(newAppointmentRef, {
-        date: dateR,
-        user: userId,
-        mod: modId,
-        state: "pending",
-        link: "",
-    });
-
-  }
-  catch (error) {
-    console.error('Error sending appointment:', error);
-  }
-}
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    try {
+        const appointmentRef = collection(db, "appointments");
+        const newAppointmentRef = doc(appointmentRef);
+        await setDoc(newAppointmentRef, {
+            date: dateR,
+            user: userId,
+            mod: modId,
+            state: "pending",
+            link: "",
+        });
+    } catch (error) {
+        console.error("Error sending appointment:", error);
+    }
+};
 
 export const setLink = async (id, l) => {
-  try{
-    const docRef = doc(db, "appointments", id);
-    await setDoc(docRef, {
-      link: l,
-    }, { merge: true });
-    
-  } catch (error) {
-    console.error("Error setting appointment link:", error);
-  }
-}
+    try {
+        const docRef = doc(db, "appointments", id);
+        await setDoc(
+            docRef,
+            {
+                link: l,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error setting appointment link:", error);
+    }
+};
 
 export const fetchMyMod = async () => {
-  while (auth.currentUser == null) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
-  const  userId = auth.currentUser?.uid;
-  if (!userId) return;
-
-  const modList = await fetchModList();
-
-  const modPromises = modList?.map(async (modId) => {
-    try {
-      const docRef = doc(db, "users", modId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const modData = docSnap.data();
-        return {
-          id: modId,
-          users: modData.users,
-        };
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching mod data:", error);
-      return null;
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  });
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
 
-  const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
+    const modList = await fetchModList();
 
-  const myMod = mods.find(mod => mod.users.includes(userId));
-  if (myMod) {
-    return myMod.id;
-  } else {
-    return null;
-  }
-  
-}
+    const modPromises = modList?.map(async (modId) => {
+        try {
+            const docRef = doc(db, "users", modId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const modData = docSnap.data();
+                return {
+                    id: modId,
+                    users: modData.users,
+                };
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetching mod data:", error);
+            return null;
+        }
+    });
+
+    const mods = (await Promise.all(modPromises)).filter((mod) => mod !== null);
+
+    const myMod = mods.find((mod) => mod.users.includes(userId));
+    if (myMod) {
+        return myMod.id;
+    } else {
+        return null;
+    }
+};
 
 export const fetchSlots = async (date, uid) => {
-  try {
-      const docRef = collection(db, "appointments");
-      const q = query(docRef, orderBy('date', 'asc'));
-      const snapshot = await getDocs(q);
-      const appointments = snapshot.docs.map(doc => ({
-        id: doc.id,
-        mod: doc.data().mod,
-        date: doc.data().date,
-        ...doc.data(),
-      }));
-      const myAppointments = [];
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth();
-      const year = dateObj.getFullYear();
-      appointments.forEach(appointment => {
-        if (appointment.mod === uid) {
-        const appointmentDate = appointment.date.toDate();
-        const appointmentDay = appointmentDate.getDate();
-        const appointmentMonth = appointmentDate.getMonth();
-        const appointmentYear = appointmentDate.getFullYear();
-        if (appointmentDay === day && appointmentMonth === month && appointmentYear === year) {
-            myAppointments.push(appointment);
-          }
-        }
-      });
-      return myAppointments;
-      
+    try {
+        const docRef = collection(db, "appointments");
+        const q = query(docRef, orderBy("date", "asc"));
+        const snapshot = await getDocs(q);
+        const appointments = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            mod: doc.data().mod,
+            date: doc.data().date,
+            ...doc.data(),
+        }));
+        const myAppointments = [];
+        const dateObj = new Date(date);
+        const day = dateObj.getDate();
+        const month = dateObj.getMonth();
+        const year = dateObj.getFullYear();
+        appointments.forEach((appointment) => {
+            if (appointment.mod === uid) {
+                const appointmentDate = appointment.date.toDate();
+                const appointmentDay = appointmentDate.getDate();
+                const appointmentMonth = appointmentDate.getMonth();
+                const appointmentYear = appointmentDate.getFullYear();
+                if (appointmentDay === day && appointmentMonth === month && appointmentYear === year) {
+                    myAppointments.push(appointment);
+                }
+            }
+        });
+        return myAppointments;
     } catch (error) {
-      console.error("Error fetching user appointments:", error);
+        console.error("Error fetching user appointments:", error);
     }
 };
