@@ -325,6 +325,17 @@ export default function ExerciseScreen() {
         return `${m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
     };
 
+    const getExerciseImageName = (exerciseName?: string) => {
+        if (!exerciseName) return exerciseName;
+
+        // Map names like "march_place_1" to "march_place" for image lookup.
+        if (exerciseName.length >= 2 && exerciseName.charAt(exerciseName.length - 2) === "_") {
+            return exerciseName.slice(0, -2);
+        }
+
+        return exerciseName;
+    };
+
     if (currentIndex >= parsedWorkoutPlan.length) {
         if (endTime === "") {
             const time = getTime();
@@ -502,7 +513,7 @@ export default function ExerciseScreen() {
                         <LoopingImage
                             key={currentIndex}
                             gender={gender}
-                            exercise_name={parsedWorkoutPlan[currentIndex]?.exercise}
+                            exercise_name={getExerciseImageName(parsedWorkoutPlan[currentIndex]?.exercise)}
                         />
                         <Text style={styles.exerciseTitle}>
                             {t(`exercises.${parsedWorkoutPlan[currentIndex]?.exercise}`)}
