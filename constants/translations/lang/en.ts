@@ -306,12 +306,24 @@ const en = {
         diaphragmatic_breathing_2: "Diaphragmatic Breathing",
 
         /* Plan 3 */
+        seated_march_3: "Seated March",
+
+        seated_shoulder_rolls_3: "Seated Shoulder Rolls",
+        ankle_circles_3: "Ankle Circles",
+        seated_gentle_trunk_stretch_3: "Seated Gentle Trunk Stretch",
+
+        spiky_ball_hands_3: "Spiky Ball Massage (Hands)",
+        seated_textures_3: "Seated Textures Exploration",
+
+        seated_calf_stretch_3: "Seated Calf Stretch",
+        seated_neck_stretch_3: "Seated Neck Stretch",
+        // seated_shoulder_rolls_3
+        // ankle_circles_3
+        seated_diaphragmatic_breathing_3: "Seated Diaphragmatic Breathing",
+        muscle_relaxation_3: "Muscle Relaxation",
 
         /* The rest */
-        seated_march: "Seated March",
         side_step_walk: "Side Step Walk",
-        seated_shoulder_rolls: "Seated Shoulder Rolls",
-        ankle_circles: "Ankle Circles",
         trunk_inclinations: "Trunk Inclinations",
         gentle_trunk_inclinations: "Gentle Trunk Inclinations",
         seated_arm_raises: "Seated Arm Raises",
@@ -323,17 +335,11 @@ const en = {
         squat: "Squat",
         reach_fixed_support: "Reach with Fixed Support",
         textures: "Textures Exploration",
-        seated_textures: "Seated Textures Exploration",
-        seated_calf_stretch: "Seated Calf Stretch",
         seated_chest_stretch: "Seated Chest Stretch",
         neck_side_stretch: "Neck Side Stretch",
-        seated_neck_stretch: "Seated Neck Stretch",
         seated_lateral_stretch: "Seated Lateral Stretch",
         seated_lateral_trunk_stretch: "Seated Lateral Trunk Stretch",
-        seated_gentle_trunk_stretch: "Seated Gentle Trunk Stretch",
         seated_arm_stretch: "Seated Arm Stretch",
-        seated_diaphragmatic_breathing: "Seated Diaphragmatic Breathing",
-        muscle_relaxation: "Muscle Relaxation",
         rest: "Rest",
     },
     done: "Done",
@@ -365,12 +371,12 @@ const en = {
             "March in place slowly, with support from a chair or wall, slightly lifting the knees and swinging the arms.",
         incline_pushup_2:
             "Inclined push-ups by placing hands on an elevated surface, with a slower pace and focus on control.",
-        seated_march: "Seated, lift one knee at a time, slow pace.",
+        seated_march_3: "Seated, lift one knee at a time, slow pace.",
         side_step_walk: "Take small side steps, going back and forth, with nearby support.",
         shoulder_rolls_1: "Roll the shoulders backward and then forward, in a controlled manner.",
         supported_heel_raises_2: "Rise onto the toes while supporting yourself on a chair or wall.",
-        seated_shoulder_rolls: "Roll shoulders backward and forward gently.",
-        ankle_circles: "Make circles with the ankles while seated.",
+        seated_shoulder_rolls_3: "Roll shoulders backward and forward gently.",
+        ankle_circles_3: "Make circles with the ankles while seated.",
         neck_mobilization_1: "Tilt the head to one side, then the other, slowly.",
         knee_lifts_1: "Lift one knee at a time up to the waist, with support if needed.",
         supported_knee_lifts_2: "Lift one knee at a time up to the waist, supporting yourself on a chair if needed.",
@@ -409,31 +415,31 @@ const en = {
         reach_fixed_support:
             "Stretch the arm forward/side while holding onto a stable structure: perform at a slow and mindful pace.",
         textures: "Touch various fabrics with eyes closed for tactile stimulation.",
-        seated_textures: "Touch different fabrics with eyes closed, seated comfortably.",
+        seated_textures_3: "Touch different fabrics with eyes closed, seated comfortably.",
         pinch_1: "Pick up coins with fingers and place them in a container.",
         pinch_2: "Pick up small objects with fingers and place them in a container.",
         spiky_ball_1: "Roll a textured ball under feet or hands.",
-        spiky_ball_hands_2:
-            "Roll a textured ball with the hands, gently. Pause if discomfort, tingling, or arm fatigue occurs.",
+        spiky_ball_hands_2: "Roll a textured ball with your hands.",
+        spiky_ball_hands_3: "Roll a textured ball with your hands.",
         calf_stretch_1: "Stretch the calves by pushing the body against the wall.",
         supported_calf_stretch_2: "Stretch the calves with hands supported on the wall for added safety.",
-        seated_calf_stretch: "With the leg extended forward, pull the foot toward the body using a towel or strap.",
+        seated_calf_stretch_3: "With the leg extended forward, pull the foot toward the body using a towel or strap.",
         seated_chest_stretch: "Seated, open the arms backward to stretch the chest.",
         neck_side_stretch: "Tilt the head to the side gently.",
         seated_hamstring_stretch_1: "Seated, stretch one leg and lean the trunk forward.",
         seated_hamstring_stretch_2: "Seated, stretch one leg and lean the trunk forward.",
-        seated_neck_stretch: "Tilt the head to the side gently, maintaining posture.",
+        seated_neck_stretch_3: "Tilt the head to the side gently, maintaining posture.",
         seated_lateral_stretch: "Seated, lean the trunk to the side.",
         seated_lateral_trunk_stretch: "Seated, lean the trunk to the side.",
-        seated_gentle_trunk_stretch: "Slowly lean the trunk to the right and then to the left.",
+        seated_gentle_trunk_stretch_3: "Slowly lean the trunk to the right and then to the left.",
         seated_arm_stretch: "Cross the arm in front of the body and hold it.",
         chest_stretch_wall_1: "With the arm at 90º on the wall, rotate the trunk to stretch.",
         chest_stretch_wall_2: "With the arm at 90º on the wall, rotate the trunk to stretch.",
         diaphragmatic_breathing_1: "Inhale expanding the abdomen, exhale slowly.",
         diaphragmatic_breathing_2: "Inhale expanding the abdomen, exhale slowly.",
-        seated_diaphragmatic_breathing:
+        seated_diaphragmatic_breathing_3:
             "Inhale deeply expanding the abdomen and exhale slowly, seated in a comfortable position.",
-        muscle_relaxation:
+        muscle_relaxation_3:
             "Sequentially contract and relax different muscle groups, from feet to head. Pause only if desired.",
         rest: "",
     },

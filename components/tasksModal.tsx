@@ -559,9 +559,6 @@ export default function TasksModal({ page = 0 }) {
                     </>
                 ) : workoutPlan.length > 0 ? (
                     <>
-                        {warmupPlan.length > 0 ? (
-                            <Block title={t("warmup")} onPress={handleWarmup} completed={warmupCompleted} />
-                        ) : null}
                         <Block title={t("workout")} onPress={handleWorkout} completed={workoutCompleted} />
                         <Block
                             title={t("back")}
