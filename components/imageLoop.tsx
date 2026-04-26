@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { Asset } from "expo-asset";
 import { VideoView, useVideoPlayer } from "expo-video";
 
-function LoopingVideo({ source }) {
+type MediaSource = {
+    source: any;
+    isVideo: boolean;
+};
+
+type ExerciseMediaAsset = number | number[];
+
+type ExerciseImageMap = Record<string, ExerciseMediaAsset>;
+
+type ExerciseImagesByGender = Record<string, ExerciseImageMap>;
+
+function LoopingVideo({ source, style }: { source: any; style?: any }) {
     const player = useVideoPlayer(source, (p) => {
         p.muted = true;
         p.loop = true;
         p.play();
     });
 
-    return <VideoView player={player} style={styles.exerciseGif} contentFit="contain" nativeControls={false} />;
+    return (
+        <VideoView player={player} style={style ?? styles.exerciseGif} contentFit="contain" nativeControls={false} />
+    );
 }
 
 export default function LoopingImage({ gender, exercise_name }) {
-    const [media, setMedia] = useState<{ source: any; isVideo: boolean } | null>(null);
+    const [media, setMedia] = useState<MediaSource[]>([]);
 
-    const exerciseImages = {
+    const exerciseImages: ExerciseImagesByGender = {
         male: {
             march_place: require("../assets/images/exercises/male/march_place.png"),
             slow_march_place: require("../assets/images/exercises/male/march_place.png"),
@@ -85,7 +98,6 @@ export default function LoopingImage({ gender, exercise_name }) {
             march_place: require("../assets/images/exercises/female/march_place.png"),
             slow_march_place: require("../assets/images/exercises/female/march_place.png"),
             ankle_circles: require("../assets/images/exercises/female/ankle_circles.png"),
-            backward_lunge: require("../assets/images/exercises/female/backward_lunge.png"),
             ball_squeeze: require("../assets/images/exercises/female/ball.png"),
             breathing: require("../assets/images/exercises/female/breathing.png"),
             calf_stretch: require("../assets/images/exercises/female/calf_stretch.png"),
@@ -144,46 +156,72 @@ export default function LoopingImage({ gender, exercise_name }) {
         },
     };
 
-    const otherGender = () => {
-        if (gender == "male") {
-            return "female";
-        } else if (gender == "female") {
-            return "male";
-        }
-        return null;
-    };
+    const resolveMedia = (name?: string, preferredGender = gender) => {
+        let selectedImage: ExerciseMediaAsset = require("../assets/images/exercises/default.png");
 
-    useEffect(() => {
-        let selectedImage = require("../assets/images/exercises/default.png");
-
-        if (exerciseImages[gender]) {
-            if (exerciseImages[gender][exercise_name]) {
-                selectedImage = exerciseImages[gender][exercise_name];
-            } else if (exerciseImages[otherGender()]?.[exercise_name]) {
-                selectedImage = exerciseImages[otherGender()][exercise_name];
+        if (name && exerciseImages[preferredGender]) {
+            if (exerciseImages[preferredGender][name]) {
+                selectedImage = exerciseImages[preferredGender][name];
             }
         }
 
-        const asset = Asset.fromModule(selectedImage);
-        const isMp4 = asset?.type?.toLowerCase() === "mp4";
+        const sources = Array.isArray(selectedImage) ? selectedImage : [selectedImage];
 
-        setMedia({ source: selectedImage, isVideo: isMp4 });
+        return sources.map((source) => {
+            const asset = Asset.fromModule(source);
+            return { source, isVideo: asset?.type?.toLowerCase() === "mp4" };
+        });
+    };
+
+    useEffect(() => {
+        if (!exercise_name) {
+            setMedia([]);
+            return;
+        }
+
+        setMedia(resolveMedia(exercise_name, gender));
     }, [gender, exercise_name]);
 
-    if (!media) {
+    if (!media.length) {
         return null;
     }
 
-    if (media.isVideo) {
-        return <LoopingVideo source={media.source} />;
+    if (media.length === 1) {
+        const singleMedia = media[0];
+
+        if (singleMedia.isVideo) {
+            return <LoopingVideo source={singleMedia.source} />;
+        }
+
+        return <Image source={singleMedia.source} style={styles.exerciseGif} resizeMode="contain" />;
     }
 
-    return <Image source={media.source} style={styles.exerciseGif} resizeMode="contain" />;
+    return (
+        <View style={styles.row}>
+            {media.map((item, index) =>
+                item.isVideo ? (
+                    <LoopingVideo key={index} source={item.source} style={styles.pairedMedia} />
+                ) : (
+                    <Image key={index} source={item.source} style={styles.pairedMedia} resizeMode="contain" />
+                ),
+            )}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
     exerciseGif: {
         width: 200,
         height: 200,
+    },
+    row: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    pairedMedia: {
+        width: 150,
+        height: 150,
+        marginHorizontal: 6,
     },
 });
