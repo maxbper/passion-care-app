@@ -104,6 +104,9 @@ const en = {
     },
     incomplete_form: "The form is not complete. \n\nPlease fill in all fields.",
     register: "Register",
+    general_info: "General Information",
+    general_info_description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     warmup: "Warm-up",
     workout: "Workout",
     web_admin_message: "The web version of the app is only available for admins.",

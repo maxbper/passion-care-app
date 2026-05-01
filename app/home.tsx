@@ -32,7 +32,7 @@ export default function HomeScreen() {
     const [myUid, setMyUid] = useState("");
     const [name, setName] = useState("");
     const { showModal } = useProfileModal();
-    const [wantsForm, setWantsForm]= useState(false);
+    const [wantsForm, setWantsForm] = useState(false);
 
     const messages = [
         t("encouragement_messages.0"),
@@ -46,17 +46,17 @@ export default function HomeScreen() {
     const suspend = async () => {
         await setIsSuspended(true);
         router.replace("/dontExercise");
-    }
+    };
 
     useEffect(() => {
         const checkAuthentication = async () => {
             await checkAuth();
             const uid = await getUid();
-            if(uid) {
+            if (uid) {
                 setMyUid(uid);
             }
             const n = await fetchName();
-            if(n) {
+            if (n) {
                 setName(n);
             }
         };
@@ -101,24 +101,28 @@ export default function HomeScreen() {
                                     },
                                     {
                                         text: t("yes"),
-                                        onPress: () => {suspend()},
+                                        onPress: () => {
+                                            suspend();
+                                        },
                                         style: "cancel",
                                     },
                                 ],
-                                { cancelable: false }
+                                { cancelable: false },
                             );
                         },
                         style: "cancel",
                     },
                     {
                         text: t("yes"),
-                        onPress: () => {setWarningShown(true)},
+                        onPress: () => {
+                            setWarningShown(true);
+                        },
                     },
                 ],
-                { cancelable: false }
+                { cancelable: false },
             );
         }
-    }
+    };
 
     const handleSymptomPress = async () => {
         if (Platform.OS !== "web") {
@@ -138,17 +142,16 @@ export default function HomeScreen() {
                             router.push({
                                 pathname: "/exercisePlan",
                                 params: { p: JSON.stringify(true) },
-                            })
+                            });
                         },
                     },
                 ],
-                { cancelable: false }
+                { cancelable: false },
             );
         }
-    }
-    
-    useEffect(() => {
+    };
 
+    useEffect(() => {
         const getXP = async () => {
             const userXP = await fetchXp();
             const calculatedLevel = Math.floor(userXP / 1000) + 1;
@@ -158,7 +161,7 @@ export default function HomeScreen() {
 
         if (!isAdmin && !isMod) {
             getXP();
-            if(changeMessage) {
+            if (changeMessage) {
                 setChangeMessage(false);
                 const random = Math.floor(Math.random() * 5);
                 setMessage(random);
@@ -167,122 +170,216 @@ export default function HomeScreen() {
                 }, 300000);
             }
         }
-        
     }, [isAdmin, isMod, message, changeMessage]);
 
     if (isAdmin && isMod) {
         return (
-            <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 150, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
-            </View>
+            <View
+                style={{
+                    padding: 10,
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    marginTop: insets.top + 150,
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 60,
+                    zIndex: 10,
+                }}
+            ></View>
         );
-    } 
-
+    }
 
     return (
         <>
-        {!isAdmin && !isMod ? (
-            <>
-            {Platform.OS === "web" ? (
-                <View style={styles.card}>
-                <Text style={styles.levelText}>{t("warning")}</Text>
-                <Text style={styles.xpText}>{t("web_admin_message")}</Text>
-                <TouchableOpacity style={styles.button} onPress={logout}>
-                    <MaterialIcons name="logout" size={36} color={cancerColor}/>
-                    <Text style={styles.text}>{t("logout")}</Text>
-                </TouchableOpacity>
-                </View>
-            ) : (
-            <>
-            <View style={[styles.container, {marginTop: insets.top + 50}]}>
-                    <>
-                    <View style={{width: "90%", padding: 20}}>
-                    <Text style={styles.levelText}>{t("hello")}{name}</Text>
+            <TouchableOpacity
+                onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")}
+                style={{
+                    position: "absolute",
+                    top: insets.top + 25,
+                    right: 30,
+                    width: 100,
+                    height: 80,
+                    borderRadius: 10,
+                    backgroundColor: "#fff",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 20,
+                    borderWidth: 1,
+                    borderColor: "#e5e7eb",
+                    paddingHorizontal: 4,
+                }}
+            >
+                {i18n.language === "pt" ? (
+                    <View style={{ position: "relative", width: 50, height: 30 }}>
+                        <Text style={{ position: "absolute", fontSize: 40, opacity: 1, top: -15, left: -5, zIndex: 2 }}>
+                            🇵🇹
+                        </Text>
+                        <Text style={{ position: "absolute", fontSize: 40, opacity: 0.3, top: 0, left: 10, zIndex: 1 }}>
+                            🇬🇧
+                        </Text>
                     </View>
-                    {/* <View style={styles.card2}>
+                ) : (
+                    <View style={{ position: "relative", width: 50, height: 30 }}>
+                        <Text style={{ position: "absolute", fontSize: 40, opacity: 1, top: -15, left: -5, zIndex: 2 }}>
+                            🇬🇧
+                        </Text>
+                        <Text style={{ position: "absolute", fontSize: 40, opacity: 0.3, top: 0, left: 10, zIndex: 1 }}>
+                            🇵🇹
+                        </Text>
+                    </View>
+                )}
+            </TouchableOpacity>
+            {!isAdmin && !isMod ? (
+                <>
+                    {Platform.OS === "web" ? (
+                        <View style={styles.card}>
+                            <Text style={styles.levelText}>{t("warning")}</Text>
+                            <Text style={styles.xpText}>{t("web_admin_message")}</Text>
+                            <TouchableOpacity style={styles.button} onPress={logout}>
+                                <MaterialIcons name="logout" size={36} color={cancerColor} />
+                                <Text style={styles.text}>{t("logout")}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <>
+                            <View style={[styles.container, { marginTop: insets.top + 50 }]}>
+                                <>
+                                    <View style={{ width: "90%", padding: 20 }}>
+                                        <Text style={styles.levelText}>
+                                            {t("hello")}
+                                            {name}
+                                        </Text>
+                                    </View>
+                                    {/* <View style={styles.card2}>
                     <WeekModal />
                     </View> */}
-                    {/* <View style={styles.card}>
+                                    {/* <View style={styles.card}>
                         <Text style={styles.levelText}>{t("level")} {isNaN(level) ? 0 : level} 🏅</Text>
                         <ProgressBar progress={isNaN(progress) ? 0 : progress} color={cancerColor} style={styles.progressBar} />
                         <Text style={styles.xpText}>{Math.floor(progress * 1000)} / 1000 XP</Text>
                         <Text style={styles.encouragement}>{t(`encouragement_messages.${message}`)}</Text>
                     </View> */}
-                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
-                    <Pressable style={styles.card} onPress={() => router.push("/exercisePlan")}>
-                        <FontAwesome6 name="person-running" size={36} color={cancerColor}/>
-                        <Text style={styles.xpText1}>{t("exercises_name")}</Text>
-                    </Pressable>
-                    <AppointmentModal />
-                    </View>
-                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
-                    <Pressable style={styles.card} onPress={() => router.push("/historyPage")}>
-                        <FontAwesome5 name="history" size={36} color={cancerColor} />
-                        <Text style={styles.xpText1}>{t("history")}</Text>
-                    </Pressable>
-                    <Pressable onPress={showModal} style={styles.card}>
-                            <Feather name="watch" size={36} color={cancerColor}/>
-                            <Text style={styles.xpText1}>{t("watch")}</Text>
-                    </Pressable>
-                    </View>
-                    <Pressable style={styles.card1} onPress={handleSymptomPress}>
-                        <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
-                        <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                        <AntDesign name="warning" size={25} color="orange" style={{marginRight: 10}} />
-                        <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
-                        </View>
-                    </Pressable>
-                    <View style={{flexDirection: "row", flex: 2, justifyContent: "space-between", width: "90%", alignContent: "center", alignSelf: "center"}}>
-                    <Pressable style={styles.card} onPress={() => 
-                        Alert.alert(
-                                  t("logout"),
-                                  t("are_you_sure_logout"),
-                                  [
-                                    {
-                                      text: t("cancel"),
-                                      style: "cancel",
-                                    },
-                                    {
-                                      text: t("logout"),
-                                      onPress: () => {
-                                        logout();
-                                      },
-                                    },
-                                  ],
-                                  { cancelable: true }
-                                )
-                    }>
-                    <MaterialIcons name="logout" size={34} color={cancerColor}/>
-                        <Text style={styles.xpText1}>{t("logout")}</Text>
-                    </Pressable>
-                    <Pressable onPress={() => i18n.changeLanguage(i18n.language === "en" ? "pt" : "en")} style={styles.card}>
-                        {i18n.language === "pt" ? (
-                            <View style={{position: 'relative', width: '100%', height: '100%'}}>
-                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 37, zIndex:2 }}>🇵🇹</Text>
-                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 27, zIndex:1 }}>🇬🇧</Text>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            flex: 2,
+                                            justifyContent: "space-between",
+                                            width: "90%",
+                                            alignContent: "center",
+                                            alignSelf: "center",
+                                        }}
+                                    >
+                                        <Pressable style={styles.card} onPress={() => router.push("/exercisePlan")}>
+                                            <FontAwesome6 name="person-running" size={36} color={cancerColor} />
+                                            <Text style={styles.xpText1}>{t("exercises_name")}</Text>
+                                        </Pressable>
+                                        <AppointmentModal />
+                                    </View>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            flex: 2,
+                                            justifyContent: "space-between",
+                                            width: "90%",
+                                            alignContent: "center",
+                                            alignSelf: "center",
+                                        }}
+                                    >
+                                        <Pressable style={styles.card} onPress={() => router.push("/historyPage")}>
+                                            <FontAwesome5 name="history" size={36} color={cancerColor} />
+                                            <Text style={styles.xpText1}>{t("history")}</Text>
+                                        </Pressable>
+                                        <Pressable onPress={showModal} style={styles.card}>
+                                            <Feather name="watch" size={36} color={cancerColor} />
+                                            <Text style={styles.xpText1}>{t("watch")}</Text>
+                                        </Pressable>
+                                    </View>
+                                    <Pressable style={styles.card1} onPress={handleSymptomPress}>
+                                        <Text style={styles.levelText}>{t("symptom_evaluation")}</Text>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                            <AntDesign
+                                                name="warning"
+                                                size={25}
+                                                color="orange"
+                                                style={{ marginRight: 10 }}
+                                            />
+                                            <Text style={styles.xpText}>{t("how_you_feeling")}</Text>
+                                        </View>
+                                    </Pressable>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            flex: 2,
+                                            justifyContent: "space-between",
+                                            width: "90%",
+                                            alignContent: "center",
+                                            alignSelf: "center",
+                                        }}
+                                    >
+                                        <Pressable
+                                            style={styles.card}
+                                            onPress={() =>
+                                                Alert.alert(
+                                                    t("logout"),
+                                                    t("are_you_sure_logout"),
+                                                    [
+                                                        {
+                                                            text: t("cancel"),
+                                                            style: "cancel",
+                                                        },
+                                                        {
+                                                            text: t("logout"),
+                                                            onPress: () => {
+                                                                logout();
+                                                            },
+                                                        },
+                                                    ],
+                                                    { cancelable: true },
+                                                )
+                                            }
+                                        >
+                                            <MaterialIcons name="logout" size={34} color={cancerColor} />
+                                            <Text style={styles.xpText1}>{t("logout")}</Text>
+                                        </Pressable>
+                                        <Pressable onPress={() => router.push("/info")} style={styles.card}>
+                                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                                <Feather name="info" size={36} color={cancerColor} />
+                                                <Text style={styles.xpText1}>{t("basic_info") || "Info"}</Text>
+                                            </View>
+                                        </Pressable>
+                                    </View>
+                                </>
                             </View>
-                            ) : (
-                            <View style={{position: 'relative', width: '100%', height: '100%'}}>
-                                <Text style={{position: 'absolute', fontSize: 35, opacity: 1, top: 15, right: 37, zIndex:2 }}>🇬🇧</Text>
-                                <Text style={{position: 'absolute', fontSize: 25, opacity: 0.3, top: 5, right: 27, zIndex:1 }}>🇵🇹</Text>
-                            </View>
-                            )}
-                            <Text style={styles.xpText1}>{i18n.language === "pt" ? "PT" : "EN"}</Text>
-                    </Pressable>
-                    </View>
-                    </>
-            </View>
-            </>
-            )}
-            </>
+                        </>
+                    )}
+                </>
             ) : (
                 <>
-                <View style={{ padding: 10, flexDirection: "column", justifyContent: "center", marginTop: insets.top + 120, alignItems: "center", position: "absolute", top: 0, left: 0, right: 0, height: 60, zIndex: 10 }}>
-                    <Text style={[styles.levelText, {color: cancerColor}]}>PASSiON CARE</Text>
-                    <Text style={[{fontSize: 18, color: cancerColor}]}>{t("admin_panel")}</Text>
-                </View>
-                <View style={[styles.container, {marginTop: insets.top + 200}]}>
-                    <AdminModal />
-                </View></>
+                    <View
+                        style={{
+                            padding: 10,
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            marginTop: insets.top + 120,
+                            alignItems: "center",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: 60,
+                            zIndex: 10,
+                        }}
+                    >
+                        <Text style={[styles.levelText, { color: cancerColor }]}>PASSiON CARE</Text>
+                        <Text style={[{ fontSize: 18, color: cancerColor }]}>{t("admin_panel")}</Text>
+                    </View>
+                    <View style={[styles.container, { marginTop: insets.top + 200 }]}>
+                        <AdminModal />
+                    </View>
+                </>
             )}
             {/* <TouchableOpacity style={[styles.card2, {marginTop: 50, width: "50%"}]} onPress={logout}>
                 <View style={{flexDirection: "row", justifyContent: "center", width: "90%", alignSelf: "center"}}>
@@ -372,11 +469,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     statsText: {
-        flexDirection: "row", 
+        flexDirection: "row",
         fontSize: 18,
         marginBottom: 10,
         justifyContent: "space-evenly",
-        width: '100%',
+        width: "100%",
     },
     encouragement: {
         fontStyle: "italic",
@@ -390,10 +487,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
-      },
-      text: {
+    },
+    text: {
         color: "#000",
         fontSize: 14,
         fontWeight: "bold",
-      },
+    },
 });
