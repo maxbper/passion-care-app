@@ -104,6 +104,9 @@ const pt = {
     },
     incomplete_form: "O formulário não está completo. \n\nPor favor, preencha todos os campos.",
     register: "Registar",
+    general_info: "Informação Geral",
+    general_info_description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     warmup: "Aquecimento",
     workout: "Treino",
     web_admin_message: "A versão web da aplicação está disponível apenas para administradores.",
