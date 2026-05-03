@@ -466,6 +466,63 @@ export const fetchExercise = async (exerciseId, plan) => {
     }
 };
 
+export const fetchRepMultiplier = async () => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return 1;
+
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const value = docSnap.data().rep_multiplier;
+            return typeof value === "number" ? value : 1;
+        }
+        return 1;
+    } catch (error) {
+        console.error("Error fetching rep multiplier:", error);
+        return 1;
+    }
+};
+
+export const updateRepMultiplierFromFeedback = async (feedbackScore) => {
+    while (auth.currentUser == null) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        const currentMultiplier =
+            docSnap.exists() && typeof docSnap.data().rep_multiplier === "number" ? docSnap.data().rep_multiplier : 1;
+
+        let nextMultiplier = currentMultiplier;
+        if (feedbackScore < 4) {
+            nextMultiplier = currentMultiplier * 1.2;
+        } else if (feedbackScore > 7) {
+            nextMultiplier = currentMultiplier * 0.8;
+        }
+
+        // Keep progression bounded to avoid extreme values over time.
+        nextMultiplier = Math.max(0.5, Math.min(2.0, nextMultiplier));
+
+        await setDoc(
+            docRef,
+            {
+                rep_multiplier: nextMultiplier,
+            },
+            { merge: true },
+        );
+    } catch (error) {
+        console.error("Error updating rep multiplier:", error);
+    }
+};
+
 export const registerUser = async (form) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, form.email, "123456");
@@ -491,6 +548,7 @@ export const registerUser = async (form) => {
             chemo_goal: form.chemo_goal,
             suspended: false,
             workout_plan: "",
+            rep_multiplier: 1,
             xp: 0,
         });
     } catch (error) {
