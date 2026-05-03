@@ -253,6 +253,10 @@ const pt = {
     rep: "Repetição",
     set: "Série",
     exercises: {
+        spiky_ball: "Manipular Bola de Picos",
+        pinch: "Pinça com dedos",
+        single_leg_stand: "Apoio numa perna",
+        stand_soft_surface: "Apoio em Superfície Macia",
         march_place_1: "Marcha no Lugar",
         slow_march_place_2: "Marcha Lenta no Lugar",
         supported_march_place_2: "Marcha Apoiada no Lugar",
@@ -342,6 +346,10 @@ const pt = {
     workout_locked_title: "Treino Bloqueado",
     workout_locked_message: "Por favor completar o aquecimento antes de iniciar o treino.",
     description: {
+        spiky_ball: "Rolar bola texturizada sob pés ou mãos.",
+        pinch: "Pegar em moedas com os dedos e colocá-las num recipiente.",
+        single_leg_stand: "Manter o equilíbrio numa só perna.",
+        stand_soft_surface: "Ficar de pé sobre almofada ou tapete dobrado, com apoio próximo.",
         march_place_1: "Marchar suavemente, levantando ligeiramente os joelhos e balançando os braços. ",
         incline_pushup_2: "Flexões inclinadas apoiando as mãos numa superfície alta. ",
         pinch_2: "Pegar em moedas com os dedos e colocá-las num recipiente. ",
