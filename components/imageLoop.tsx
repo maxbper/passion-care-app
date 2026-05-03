@@ -87,7 +87,7 @@ export default function LoopingImage({ gender, exercise_name }) {
             side_weight_shift: require("../assets/images/exercises/male/weight.png"),
             trunk_inclinations: require("../assets/images/exercises/male/trunk_inclinations.png"),
             gentle_trunk_inclinations: require("../assets/images/exercises/male/trunk_inclinations.png"),
-            walk_various_surfaces: require("../assets/images/exercises/male/stand_soft.png"),
+            walk_various_surfaces: require("../assets/images/exercises/male/walk_various_surfaces.png"),
             supported_mini_squat: require("../assets/images/exercises/male/mini_squat.png"),
             seated_arm_stretch: require("../assets/images/exercises/male/seated_arm_stretch.png"),
             chest_stretch_wall: require("../assets/images/exercises/male/chest_stretch.png"),
