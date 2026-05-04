@@ -294,6 +294,16 @@ export default function TasksModal({ page = 0 }) {
         };
 
         const buildExercisePlan = async (planItems, planKey, repMultiplier = 1) => {
+            const shouldApplyRepMultiplier = (exerciseName: string) => {
+                const normalizedName = exerciseName.toLowerCase();
+
+                return (
+                    !normalizedName.startsWith("rest") &&
+                    !normalizedName.includes("breathing") &&
+                    !normalizedName.includes("muscle_relaxation")
+                );
+            };
+
             const fetchedExercises = await Promise.all(
                 planItems.map(async (element) => {
                     if (element.substring(0, 4) === "rest") {
@@ -312,9 +322,15 @@ export default function TasksModal({ page = 0 }) {
                     const [name, attr] = exerciseData;
                     const baseReps = attr.reps ? Number(attr.reps) : 0;
                     const baseDuration = attr.duration ? Number(attr.duration) : 0;
-                    const adjustedReps = baseReps > 0 ? Math.max(1, Math.round(baseReps * repMultiplier)) : 0;
+                    const appliesMultiplier = shouldApplyRepMultiplier(name);
+                    const adjustedReps =
+                        appliesMultiplier && baseReps > 0
+                            ? Math.max(1, Math.round(baseReps * repMultiplier))
+                            : baseReps;
                     const adjustedDuration =
-                        baseDuration > 0 ? Math.max(1, Math.round(baseDuration * repMultiplier)) : 0;
+                        appliesMultiplier && baseDuration > 0
+                            ? Math.max(1, Math.round(baseDuration * repMultiplier))
+                            : baseDuration;
                     if (attr.sets && attr.sets > 1) {
                         const sets = attr.sets;
                         const exercises = [];

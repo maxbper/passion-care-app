@@ -502,10 +502,14 @@ export const updateRepMultiplierFromFeedback = async (feedbackScore) => {
             docSnap.exists() && typeof docSnap.data().rep_multiplier === "number" ? docSnap.data().rep_multiplier : 1;
 
         let nextMultiplier = currentMultiplier;
-        if (feedbackScore < 4) {
-            nextMultiplier = currentMultiplier * 1.2;
-        } else if (feedbackScore > 7) {
-            nextMultiplier = currentMultiplier * 0.8;
+        if (feedbackScore < 2) {
+            nextMultiplier = currentMultiplier + 0.2;
+        } else if (feedbackScore < 4) {
+            nextMultiplier = currentMultiplier + 0.1;
+        } else if (feedbackScore > 8) {
+            nextMultiplier = currentMultiplier - 0.2;
+        } else if (feedbackScore > 6) {
+            nextMultiplier = currentMultiplier - 0.1;
         }
 
         // Keep progression bounded to avoid extreme values over time.
