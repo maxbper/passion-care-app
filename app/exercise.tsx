@@ -21,7 +21,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import LoopingImage from "../components/imageLoop";
 import { refreshTokens } from "../components/wearable";
-import { addXp, incrementExerciseAmount, uploadWorkout } from "../services/dbService";
+import { addXp, incrementExerciseAmount, updateRepMultiplierFromFeedback, uploadWorkout } from "../services/dbService";
 
 const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
@@ -42,10 +42,26 @@ export default function ExerciseScreen() {
     }, []);
 
     const { workoutPlan, warmup, workout, sex } = useLocalSearchParams();
-    const parsedWorkoutPlan = workoutPlan ? JSON.parse(workoutPlan as string) : workoutPlan;
-    const isWarmup = warmup ? JSON.parse(warmup as string) : false;
-    const isWorkout = workout ? JSON.parse(workout as string) : false;
-    const gender = sex ? JSON.parse(sex as string) : "male";
+
+    const parseSearchParam = <T,>(param: string | string[] | undefined, fallback: T): T => {
+        if (!param) return fallback;
+
+        const rawValue = Array.isArray(param) ? param[0] : param;
+        if (!rawValue) return fallback;
+
+        try {
+            const parsed = JSON.parse(rawValue);
+            return (parsed ?? fallback) as T;
+        } catch {
+            return fallback;
+        }
+    };
+
+    const workoutPlanParam = parseSearchParam<unknown>(workoutPlan, []);
+    const parsedWorkoutPlan = Array.isArray(workoutPlanParam) ? workoutPlanParam : [];
+    const isWarmup = parseSearchParam<boolean>(warmup, false);
+    const isWorkout = parseSearchParam<boolean>(workout, false);
+    const gender = parseSearchParam<string>(sex, "male");
     const [currentIndex, setCurrentIndex] = useState(-3); // For 3-2-1 countdown
     const [timeLeft, setTimeLeft] = useState(0);
     const [paused, setPaused] = useState(false);
@@ -225,6 +241,7 @@ export default function ExerciseScreen() {
 
             if (exercises.length !== 0) {
                 await uploadWorkout(timeElapsed, heartRateData, String(feedbackScore), exercises);
+                await updateRepMultiplierFromFeedback(feedbackScore);
                 await addXp(20);
             }
         } else {
