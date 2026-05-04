@@ -7,6 +7,7 @@ export default function InfoScreen() {
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
     const [measuredLines, setMeasuredLines] = useState<string[]>([]);
+    const useJustifiedText = false;
     const paragraphText =
         t("general_info_description") || "This screen contains general information and tips for using the app.";
 
@@ -28,7 +29,9 @@ export default function InfoScreen() {
                     {paragraphText}
                 </Text>
                 <View style={styles.paragraphBlock}>
-                    {measuredLines.length > 0 ? (
+                    {!useJustifiedText ? (
+                        <Text style={styles.paragraphText}>{paragraphText}</Text>
+                    ) : measuredLines.length > 0 ? (
                         measuredLines.map((line, index) => {
                             const words = line.trim().split(/\s+/).filter(Boolean);
                             const isLastLine = index === measuredLines.length - 1;
@@ -79,6 +82,11 @@ const styles = StyleSheet.create({
         maxWidth: 340,
         fontSize: 16,
         lineHeight: 22,
+    },
+    paragraphText: {
+        fontSize: 16,
+        lineHeight: 22,
+        color: "#333",
     },
     lineRow: {
         width: "100%",

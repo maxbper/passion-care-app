@@ -106,7 +106,47 @@ const pt = {
     register: "Registar",
     general_info: "Informação Geral",
     general_info_description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "NEUROPATIA PERIFÉRICA INDUZIDA PELA QUIMIOTERAPIA – O Que Deve Saber e Como Gerir\n\
+O que é?\n\
+É lesão dos nervos periféricos, comum em tratamentos com platina (ex.: oxaliplatina), taxanos (ex.: paclitaxel) ou outros. Causa dormência, formigueiro, sensibilidade ao frio, dor em padrão “meia-luva” (afeta as extremidades dos pés e mãos) e pode também causar fraqueza, desequilíbrio e risco de quedas. De uma forma geral, afeta a sensibilidade, o movimento ou funções automáticas (coração, intestino, bexiga).\n\
+\n\
+Sinais de alerta\n\
+•	Formigueiro, dormência ou dor nas mãos/pés (mas pode avançar para braços/pernas, em casos mais graves).\n\
+•	Sensibilidade excessiva ao toque ou ao frio.\n\
+•	Dificuldade em abotoar roupa, escrever, caminhar ou equilibrar-se.\n\
+•	Fraqueza muscular, cãibras ou alterações digestivas.\n\
+\n\
+Avisar a equipa SEMPRE\n\
+Logo que notar sintomas novos ou pioria! \n\
+Não espere. Uma atuação precoce permite ajustar tratamento e evitar agravamento.\n\
+\n\
+CUIDADOS NO DIA A DIA\n\
+Casa segura (previna quedas):\n\
+•	Luzes fortes em todos os sítios (à noite com luzes de presença).\n\
+•	Corrimãos nas escadas, tapetes antiderrapantes, sem fios soltos.\n\
+•	Temperatura água <43°C no banho/duche (use termómetro). (O banho confortável está entre 37-40ºC, mas limite seguro é inferior a 43-44ºC)\n\
+•	Limpe derrames imediatamente.\n\
+Mãos e pés:\n\
+•	Verifique pele diariamente (cortes, queimaduras).\n\
+•	Use sapatos fechados com sola antiderrapante, luvas e cachecol para frio.\n\
+•	Evite conduzir se se sentir inseguro(a).\n\
+Vestir e comer:\n\
+•	Roupas com velcro/elásticos, abotoadores.\n\
+•	Abridor de frascos, tachos com pegas grossas.\n\
+Estilo de vida:\n\
+•	Exercício diário (caminhadas, alongamentos, equilíbrio) – faça o plano PASSiON Care.\n\
+•	Não fume, prefira uma alimentação saudável, sem álcool, seja rigoroso no controle da glicemia se for diabético.\n\
+\n\
+Tratamentos:\n\
+•	Medicamentos para dor (prescritos pelo médico, ex.: duloxetina).\n\
+•	Reabilitação / exercício físico para força e equilíbrio.\n\
+•	Massagens, yoga ou acupuntura com orientação.\n\
+\n\
+Depois de instalada a neuropatia periférica é de difícil tratamento, mas pode melhorar\n\
+•	Com vigilância e cuidados, muitos sintomas aliviam em 6-18 meses. A reabilitação ajuda função e qualidade de vida.\n\
+Contacto: Equipa de oncologia ou SNS24 (808 24 24 24).\n\
+\n\
+Baseado em Mayo Clinic, MSKCC, Johns Hopkins e evidência atual. PASSiON Care 2026.",
     warmup: "Aquecimento",
     workout: "Treino",
     web_admin_message: "A versão web da aplicação está disponível apenas para administradores.",
