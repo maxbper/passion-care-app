@@ -10,6 +10,7 @@ import {
     fetchWarmupPlan,
     fetchGender,
     fetchIsSuspended,
+    fetchRepMultiplier,
 } from "../services/dbService";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
@@ -292,7 +293,17 @@ export default function TasksModal({ page = 0 }) {
             }
         };
 
-        const buildExercisePlan = async (planItems, planKey) => {
+        const buildExercisePlan = async (planItems, planKey, repMultiplier = 1) => {
+            const shouldApplyRepMultiplier = (exerciseName: string) => {
+                const normalizedName = exerciseName.toLowerCase();
+
+                return (
+                    !normalizedName.startsWith("rest") &&
+                    !normalizedName.includes("breathing") &&
+                    !normalizedName.includes("muscle_relaxation")
+                );
+            };
+
             const fetchedExercises = await Promise.all(
                 planItems.map(async (element) => {
                     if (element.substring(0, 4) === "rest") {
@@ -309,14 +320,25 @@ export default function TasksModal({ page = 0 }) {
                     }
 
                     const [name, attr] = exerciseData;
+                    const baseReps = attr.reps ? Number(attr.reps) : 0;
+                    const baseDuration = attr.duration ? Number(attr.duration) : 0;
+                    const appliesMultiplier = shouldApplyRepMultiplier(name);
+                    const adjustedReps =
+                        appliesMultiplier && baseReps > 0
+                            ? Math.max(1, Math.round(baseReps * repMultiplier))
+                            : baseReps;
+                    const adjustedDuration =
+                        appliesMultiplier && baseDuration > 0
+                            ? Math.max(1, Math.round(baseDuration * repMultiplier))
+                            : baseDuration;
                     if (attr.sets && attr.sets > 1) {
                         const sets = attr.sets;
                         const exercises = [];
                         for (let i = 0; i < sets; i++) {
                             const exercise = {
                                 exercise: name,
-                                duration: attr.duration ? attr.duration : 0,
-                                reps: attr.reps ? attr.reps : 0,
+                                duration: adjustedDuration,
+                                reps: adjustedReps,
                                 sets: attr.sets ? attr.sets - i : 0,
                             };
                             exercises.push(exercise);
@@ -332,8 +354,8 @@ export default function TasksModal({ page = 0 }) {
 
                     return {
                         exercise: name,
-                        duration: attr.duration ? attr.duration : 0,
-                        reps: attr.reps ? attr.reps : 0,
+                        duration: adjustedDuration,
+                        reps: adjustedReps,
                         sets: attr.sets ? attr.sets : 0,
                     };
                 }),
@@ -368,7 +390,9 @@ export default function TasksModal({ page = 0 }) {
                 return;
             }
 
-            const builtWorkoutPlan = await buildExercisePlan(wp, plan);
+            const repMultiplier = await fetchRepMultiplier();
+
+            const builtWorkoutPlan = await buildExercisePlan(wp, plan, repMultiplier);
             if (!builtWorkoutPlan.length) {
                 setPlanLoadFailed(true);
                 setWorkoutPlan([]);
@@ -394,7 +418,7 @@ export default function TasksModal({ page = 0 }) {
                 return;
             }
 
-            const builtWarmupPlan = await buildExercisePlan(warmupRaw, warmupPlanKey);
+            const builtWarmupPlan = await buildExercisePlan(warmupRaw, warmupPlanKey, repMultiplier);
             setWarmupPlan(builtWarmupPlan);
             setPlansLoading(false);
         };
