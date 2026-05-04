@@ -106,7 +106,47 @@ const en = {
     register: "Register",
     general_info: "General Information",
     general_info_description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "CHEMOTHERAPY-INDUCED PERIPHERAL NEUROPATHY - What You Should Know and How to Manage It\n\
+What is it?\n\
+It is damage to the peripheral nerves, common in treatments with platinum drugs (e.g. oxaliplatin), taxanes (e.g. paclitaxel), or others. It can cause numbness, tingling, cold sensitivity, pain in a glove-and-stocking pattern (affecting the hands and feet), and may also cause weakness, imbalance, and a higher risk of falls. In general, it affects sensation, movement, or automatic functions (heart, intestines, bladder).\n\
+\n\
+Warning signs\n\
+• Tingling, numbness, or pain in the hands/feet (and in more severe cases it may spread to the arms/legs).\n\
+• Excessive sensitivity to touch or cold.\n\
+• Difficulty buttoning clothes, writing, walking, or keeping balance.\n\
+• Muscle weakness, cramps, or digestive changes.\n\
+\n\
+Always tell the team\n\
+As soon as you notice new symptoms or worsening!\n\
+Do not wait. Early action allows treatment to be adjusted and helps prevent it from getting worse.\n\
+\n\
+DAILY CARE\n\
+Make the home safe (prevent falls):\n\
+• Bright lights in all areas (night lights at night).\n\
+• Handrails on stairs, non-slip rugs, no loose wires.\n\
+• Water temperature below 43°C in the bath/shower (use a thermometer). (Comfortable bath water is around 37-40°C, but the safe limit is below 43-44°C.)\n\
+• Clean up spills immediately.\n\
+Hands and feet:\n\
+• Check your skin daily (cuts, burns).\n\
+• Wear closed shoes with non-slip soles, gloves, and a scarf for the cold.\n\
+• Avoid driving if you feel unsafe.\n\
+Dressing and eating:\n\
+• Clothes with Velcro/elastics, button hooks.\n\
+• Jar openers, pans with thick handles.\n\
+Lifestyle:\n\
+• Daily exercise (walks, stretching, balance) - follow the PASSiON Care plan.\n\
+• Do not smoke, choose a healthy diet, avoid alcohol, and be strict with blood sugar control if you have diabetes.\n\
+\n\
+Treatments:\n\
+• Pain medication (prescribed by the doctor, e.g. duloxetine).\n\
+• Rehabilitation / physical exercise for strength and balance.\n\
+• Massage, yoga, or acupuncture with guidance.\n\
+\n\
+Once peripheral neuropathy is established, it is difficult to treat, but it can improve\n\
+• With monitoring and care, many symptoms improve within 6-18 months. Rehabilitation helps function and quality of life.\n\
+Contact: Oncology team or NHS 24 (111).\n\
+\n\
+Based on Mayo Clinic, MSKCC, Johns Hopkins, and current evidence. PASSiON Care® 2026.",
     warmup: "Warm-up",
     workout: "Workout",
     web_admin_message: "The web version of the app is only available for admins.",
