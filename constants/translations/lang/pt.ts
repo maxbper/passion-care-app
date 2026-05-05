@@ -104,23 +104,24 @@ const pt = {
     },
     incomplete_form: "O formulário não está completo. \n\nPor favor, preencha todos os campos.",
     register: "Registar",
+    info: "Informação",
     general_info: "Informação Geral",
     general_info_description:
-        "NEUROPATIA PERIFÉRICA INDUZIDA PELA QUIMIOTERAPIA – O Que Deve Saber e Como Gerir\n\
-O que é?\n\
+        "<b>NEUROPATIA PERIFÉRICA INDUZIDA PELA QUIMIOTERAPIA – O Que Deve Saber e Como Gerir</b>\n\n\
+<b>O que é?</b>\n\
 É lesão dos nervos periféricos, comum em tratamentos com platina (ex.: oxaliplatina), taxanos (ex.: paclitaxel) ou outros. Causa dormência, formigueiro, sensibilidade ao frio, dor em padrão “meia-luva” (afeta as extremidades dos pés e mãos) e pode também causar fraqueza, desequilíbrio e risco de quedas. De uma forma geral, afeta a sensibilidade, o movimento ou funções automáticas (coração, intestino, bexiga).\n\
 \n\
-Sinais de alerta\n\
+<b>Sinais de alerta</b>\n\
 •	Formigueiro, dormência ou dor nas mãos/pés (mas pode avançar para braços/pernas, em casos mais graves).\n\
 •	Sensibilidade excessiva ao toque ou ao frio.\n\
 •	Dificuldade em abotoar roupa, escrever, caminhar ou equilibrar-se.\n\
 •	Fraqueza muscular, cãibras ou alterações digestivas.\n\
 \n\
-Avisar a equipa SEMPRE\n\
+<b>Avisar a equipa SEMPRE</b>\n\
 Logo que notar sintomas novos ou pioria! \n\
 Não espere. Uma atuação precoce permite ajustar tratamento e evitar agravamento.\n\
 \n\
-CUIDADOS NO DIA A DIA\n\
+<b>CUIDADOS NO DIA A DIA</b>\n\
 Casa segura (previna quedas):\n\
 •	Luzes fortes em todos os sítios (à noite com luzes de presença).\n\
 •	Corrimãos nas escadas, tapetes antiderrapantes, sem fios soltos.\n\
@@ -137,16 +138,16 @@ Estilo de vida:\n\
 •	Exercício diário (caminhadas, alongamentos, equilíbrio) – faça o plano PASSiON Care.\n\
 •	Não fume, prefira uma alimentação saudável, sem álcool, seja rigoroso no controle da glicemia se for diabético.\n\
 \n\
-Tratamentos:\n\
+<b>Tratamentos:</b>\n\
 •	Medicamentos para dor (prescritos pelo médico, ex.: duloxetina).\n\
 •	Reabilitação / exercício físico para força e equilíbrio.\n\
 •	Massagens, yoga ou acupuntura com orientação.\n\
 \n\
-Depois de instalada a neuropatia periférica é de difícil tratamento, mas pode melhorar\n\
-•	Com vigilância e cuidados, muitos sintomas aliviam em 6-18 meses. A reabilitação ajuda função e qualidade de vida.\n\
-Contacto: Equipa de oncologia ou SNS24 (808 24 24 24).\n\
+Depois de instalada a neuropatia periférica é de difícil tratamento, mas pode melhorar com vigilância e cuidados, muitos sintomas aliviam em 6-18 meses. A reabilitação ajuda função e qualidade de vida.\n\
 \n\
-Baseado em Mayo Clinic, MSKCC, Johns Hopkins e evidência atual. PASSiON Care 2026.",
+Contacto: Equipa de oncologia ou SNS24 (808 24 24 24).\n\
+\n\n\
+<it>Baseado em Mayo Clinic, MSKCC, Johns Hopkins e evidência atual. PASSiON Care® 2026.</it>",
     warmup: "Aquecimento",
     workout: "Treino",
     web_admin_message: "A versão web da aplicação está disponível apenas para administradores.",

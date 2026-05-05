@@ -3,13 +3,39 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
+function renderWithBold(s: string) {
+    // capture <b>...</b>, <i>...</i>, <it>...</it> and <em>...</em>
+    const parts = s.split(/(<(?:b|i|it|em)>.*?<\/(?:b|i|it|em)>)/gi);
+    return parts.map((p, i) => {
+        const low = p.toLowerCase();
+        if (low.startsWith("<b>")) {
+            return (
+                <Text key={i} style={{ fontWeight: "bold" }}>
+                    {p.replace(/<\/?(?:b|i|it|em)>/gi, "")}
+                </Text>
+            );
+        }
+
+        if (low.startsWith("<i>") || low.startsWith("<it>") || low.startsWith("<em>")) {
+            return (
+                <Text key={i} style={{ fontStyle: "italic" }}>
+                    {p.replace(/<\/?(?:b|i|it|em)>/gi, "")}
+                </Text>
+            );
+        }
+
+        return <Text key={i}>{p}</Text>;
+    });
+}
+
 export default function InfoScreen() {
     const insets = useSafeAreaInsets();
     const { t } = useTranslation();
     const [measuredLines, setMeasuredLines] = useState<string[]>([]);
     const useJustifiedText = false;
-    const paragraphText =
-        t("general_info_description") || "This screen contains general information and tips for using the app.";
+    const paragraphText = renderWithBold(
+        t("general_info_description") || "This screen contains general information and tips for using the app.",
+    );
 
     return (
         <View style={[styles.container, { paddingTop: insets.top + 12 }]}>

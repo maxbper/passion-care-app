@@ -104,23 +104,25 @@ const en = {
     },
     incomplete_form: "The form is not complete. \n\nPlease fill in all fields.",
     register: "Register",
+    info: "Information",
     general_info: "General Information",
     general_info_description:
-        "CHEMOTHERAPY-INDUCED PERIPHERAL NEUROPATHY - What You Should Know and How to Manage It\n\
-What is it?\n\
+        "<b>CHEMOTHERAPY-INDUCED PERIPHERAL NEUROPATHY - What You Should Know and How to Manage It</b>\n\
+\n\
+<b>What is it?</b>\n\
 It is damage to the peripheral nerves, common in treatments with platinum drugs (e.g. oxaliplatin), taxanes (e.g. paclitaxel), or others. It can cause numbness, tingling, cold sensitivity, pain in a glove-and-stocking pattern (affecting the hands and feet), and may also cause weakness, imbalance, and a higher risk of falls. In general, it affects sensation, movement, or automatic functions (heart, intestines, bladder).\n\
 \n\
-Warning signs\n\
+<b>Warning signs</b>\n\
 • Tingling, numbness, or pain in the hands/feet (and in more severe cases it may spread to the arms/legs).\n\
 • Excessive sensitivity to touch or cold.\n\
 • Difficulty buttoning clothes, writing, walking, or keeping balance.\n\
 • Muscle weakness, cramps, or digestive changes.\n\
 \n\
-Always tell the team\n\
+<b>Always tell the team</b>\n\
 As soon as you notice new symptoms or worsening!\n\
 Do not wait. Early action allows treatment to be adjusted and helps prevent it from getting worse.\n\
 \n\
-DAILY CARE\n\
+<b>DAILY CARE</b>\n\
 Make the home safe (prevent falls):\n\
 • Bright lights in all areas (night lights at night).\n\
 • Handrails on stairs, non-slip rugs, no loose wires.\n\
@@ -137,16 +139,15 @@ Lifestyle:\n\
 • Daily exercise (walks, stretching, balance) - follow the PASSiON Care plan.\n\
 • Do not smoke, choose a healthy diet, avoid alcohol, and be strict with blood sugar control if you have diabetes.\n\
 \n\
-Treatments:\n\
+<b>Treatments:</b>\n\
 • Pain medication (prescribed by the doctor, e.g. duloxetine).\n\
 • Rehabilitation / physical exercise for strength and balance.\n\
 • Massage, yoga, or acupuncture with guidance.\n\
 \n\
-Once peripheral neuropathy is established, it is difficult to treat, but it can improve\n\
-• With monitoring and care, many symptoms improve within 6-18 months. Rehabilitation helps function and quality of life.\n\
+Once peripheral neuropathy is established, it is difficult to treat, but it can improve with monitoring and care, many symptoms improve within 6-18 months. Rehabilitation helps function and quality of life.\n\
 Contact: Oncology team or NHS 24 (111).\n\
 \n\
-Based on Mayo Clinic, MSKCC, Johns Hopkins, and current evidence. PASSiON Care® 2026.",
+<it>Based on Mayo Clinic, MSKCC, Johns Hopkins, and current evidence. PASSiON Care® 2026.</it>",
     warmup: "Warm-up",
     workout: "Workout",
     web_admin_message: "The web version of the app is only available for admins.",

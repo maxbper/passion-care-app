@@ -347,7 +347,7 @@ export default function HomeScreen() {
                                         <Pressable onPress={() => router.push("/info")} style={styles.card}>
                                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                                 <Feather name="info" size={36} color={cancerColor} />
-                                                <Text style={styles.xpText1}>{t("basic_info") || "Info"}</Text>
+                                                <Text style={styles.xpText1}>{t("info") || "Info"}</Text>
                                             </View>
                                         </Pressable>
                                     </View>
