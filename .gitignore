@@ -31,6 +31,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+passion-care-app-5a54ca09971e.json
 
 # typescript
 *.tsbuildinfo
