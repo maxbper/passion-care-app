@@ -33,7 +33,7 @@ export default function LoopingImage({ gender, exercise_name }) {
         male: {
             march_place: require("../assets/images/exercises/march_place.png"),
             slow_march_place: require("../assets/images/exercises/march_place.png"),
-            ankle_circles: require("../assets/images/exercises/white.png"),
+            ankle_circles: require("../assets/images/exercises/ankle_circles.mp4"),
             backward_lunge: require("../assets/images/exercises/backward_lunge.png"),
             ball_squeeze: require("../assets/images/exercises/ball.mp4"),
             breathing: require("../assets/images/exercises/breathing.mp4"),
@@ -58,8 +58,8 @@ export default function LoopingImage({ gender, exercise_name }) {
             seated_row: require("../assets/images/exercises/row.png"),
             single_leg_stand: require("../assets/images/exercises/single_leg_stand.png"),
             sit_stand: require("../assets/images/exercises/sit_stand.png"),
-            spiky_ball: require("../assets/images/exercises/white.png"),
-            spiky_ball_hands: require("../assets/images/exercises/white.png"),
+            spiky_ball: require("../assets/images/exercises/spiky_ball.mp4"),
+            spiky_ball_hands: require("../assets/images/exercises/spiky_ball.mp4"),
             /* squat: require("../assets/images/exercises/squat.png"), */
             stand_soft_surface: require("../assets/images/exercises/stand_soft.png"),
             supported_heel_raises: require("../assets/images/exercises/heel_raises.mp4"),
@@ -97,7 +97,7 @@ export default function LoopingImage({ gender, exercise_name }) {
         female: {
             march_place: require("../assets/images/exercises/march_place.png"),
             slow_march_place: require("../assets/images/exercises/march_place.png"),
-            ankle_circles: require("../assets/images/exercises/white.png"),
+            ankle_circles: require("../assets/images/exercises/ankle_circles.mp4"),
             backward_lunge: require("../assets/images/exercises/backward_lunge.png"),
             ball_squeeze: require("../assets/images/exercises/ball.mp4"),
             breathing: require("../assets/images/exercises/breathing.mp4"),
@@ -122,8 +122,8 @@ export default function LoopingImage({ gender, exercise_name }) {
             seated_row: require("../assets/images/exercises/row.png"),
             single_leg_stand: require("../assets/images/exercises/single_leg_stand.png"),
             sit_stand: require("../assets/images/exercises/sit_stand.png"),
-            spiky_ball: require("../assets/images/exercises/white.png"),
-            spiky_ball_hands: require("../assets/images/exercises/white.png"),
+            spiky_ball: require("../assets/images/exercises/spiky_ball.mp4"),
+            spiky_ball_hands: require("../assets/images/exercises/spiky_ball.mp4"),
             /* squat: require("../assets/images/exercises/squat.png"), */
             stand_soft_surface: require("../assets/images/exercises/stand_soft.png"),
             supported_heel_raises: require("../assets/images/exercises/heel_raises.mp4"),
