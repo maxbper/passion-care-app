@@ -79,7 +79,7 @@ export default function LoopingImage({ gender, exercise_name }) {
             seated_hamstring_stretch: require("../assets/images/exercises/seated_hamstring_stretch.png"),
             /* seated_lateral_stretch: require("../assets/images/exercises/trunk_stretch.png"),
             seated_lateral_trunk_stretch: require("../assets/images/exercises/trunk_stretch.png"), */
-            seated_gentle_trunk_stretch: require("../assets/images/exercises/white.png"),
+            seated_gentle_trunk_stretch: require("../assets/images/exercises/trunk_stretch.png"),
             seated_neck_stretch: require("../assets/images/exercises/neck_mobilization.mp4"),
             straight_line_walk: require("../assets/images/exercises/walking.mp4"),
             glute_bridge: require("../assets/images/exercises/glute_bridge.png"),
@@ -143,7 +143,7 @@ export default function LoopingImage({ gender, exercise_name }) {
             seated_hamstring_stretch: require("../assets/images/exercises/seated_hamstring_stretch.png"),
             /* seated_lateral_stretch: require("../assets/images/exercises/trunk_stretch.png"),
             seated_lateral_trunk_stretch: require("../assets/images/exercises/trunk_stretch.png"), */
-            seated_gentle_trunk_stretch: require("../assets/images/exercises/white.png"),
+            seated_gentle_trunk_stretch: require("../assets/images/exercises/trunk_stretch.png"),
             seated_neck_stretch: require("../assets/images/exercises/neck_mobilization.mp4"),
             straight_line_walk: require("../assets/images/exercises/walking.mp4"),
             glute_bridge: require("../assets/images/exercises/glute_bridge.png"),
