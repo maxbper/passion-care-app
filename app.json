@@ -19,7 +19,8 @@
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#845BB1"
             },
-            "package": "com.duartelopes.passioncare"
+            "package": "com.duartelopes.passioncare",
+            "versionCode": 13
         },
         "web": {
             "bundler": "metro",
@@ -37,7 +38,17 @@
                     "backgroundColor": "#845BB1"
                 }
             ],
-            "expo-video"
+            "expo-video",
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "compileSdkVersion": 35,
+                        "targetSdkVersion": 35,
+                        "buildToolsVersion": "35.0.0"
+                    }
+                }
+            ]
         ],
         "experiments": {
             "typedRoutes": true

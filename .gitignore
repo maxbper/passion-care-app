@@ -32,7 +32,8 @@ yarn-error.*
 # local env files
 .env*.local
 passion-care-app-5a54ca09971e.json
-application-f4ac4556-ee3a-47b2-90ec-aa15730adeb7.aab
+application-92676c7a-18db-44bc-a2ff-6a7c01b18af0.aab
+bundletool-all-1.18.3.jar
 
 # typescript
 *.tsbuildinfo
