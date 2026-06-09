@@ -20,7 +20,7 @@
                 "backgroundColor": "#845BB1"
             },
             "package": "com.duartelopes.passioncare",
-            "versionCode": 13
+            "versionCode": 14
         },
         "web": {
             "bundler": "metro",
@@ -60,6 +60,12 @@
             "eas": {
                 "projectId": "86ee4064-dbbc-4023-8974-5855a7c54db7"
             }
+        },
+        "runtimeVersion": {
+            "policy": "appVersion"
+        },
+        "updates": {
+            "url": "https://u.expo.dev/86ee4064-dbbc-4023-8974-5855a7c54db7"
         }
     }
 }
