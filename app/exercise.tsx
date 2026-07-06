@@ -18,6 +18,7 @@ import { checkAuth } from "../services/authService";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import LoopingImage from "../components/imageLoop";
 import { refreshTokens } from "../components/wearable";
@@ -28,6 +29,7 @@ const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 export default function ExerciseScreen() {
     const beepSound = require("../assets/sound/beep.mp3");
     const [sound, setSound] = useState<Audio.Sound | null>(null);
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         // Load sound once
@@ -433,20 +435,37 @@ export default function ExerciseScreen() {
     if (!hasStarted) {
         if (showPreview) {
             return (
-                <View style={[styles.container, { backgroundColor: "#fff", height: Dimensions.get("window").height }]}>
+                <View
+                    style={[
+                        styles.container,
+                        {
+                            backgroundColor: "#fff",
+                            flex: 1,
+                            justifyContent: "flex-start",
+                            paddingBottom: insets.bottom + 40,
+                        },
+                    ]}
+                >
                     <Text
                         style={{
                             fontSize: 24,
                             fontWeight: "bold",
-                            marginBottom: 20,
-                            marginTop: 20,
+                            marginBottom: 12,
+                            marginTop: 36,
                             textAlign: "center",
                         }}
                     >
                         {t("workout_plan")}
                     </Text>
-                    <View style={{ flex: 1, width: "90%", paddingTop: 50 }}>
-                        <ScrollView>
+                    <View
+                        style={{
+                            flex: 1,
+                            width: "90%",
+                            marginTop: 32,
+                            marginBottom: 24,
+                        }}
+                    >
+                        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 0 }}>
                             {parsedWorkoutPlan && parsedWorkoutPlan.length > 0 ? (
                                 parsedWorkoutPlan.map((exercise, idx) =>
                                     exercise.exercise === "rest" ||
@@ -491,14 +510,16 @@ export default function ExerciseScreen() {
                             )}
                         </ScrollView>
                     </View>
-                    <Button
-                        title={t("start") || "Start Workout"}
-                        onPress={() => {
-                            setShowPreview(false);
-                            handleStart();
-                        }}
-                        color="#845BB1"
-                    />
+                    <View style={{ marginBottom: insets.bottom + 10, flexShrink: 0 }}>
+                        <Button
+                            title={t("start") || "Start Workout"}
+                            onPress={() => {
+                                setShowPreview(false);
+                                handleStart();
+                            }}
+                            color="#845BB1"
+                        />
+                    </View>
                 </View>
             );
         } else {
