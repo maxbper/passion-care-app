@@ -34,10 +34,10 @@ const pt = {
         type: "Saúde",
         description: "Vamos começar?",
         questions: {
-            0: "Febre >38°C?",
+            0: "Febre ≥38°C?",
             1: "Vómitos/diarreia 12h?",
             2: "Incapacidade para realizar as atividades diárias?",
-            3: "Dor intensa?",
+            3: "Dor intensa (≥7/10)?",
             4: "Ferida, infecção, inflamação?",
             5: "Impacta a capacidade de realizar exercício?",
             6: "Contra-indicação médica para a prática de exercício?",
@@ -52,13 +52,23 @@ const pt = {
         type: "Funcional",
         description:
             "Este é um formulário semanal para avaliar o seu estado funcional. \nPor favor, responda às perguntas honestamente.",
+        choice_options: {
+            nada: "Nada",
+            muito_pouco: "Muito pouco",
+            um_pouco: "Um pouco",
+            bastante: "Bastante",
+            muito: "Muito",
+        },
         questions: {
             0: "Consegue manter-se de pé numa só perna por 10 segundos?",
             1: "Consegue andar 6 minutos seguidos sem parar?",
             2: "Consegue levantar-se 5x seguidas de uma cadeira sem usar as mãos?",
             3: "Hoje sente-se estável e sem tonturas?",
-            4: "De 0 a 7, qual o nível de dormencia ou formigueiro que está a sentir?",
-            5: "De 0 a 7, qual o seu nível de fadiga hoje?",
+            4: "De 0 a 10, qual o seu nível de fadiga hoje?",
+            5: "Nos últimos dias, o quanto sentiu dormência ou formigueiro nas suas mãos ou pés na pior situação?",
+            6: "Nos últimos dias, em que medida a dormência ou formigueiro nas suas mãos ou pés interferiu nas atividades habituais ou diárias?",
+            /* 4: "De 0 a 7, qual o nível de dormencia ou formigueiro que está a sentir?",
+            5: "De 0 a 7, qual o seu nível de fadiga hoje?", */
         },
         results: {
             decision: "Obrigado. \nCom base neste resultado, será definido o seu plano.",

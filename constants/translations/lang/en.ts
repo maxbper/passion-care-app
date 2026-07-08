@@ -35,10 +35,10 @@ const en = {
         type: "Health",
         description: "Let's start?",
         questions: {
-            0: "Fever >38°C?",
+            0: "Fever ≥38°C?",
             1: "Vomiting/diarrhea 12h?",
             2: "Inability to perform daily activities?",
-            3: "Intense pain?",
+            3: "Intense pain (≥7/10)?",
             4: "Wound, infection, inflammation?",
             5: "Does it impact the ability to perform exercise?",
             6: "Medical contraindication for exercise?",
@@ -52,13 +52,23 @@ const en = {
         title: "Daily Assessment",
         type: "Functional",
         description: "This is a weekly form to assess your functional status. \nPlease answer the questions honestly.",
+        choice_options: {
+            nada: "Not at all",
+            muito_pouco: "Very little",
+            um_pouco: "A little",
+            bastante: "Quite a bit",
+            muito: "Very much",
+        },
         questions: {
             0: "Can you stand on one leg for 10 seconds?",
             1: "Can you walk for 6 minutes without stopping?",
             2: "Can you get up from a chair 5 times in a row without using your hands?",
             3: "Do you confirm that you are not feeling dizzy?",
-            4: "On a scale of 0 to 7, what is the level of numbness or tingling you are feeling?",
-            5: "On a scale of 0 to 7, what is your level of fatigue today?",
+            4: "On a scale of 0 to 10, what is your level of fatigue today?",
+            5: "In the last few days, how much did you feel numbness or tingling in your hands or feet at its worst?",
+            6: "In the last few days, to what extent did numbness or tingling in your hands or feet interfere with your usual or daily activities?",
+            /* 4: "On a scale of 0 to 7, what is the level of numbness or tingling you are feeling?",
+            5: "On a scale of 0 to 7, what is your level of fatigue today?", */
         },
         results: {
             decision: "Thank you. \nBased on this result, your plan will be defined.",

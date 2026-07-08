@@ -16,6 +16,13 @@ const WeeklyHealthAssessment = ({}) => {
     const [healthAnswers, setHealthAnswers] = useState<boolean[]>([]);
     const [functionalAnswers, setFunctionalAnswers] = useState<string[]>([]);
     const [checking, setChecking] = useState(true);
+    const choiceOptions = [
+        { label: t("weekly_functional_assessment.choice_options.nada"), value: "0" },
+        { label: t("weekly_functional_assessment.choice_options.muito_pouco"), value: "1" },
+        { label: t("weekly_functional_assessment.choice_options.um_pouco"), value: "2" },
+        { label: t("weekly_functional_assessment.choice_options.bastante"), value: "3" },
+        { label: t("weekly_functional_assessment.choice_options.muito"), value: "4" },
+    ];
 
     const HealthAssessmentQuestions = [
         { id: 0, type: "yesno", text: t("weekly_health_assessment.questions.0"), nextIfYes: "suspend", nextIfNo: 1 },
@@ -32,8 +39,9 @@ const WeeklyHealthAssessment = ({}) => {
         { id: 1, type: "yesno", text: t("weekly_functional_assessment.questions.1"), nextIfYes: 2, nextIfNo: 2 },
         { id: 2, type: "yesno", text: t("weekly_functional_assessment.questions.2"), nextIfYes: 3, nextIfNo: 3 },
         { id: 3, type: "yesno", text: t("weekly_functional_assessment.questions.3"), nextIfYes: 4, nextIfNo: 4 },
-        { id: 4, type: "scale", text: t("weekly_functional_assessment.questions.4"), range: [0, 7], next: 5 },
-        { id: 5, type: "scale", text: t("weekly_functional_assessment.questions.5"), range: [0, 7], next: "decision" },
+        { id: 4, type: "scale", text: t("weekly_functional_assessment.questions.4"), range: [0, 10], next: 5 },
+        { id: 5, type: "choice", text: t("weekly_functional_assessment.questions.5"), next: 6 },
+        { id: 6, type: "choice", text: t("weekly_functional_assessment.questions.6"), next: "decision" },
     ];
 
     const results = {
@@ -212,6 +220,14 @@ const WeeklyHealthAssessment = ({}) => {
         showFunctionalQuestion(currentQuestion.next);
     };
 
+    const handleChoiceAnswer = (value: string) => {
+        if (!currentQuestion) return;
+        const updatedAnswers = [...functionalAnswers];
+        updatedAnswers[currentQuestion.currentQuestionId] = value;
+        setFunctionalAnswers(updatedAnswers);
+        showFunctionalQuestion(currentQuestion.next);
+    };
+
     const showResult = async (resultKey) => {
         const result = results[resultKey];
         if (currentAssessmentType === "health") {
@@ -230,28 +246,28 @@ const WeeklyHealthAssessment = ({}) => {
     };
 
     const makeDecision = async () => {
-        let score = 0;
-        const adaptedPlan = parseInt(functionalAnswers[4]) >= 4 || functionalAnswers[3] === "false";
+        const fatigueScore = Number(functionalAnswers[4] ?? 0);
+        const neuropathySeverityScore = Number(choiceOptions[Number(functionalAnswers[5] ?? 0)]?.value ?? 0);
+        const neuropathyImpactScore = Number(choiceOptions[Number(functionalAnswers[6] ?? 0)]?.value ?? 0);
 
-        functionalAnswers.forEach((answer, index) => {
-            if (index < 4) {
-                if (!answer) {
-                    score += 1;
-                }
-            } else {
-                score += parseInt(answer);
-            }
-        });
+        const functionalLimitations = functionalAnswers.slice(0, 4).filter((answer) => !answer).length;
+        const score = functionalLimitations + fatigueScore + neuropathySeverityScore + neuropathyImpactScore;
+        const adaptedPlan = fatigueScore >= 7 || functionalAnswers[3] === "false";
+        const severeNeuropathy = neuropathySeverityScore >= 2 && neuropathyImpactScore >= 2;
+        const extremeNeuropathy = neuropathySeverityScore >= 4 || neuropathyImpactScore >= 4;
 
         let decision: string;
-        if (score <= 4) {
+        if (extremeNeuropathy) {
+            decision = "plan3";
+        } else if (score <= 4 && !severeNeuropathy) {
             decision = adaptedPlan ? "plan2" : "plan1";
-        } else if (score <= 9) {
+        } else if (score <= 10 || severeNeuropathy) {
             decision = "plan2";
         } else {
             decision = "plan3";
         }
 
+        console.log("Decision:", decision);
         return decision;
     };
 
@@ -318,6 +334,20 @@ const WeeklyHealthAssessment = ({}) => {
                                     >
                                         <Text style={styles.buttonText}>{t("yes")}</Text>
                                     </TouchableOpacity>
+                                </View>
+                            )}
+
+                            {currentQuestion.type === "choice" && (
+                                <View style={styles.choiceContainer}>
+                                    {choiceOptions.map((option) => (
+                                        <TouchableOpacity
+                                            key={option.value}
+                                            style={styles.choiceButton}
+                                            onPress={() => handleChoiceAnswer(option.value)}
+                                        >
+                                            <Text style={styles.choiceButtonText}>{option.label}</Text>
+                                        </TouchableOpacity>
+                                    ))}
                                 </View>
                             )}
 
@@ -479,6 +509,25 @@ const styles = StyleSheet.create({
     scaleContainer: {
         width: "100%",
         alignItems: "center",
+    },
+    choiceContainer: {
+        width: "100%",
+        alignItems: "center",
+    },
+    choiceButton: {
+        backgroundColor: "#845BB1",
+        width: "88%",
+        paddingVertical: 12,
+        paddingHorizontal: 12,
+        borderRadius: 5,
+        marginBottom: 18,
+        alignItems: "center",
+    },
+    choiceButtonText: {
+        color: "white",
+        fontSize: 15,
+        fontWeight: "bold",
+        textAlign: "center",
     },
     slider: {
         width: "90%",
