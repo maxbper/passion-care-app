@@ -1,4 +1,4 @@
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import React, { useEffect, useState, useRef } from "react";
 import {
     View,
@@ -28,20 +28,8 @@ const MAX_PAUSE_TIME = 10 * 60 * 1000; // 10 minutes in ms
 
 export default function ExerciseScreen() {
     const beepSound = require("../assets/sound/beep.mp3");
-    const [sound, setSound] = useState<Audio.Sound | null>(null);
+    const player = useAudioPlayer(beepSound);
     const insets = useSafeAreaInsets();
-
-    useEffect(() => {
-        // Load sound once
-        async function loadSound() {
-            const { sound } = await Audio.Sound.createAsync(beepSound);
-            setSound(sound);
-        }
-        loadSound();
-        return () => {
-            if (sound) sound.unloadAsync();
-        };
-    }, []);
 
     const { workoutPlan, warmup, workout, sex } = useLocalSearchParams();
 
@@ -118,8 +106,10 @@ export default function ExerciseScreen() {
         setClocking(true);
 
         // Play sound when timer is 3, 2, or 1
-        if (timeLeft == 3 && sound) {
-            sound.replayAsync();
+        // Play sound when timer is 3, 2, or 1
+        if (timeLeft == 3 && player) {
+            player.seekTo(0);
+            player.play();
         }
 
         if (timeLeft === 1 && currentIndex >= 0) {

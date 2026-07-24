@@ -1,82 +1,83 @@
 {
-    "expo": {
-        "name": "PASSiON Care",
-        "slug": "passion-care",
-        "version": "2.0.1",
-        "orientation": "portrait",
-        "icon": "./assets/images/icon.png",
-        "scheme": "myapp",
-        "userInterfaceStyle": "automatic",
-        "newArchEnabled": true,
-        "jsEngine": "hermes",
-        "ios": {
-            "supportsTablet": true,
-            "jsEngine": "jsc",
-            "bundleIdentifier": "com.duartelopes.cipn-app",
-            "infoPlist": {
-                "ITSAppUsesNonExemptEncryption": false
-            }
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/images/adaptive-icon.png",
-                "backgroundColor": "#845BB1"
-            },
-            "package": "com.duartelopes.passioncare"
-        },
-        "web": {
-            "bundler": "metro",
-            "output": "static",
-            "favicon": "./assets/images/favicon.png"
-        },
-        "plugins": [
-            "expo-router",
-            [
-                "expo-splash-screen",
-                {
-                    "image": "./assets/images/splash-icon.png",
-                    "imageWidth": 200,
-                    "resizeMode": "contain",
-                    "backgroundColor": "#845BB1"
-                }
-            ],
-            "expo-video",
-            [
-                "expo-build-properties",
-                {
-                    "android": {
-                        "compileSdkVersion": 35,
-                        "targetSdkVersion": 35,
-                        "buildToolsVersion": "35.0.0"
-                    }
-                }
-            ],
-            [
-                "expo-build-properties",
-                {
-                    "ios": {
-                        "useFrameworks": "static"
-                    }
-                }
-            ],
-            ["./plugins/withIosFmtFix.js"]
-        ],
-        "experiments": {
-            "typedRoutes": true
-        },
-        "extra": {
-            "router": {
-                "origin": false
-            },
-            "eas": {
-                "projectId": "86ee4064-dbbc-4023-8974-5855a7c54db7"
-            }
-        },
-        "runtimeVersion": {
-            "policy": "appVersion"
-        },
-        "updates": {
-            "url": "https://u.expo.dev/86ee4064-dbbc-4023-8974-5855a7c54db7"
+  "expo": {
+    "name": "PASSiON Care",
+    "slug": "passion-care",
+    "version": "2.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.duartelopes.cipn-app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#845BB1"
+      },
+      "package": "com.duartelopes.passioncare"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#845BB1"
         }
+      ],
+      "expo-video",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "@react-native-community/datetimepicker",
+      "expo-font",
+      "expo-status-bar",
+      "expo-web-browser",
+      "expo-audio"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "86ee4064-dbbc-4023-8974-5855a7c54db7"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/86ee4064-dbbc-4023-8974-5855a7c54db7"
     }
+  }
 }

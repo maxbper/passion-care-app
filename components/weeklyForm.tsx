@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Modal, Pressable, Alert } from "react-native";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router/react-navigation";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import Slider from "@react-native-community/slider";

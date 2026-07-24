@@ -21,9 +21,7 @@ function LoopingVideo({ source, style }: { source: any; style?: any }) {
         p.play();
     });
 
-    return (
-        <VideoView player={player} style={style ?? styles.exerciseGif} contentFit="contain" nativeControls={false} />
-    );
+    return <VideoView player={player} style={style ?? styles.exerciseGif} contentFit="contain" />;
 }
 
 export default function LoopingImage({ gender, exercise_name }) {
