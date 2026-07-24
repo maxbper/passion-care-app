@@ -12,15 +12,17 @@
         "ios": {
             "supportsTablet": true,
             "jsEngine": "jsc",
-            "bundleIdentifier": "com.duartelopes.cipn-app"
+            "bundleIdentifier": "com.duartelopes.cipn-app",
+            "infoPlist": {
+                "ITSAppUsesNonExemptEncryption": false
+            }
         },
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#845BB1"
             },
-            "package": "com.duartelopes.passioncare",
-            "versionCode": 14
+            "package": "com.duartelopes.passioncare"
         },
         "web": {
             "bundler": "metro",
@@ -48,7 +50,16 @@
                         "buildToolsVersion": "35.0.0"
                     }
                 }
-            ]
+            ],
+            [
+                "expo-build-properties",
+                {
+                    "ios": {
+                        "useFrameworks": "static"
+                    }
+                }
+            ],
+            ["./plugins/withIosFmtFix.js"]
         ],
         "experiments": {
             "typedRoutes": true
