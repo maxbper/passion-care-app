@@ -500,7 +500,7 @@ export default function ExerciseScreen() {
                             )}
                         </ScrollView>
                     </View>
-                    <View style={{ marginBottom: insets.bottom + 10, flexShrink: 0 }}>
+                    <View style={{ marginBottom: insets.bottom, flexShrink: 0 }}>
                         <Button
                             title={t("start") || "Start Workout"}
                             onPress={() => {
