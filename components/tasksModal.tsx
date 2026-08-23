@@ -26,8 +26,9 @@ export default function TasksModal({ page = 0 }) {
     const [gender, setGender] = useState<string | null>(null);
     const { t } = useTranslation();
     const [pageNumber, setPageNumber] = useState(page);
-    const [plansLoading, setPlansLoading] = useState(false);
+    const [plansLoading, setPlansLoading] = useState(page === 1);
     const [planLoadFailed, setPlanLoadFailed] = useState(false);
+    const [waitingForPlan, setWaitingForPlan] = useState(false);
 
     const extraExercises = [
         "pinch",
@@ -210,6 +211,17 @@ export default function TasksModal({ page = 0 }) {
         });
     };
 
+    useEffect(() => {
+        if (!waitingForPlan) return;
+
+        if (planLoadFailed) {
+            setWaitingForPlan(false);
+        } else if (!plansLoading && workoutPlan.length > 0) {
+            setWaitingForPlan(false);
+            handleWorkout();
+        }
+    }, [waitingForPlan, plansLoading, workoutPlan, planLoadFailed]);
+
     const handleExtra = (exercise: string) => {
         const extra = extraPlan[exercise];
         router.push({
@@ -365,7 +377,7 @@ export default function TasksModal({ page = 0 }) {
         };
 
         const loadPlans = async () => {
-            if (pageNumber !== 2) {
+            if (pageNumber !== 1 && pageNumber !== 2) {
                 return;
             }
 
@@ -447,6 +459,7 @@ export default function TasksModal({ page = 0 }) {
         icon,
         onDisablePress,
         allowDisablePress,
+        showLock = true,
     }: {
         title: string;
         onPress: () => void;
@@ -456,6 +469,7 @@ export default function TasksModal({ page = 0 }) {
         icon?: string;
         onDisablePress?: () => void;
         allowDisablePress?: boolean;
+        showLock?: boolean;
     }) => {
         let containerStyle: any[] = [styles.block];
         if (completed) {
@@ -487,7 +501,7 @@ export default function TasksModal({ page = 0 }) {
 
                 {completed ? (
                     <CheckCircle2 size={24} color="#22c55e" />
-                ) : disabled && !half ? (
+                ) : disabled && showLock && !half ? (
                     <Lock size={24} color="#6b7280" />
                 ) : icon === "run" ? (
                     <FontAwesome6 name="person-running" size={26} color={"#845BB1"} />
@@ -540,14 +554,27 @@ export default function TasksModal({ page = 0 }) {
         );
     }
     if (pageNumber === 1) {
+        if (waitingForPlan) {
+            return (
+                <View style={styles.planLoadingContainer}>
+                    <Text style={styles.planLoadingTitle}>{t("exercises_name")}</Text>
+                    <ActivityIndicator size="large" color="#845BB1" />
+                </View>
+            );
+        }
+
         return (
             <>
                 <Block
                     title={t("workout_plan")}
                     onPress={() => {
-                        setPageNumber(2);
+                        if (plansLoading || workoutPlan.length === 0) {
+                            setWaitingForPlan(true);
+                            return;
+                        }
+                        handleWorkout();
                     }}
-                    disabled={suspended}
+                    disabled={suspended || planLoadFailed}
                     allowDisablePress={suspended}
                     onDisablePress={suspendedWarning}
                 />
@@ -566,7 +593,7 @@ export default function TasksModal({ page = 0 }) {
             </>
         );
     }
-    if (pageNumber === 2) {
+    /* if (pageNumber === 2) {
         return (
             <>
                 {plansLoading ? (
@@ -604,7 +631,7 @@ export default function TasksModal({ page = 0 }) {
                 )}
             </>
         );
-    }
+    } */
     if (pageNumber === 3) {
         return (
             <>
@@ -639,6 +666,23 @@ export default function TasksModal({ page = 0 }) {
 }
 
 const styles = StyleSheet.create({
+    planLoadingContainer: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F9FAFB",
+        zIndex: 10,
+    },
+    planLoadingTitle: {
+        marginBottom: 24,
+        fontSize: 24,
+        fontWeight: "bold",
+    },
     block: {
         alignSelf: "center",
         padding: 20,
