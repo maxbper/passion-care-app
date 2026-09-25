@@ -31,7 +31,7 @@ const WeeklyHealthAssessment = ({}) => {
         { id: 3, type: "yesno", text: t("weekly_health_assessment.questions.3"), nextIfYes: "suspend", nextIfNo: 4 },
         { id: 4, type: "yesno", text: t("weekly_health_assessment.questions.4"), nextIfYes: 5, nextIfNo: 6 },
         { id: 5, type: "yesno", text: t("weekly_health_assessment.questions.5"), nextIfYes: "suspend", nextIfNo: 6 },
-        { id: 6, type: "yesno", text: t("weekly_health_assessment.questions.6"), nextIfYes: 7, nextIfNo: "fullPlan" },
+        { id: 6, type: "yesno", text: t("weekly_health_assessment.questions.6"), nextIfYes: "suspend", nextIfNo: "fullPlan" },
     ];
 
     const FunctionalAssessmentQuestions = [
@@ -231,9 +231,7 @@ const WeeklyHealthAssessment = ({}) => {
     const showResult = async (resultKey) => {
         const result = results[resultKey];
         if (currentAssessmentType === "health") {
-            if (resultKey !== "suspend") {
-                completeAssessment(resultKey);
-            }
+            completeAssessment(resultKey);
         } else {
             setCurrentQuestion({
                 title: t("assesment_result"),
